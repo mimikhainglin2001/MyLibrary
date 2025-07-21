@@ -1,0 +1,94 @@
+ body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Styles for the custom message box */
+        .message-box-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .message-box-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .message-box-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.75rem; /* rounded-lg */
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* shadow-xl */
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+        .message-box-overlay.show .message-box-content {
+            transform: translateY(0);
+        }
+
+        /* Responsive adjustments for overall layout */
+        .body-flex-container {
+            display: flex;
+            flex-direction: column; /* Stack vertically on small screens */
+            min-height: 100vh;
+            background-color: #f3f4f6; /* bg-gray-100 */
+        }
+
+        @media (min-width: 640px) { /* sm breakpoint */
+            .body-flex-container {
+                flex-direction: row; /* Sidebar and main content side-by-side on larger screens */
+            }
+        }
+
+        /* Sidebar specific responsive adjustments */
+        .sidebar-container {
+            width: 100%; /* Full width on small screens */
+            padding: 1.5rem;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        @media (min-width: 640px) { /* sm breakpoint */
+            .sidebar-container {
+                width: 16rem; /* w-64 */
+                border-bottom-left-radius: 0.5rem; /* rounded-r-lg for sidebar */
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+                padding: 1.5rem 0 1.5rem 1.5rem; /* Adjust padding for rounded-r-lg effect */
+            }
+        }
+
+        /* Main content specific responsive adjustments */
+        .main-content-area {
+            flex: 1;
+            padding: 1.5rem; /* Default padding */
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            margin: 0; /* Remove horizontal margin for full width on small screens */
+            overflow-x: auto; /* Enable horizontal scrolling for the table on small screens */
+        }
+
+        @media (min-width: 640px) { /* sm breakpoint */
+            .main-content-area {
+                padding: 2.5rem; /* Increased padding on larger screens */
+                border-top-left-radius: 0.5rem; /* rounded-l-lg for main content */
+                border-bottom-left-radius: 0.5rem;
+                margin: 1rem; /* m-4 on larger screens */
+            }
+        }
+
+        /* Table specific styles */
+        .min-w-full {
+            min-width: 600px; /* Ensure table doesn't get too small on mobile, allowing scroll */
+        }

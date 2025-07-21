@@ -1,0 +1,147 @@
+<?php require_once APPROOT .'/views/inc/sidebar.php'; ?>
+
+        <main class="main-content-area bg-blue-100 shadow-md">
+            <div class="flex items-center justify-between pb-6 border-b border-blue-200 mb-8">
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search" class="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-48 sm:w-64">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <i class="fas fa-user-circle text-gray-700 text-2xl"></i>
+                    <span class="text-gray-700 font-medium"><?php echo $name; ?></span>
+                    
+                </div>
+            </div>
+
+            <!-- Statistical Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between transform transition duration-300 hover:scale-105">
+                    <div>
+                        <p class="text-gray-500 text-sm">Total Books</p>
+                        <p class="text-3xl font-bold text-blue-800">369</p>
+                    </div>
+                    <i class="fas fa-book text-blue-400 text-4xl"></i>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between transform transition duration-300 hover:scale-105">
+                    <div>
+                        <p class="text-gray-500 text-sm">Issued Books</p>
+                        <p class="text-3xl font-bold text-yellow-600">115</p>
+                    </div>
+                    <i class="fas fa-clipboard-check text-yellow-400 text-4xl"></i>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between transform transition duration-300 hover:scale-105">
+                    <div>
+                        <p class="text-gray-500 text-sm">Overdue Returns</p>
+                        <p class="text-3xl font-bold text-red-600">20</p>
+                    </div>
+                    <i class="fas fa-exclamation-triangle text-red-400 text-4xl"></i>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between transform transition duration-300 hover:scale-105">
+                    <div>
+                        <p class="text-gray-500 text-sm">Active Members</p>
+                        <p class="text-3xl font-bold text-green-600">200</p>
+                    </div>
+                    <i class="fas fa-user-friends text-green-400 text-4xl"></i>
+                </div>
+            </div>
+
+            <!-- Quick Actions and Today's Activity -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-6">Quick Actions</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button class="flex flex-col items-center justify-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg shadow-sm transition duration-300" onclick="window.location.href='<?php echo URLROOT;?>/admin/addnewBook'">
+                            <i class="fas fa-plus text-blue-600 text-2xl mb-2"></i>
+                            <span class="text-blue-800 font-medium text-center">Add New Book</span>
+                        </button>
+                        <button class="flex flex-col items-center justify-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg shadow-sm transition duration-300" onclick="window.location.href='<?php echo URLROOT;?>/admin/manageMember'">
+                            <i class="fas fa-users text-blue-600 text-2xl mb-2"></i>
+                            <span class="text-blue-800 font-medium text-center">View Member List</span>
+                        </button>
+                        <!-- <button class="flex flex-col items-center justify-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg shadow-sm transition duration-300" onclick="window.location.href=<?php echo URLROOT;?>/pages/category'">
+                            <i class="fas fa-book-reader text-blue-600 text-2xl mb-2"></i>
+                            <span class="text-blue-800 font-medium text-center">Add Issue Book</span>
+                        </button> -->
+                        <!-- <button class="flex flex-col items-center justify-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg shadow-sm transition duration-300">
+                            <i class="fas fa-undo text-blue-600 text-2xl mb-2"></i>
+                            <span class="text-blue-800 font-medium text-center">Add Return Book</span>
+                        </button> -->
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-6">Today's Activity</h3>
+                    <ul class="space-y-4 text-gray-700">
+                        <li class="flex items-center">
+                            <i class="fas fa-user-plus text-green-500 mr-3"></i>
+                            <span>Five New Members Register</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-book-open text-blue-500 mr-3"></i>
+                            <span>24 Books Issued Today</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-clipboard-check text-yellow-500 mr-3"></i>
+                            <span>10 Books Returned Today</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-bell text-red-500 mr-3"></i>
+                            <span>20 Overdue Warnings Sent</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Logout Message Box
+    <div id="logoutMessageBox" class="message-box-overlay">
+        <div class="message-box-content">
+            <h4 class="text-2xl font-bold text-gray-800 mb-4">Logged Out Successfully!</h4>
+            <p class="text-gray-600 mb-6">You have been successfully logged out of the admin dashboard.</p>
+            <button id="closeMessageBox" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full transition duration-300">
+                OK
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutButton = document.getElementById('logoutButton');
+            const logoutMessageBox = document.getElementById('logoutMessageBox');
+            const closeMessageBox = document.getElementById('closeMessageBox');
+
+            // Function to show the message box
+            function showMessageBox() {
+                logoutMessageBox.classList.add('show');
+            }
+
+            // Function to hide the message box
+            function hideMessageBox() {
+                logoutMessageBox.classList.remove('show');
+            }
+
+            // Event listener for the logout button
+            logoutButton.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent default link behavior
+                console.log('Logout initiated...');
+                // In a real application, you would perform actual logout logic here,
+                // e.g., clearing session storage, redirecting to a login page, etc.
+                showMessageBox(); // Show the custom message box
+            });
+
+            // Event listener to close the message box
+            closeMessageBox.addEventListener('click', hideMessageBox);
+
+            // Close message box if clicked outside (optional)
+            logoutMessageBox.addEventListener('click', function(event) {
+                if (event.target === logoutMessageBox) {
+                    hideMessageBox();
+                }
+            });
+        });
+    </script> -->
+</body>
+</html>

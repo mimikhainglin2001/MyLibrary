@@ -1,0 +1,405 @@
+
+/* General Body Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f4f4f4; /* Light gray background for page content */
+    color: #333;
+}
+
+/* Header Container */
+header {
+    background-color: #add8e6; /* Light blue */
+    padding: 15px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+    max-width: 1200px; /* Max width for content, centered */
+    margin: 0 auto;
+    padding: 0 20px; /* Horizontal padding */
+    display: flex;
+    align-items: center; /* Vertically align items */
+    justify-content: space-between; /* Space out the logo and navigation */
+}
+
+/* Logo and Title Container */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between SVG icon and text title */
+}
+
+.logo-container svg {
+    width: 28px; /* Adjust SVG size as needed */
+    height: 28px;
+    color: #007bff; /* Blue color for the SVG icon */
+}
+
+.library-title {
+    font-size: 1.8em; /* Size of the "Library" text */
+    font-weight: bold;
+    color: #333; /* Dark gray text color */
+    margin: 0; /* Remove default margin */
+}
+
+/* Navigation Links */
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* Space between navigation links */
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: #555;
+    font-weight: bold;
+    font-size: 1.0em;
+    padding: 5px 0;
+    transition: color 0.3s ease;
+}
+
+.main-nav a:hover {
+    color: #007bff; /* Blue hover color */
+}
+
+/* User Icon */
+.user-icon {
+    font-size: 1.8em; /* Size of the user icon */
+    color: #555; /* Color of the user icon */
+    margin-left: 15px; /* Space from the last navigation link */
+}
+/* --- Rest of your existing CSS (Homepage, Category, Register styles) --- */
+
+/* Hero Section specific to Categories page ("Find The Book You Love") */
+.category-hero-section {
+    display: flex;
+    flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+    align-items: center;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    gap: 40px; /* Space between image and text */
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.category-hero-image-container {
+    flex: 1; /* Allows image to take available space */
+    min-width: 300px; /* Minimum width before wrapping */
+    text-align: center; /* Center image within its container */
+}
+
+.category-hero-image-container .actual-hero-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.category-hero-content {
+    flex: 1; /* Allows text content to take available space */
+    min-width: 300px; /* Minimum width before wrapping */
+    text-align: center; /* Center text within its container */
+}
+
+.category-hero-content h2 {
+    font-size: 2.2em;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 400px; /* Limit max width of search bar */
+    margin: 0 auto; /* Center the search bar */
+}
+
+.search-bar input {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px; /* Rounded left, straight right */
+    font-size: 1em;
+    outline: none;
+}
+
+.search-bar button {
+    background-color: #28a745; /* Green search button */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 0 5px 5px 0; /* Straight left, rounded right */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1em;
+}
+
+.search-bar button:hover {
+    background-color: #218838;
+}
+
+/* Section for "Select a book Category" and "Literary Book Listed" */
+.book-listing-section { /* New class to wrap both category and literary lists */
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 20px;
+    text-align: center;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.book-listing-section h2 {
+    font-size: 2.2em;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+.category-grid, .literary-book-grid { /* Applies to both category cards and literary book cards */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid for 3 columns on large screens */
+    gap: 30px;
+    justify-content: center; /* Center items in the grid */
+    padding-bottom: 40px; /* Space before buttons if they are directly below */
+}
+
+.category-card, .literary-book-card { /* Styles for individual cards */
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 250px; /* Ensure cards have some height */
+}
+
+.category-card:hover, .literary-book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.category-card img, .literary-book-card img {
+    max-width: 100%;
+    height: 180px; /* Fixed height for consistent image size */
+    object-fit: contain; /* Contain the image within its bounds */
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.category-card h3 a { /* <--- MODIFIED: Apply text-decoration to the anchor tag inside h3 */
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 5px;
+    text-decoration: none; /* Ensure no underline */
+}
+
+.literary-book-card p { /* Specific for details in literary book cards */
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 5px;
+    line-height: 1.4;
+    text-align: left; /* Align text left inside the card */
+    width: 100%; /* Take full width for text */
+}
+.literary-book-card a{
+    text-decoration: none;
+}
+
+.issue-book-btn { /* For the "Issue Book" button on literary book cards */
+    background-color: #1a7550; /* Green button */
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px; /* Space from text */
+    width: 90%; /* Make button fill most of the card width */
+}
+
+.issue-book-btn:hover {
+    background-color: #155d3e;
+}
+
+
+/* Navigation Buttons (Back/See More) */
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 0 20px; /* Add horizontal padding */
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 40px; /* Space below buttons */
+}
+
+.navigation-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.back-btn {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.back-btn:hover {
+    background-color: #d0d0d0;
+}
+
+.back-btn i {
+    margin-right: 8px;
+}
+
+.see-more-btn {
+    background-color: #28a745; /* Green for See More */
+    color: white;
+}
+
+.see-more-btn:hover {
+    background-color: #218838;
+}
+
+/* --- Responsive Mobile Views for Book Category Page --- */
+@media (max-width: 768px) {
+    /* Header Responsive */
+    .header-content {
+        flex-direction: column; /* Stack logo/title and nav on small screens */
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .main-nav {
+        flex-direction: column; /* Stack nav links vertically */
+        gap: 10px;
+        width: 100%;
+        align-items: center;
+    }
+
+    .main-nav a {
+        font-size: 0.9em;
+        padding: 8px 0;
+    }
+
+    .user-icon {
+        font-size: 1.5em;
+        margin-left: 0;
+        margin-top: 10px;
+    }
+
+    .library-title {
+        font-size: 1.5em; /* Smaller title on mobile */
+    }
+
+    /* Category Hero Section Responsive */
+    .category-hero-section {
+        flex-direction: column; /* Stack hero content on small screens */
+        padding: 15px;
+        margin: 20px auto;
+    }
+
+    .category-hero-image-container .actual-hero-image {
+        max-width: 80%; /* Adjust image size for mobile */
+    }
+
+    .category-hero-content h2 {
+        font-size: 1.8em;
+    }
+
+    .search-bar input {
+        max-width: none; /* Allow input to take more width */
+    }
+
+    /* Book Listing Section Responsive */
+    .book-listing-section {
+        padding: 15px;
+        margin: 40px auto;
+    }
+
+    .book-listing-section h2 {
+        font-size: 1.8em;
+        margin-bottom: 30px;
+    }
+
+    .category-grid, .literary-book-grid {
+        /* On medium screens, go to 2 columns for cards */
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .category-card, .literary-book-card {
+        padding: 10px;
+        min-height: 200px;
+    }
+
+    .category-card img, .literary-book-card img {
+        height: 120px; /* Smaller image height */
+    }
+
+    .category-card h3, .literary-book-card h3 {
+        font-size: 1.1em;
+        text-decoration: none;
+    }
+
+    /* Navigation Buttons Responsive */
+    .navigation-buttons {
+        flex-direction: column; /* Stack buttons */
+        gap: 15px;
+        padding: 0;
+        align-items: center;
+    }
+
+    .navigation-buttons button {
+        width: 80%; /* Make buttons wider */
+    }
+}
+
+@media (max-width: 480px) {
+    /* Header Responsive */
+    .header-content {
+        padding: 0 15px; /* Reduce padding further */
+    }
+
+    .main-nav a {
+        font-size: 0.8em; /* Even smaller font size for very small screens */
+    }
+
+    /* Category Hero Section Responsive */
+    .category-hero-section {
+        padding: 15px;
+    }
+
+    /* Book Listing Section Responsive */
+    .book-listing-section {
+        padding: 15px;
+    }
+
+    .category-grid, .literary-book-grid {
+        /* On very small screens, stack into a single column for cards */
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .category-card, .literary-book-card {
+        max-width: 250px; /* Limit max width of cards for centered look */
+        margin: 0 auto;
+    }
+}

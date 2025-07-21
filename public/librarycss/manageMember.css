@@ -1,0 +1,154 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6; /* bg-gray-100 */
+    display: flex;
+    flex-direction: column; /* Ensure body is a flex container for header + main content */
+    min-height: 100vh; /* Full viewport height */
+}
+/* Custom styles for the message box - Keep as is */
+.message-box-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.message-box-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+.message-box-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 0.75rem; /* rounded-lg */
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* shadow-xl */
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+}
+.message-box-overlay.show .message-box-content {
+    transform: translateY(0);
+}
+
+/* Responsive adjustments for overall layout - Keep as is */
+.body-flex-container {
+    display: flex;
+    flex-direction: column; /* Stack vertically on small screens */
+    flex-grow: 1; /* Allow to take remaining vertical space */
+}
+
+@media (min-width: 640px) { /* sm breakpoint */
+    .body-flex-container {
+        flex-direction: row; /* Sidebar and main content side-by-side on larger screens */
+    }
+}
+
+/* Sidebar specific responsive adjustments - Keep as is */
+.sidebar-container {
+    width: 100%; /* Full width on small screens */
+    padding: 1.5rem;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+@media (min-width: 640px) { /* sm breakpoint */
+    .sidebar-container {
+        width: 16rem; /* w-64 */
+        border-bottom-left-radius: 0.5rem; /* rounded-r-lg for sidebar */
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        padding: 1.5rem 0 1.5rem 1.5rem; /* Adjust padding for rounded-r-lg effect */
+    }
+}
+
+/* Main content specific responsive adjustments */
+.main-content-area {
+    flex: 1;
+    padding: 1.5rem; /* Default padding */
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    margin: 0; /* Remove horizontal margin for full width on small screens */
+    /* Removed overflow-x: auto; from here */
+}
+
+@media (min-width: 640px) { /* sm breakpoint */
+    .main-content-area {
+        padding: 2.5rem; /* Increased padding on larger screens */
+        border-top-left-radius: 0.5rem; /* rounded-l-lg for main content */
+        border-bottom-left-radius: 0.5rem;
+        margin: 1rem; /* m-4 on larger screens */
+    }
+}
+
+/* --- Table Scrolling and Fixed Header Styles --- */
+
+/* Wrapper for the table to enable both horizontal and vertical scrolling */
+.table-scroll-container {
+    overflow: auto; /* Enables both horizontal and vertical scrolling as needed */
+    max-height: 400px; /* Set a max height to enable vertical scrolling */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    width: 100%; /* Ensure it takes full width of its parent */
+}
+
+/* Ensure the table itself has fixed layout and minimum width */
+.min-w-full { /* This class is already on your table */
+    table-layout: fixed; /* Ensures column widths are respected */
+    /* Add a minimum width to the table itself to ensure horizontal scrolling is triggered
+       even if content isn't super wide, especially on smaller screens.
+       Adjust this value based on your actual column content and desired scroll point. */
+    min-width: 700px; /* Example min-width, adjust as needed */
+}
+
+/* Style for table headers to make them sticky */
+.table-header {
+    position: sticky; /* Makes the header sticky */
+    top: 0; /* Sticks to the top of its scrollable parent (.table-scroll-container) */
+    background-color: #f9fafb; /* bg-gray-50 - crucial to hide content behind */
+    z-index: 10; /* Ensure header stays on top of scrolling content */
+
+    font-weight: 600; /* font-semibold */
+    color: #4a5568; /* text-gray-700 */
+    text-transform: uppercase;
+    font-size: 0.875rem; /* text-sm */
+    padding: 1rem;
+    text-align: left;
+    white-space: nowrap; /* Prevents text from wrapping, forcing horizontal scroll */
+    border-bottom: 1px solid #e2e8f0; /* Add a subtle border for separation */
+}
+
+/* Style for table cells */
+.table-cell {
+    padding: 1rem; /* p-4 */
+    text-align: left;
+    white-space: nowrap; /* Prevents text from wrapping, forcing horizontal scroll */
+}
+
+/* Optional: Style the scrollbar for better appearance (Webkit browsers) */
+.table-scroll-container::-webkit-scrollbar {
+    height: 8px; /* Height of the horizontal scrollbar */
+    width: 8px; /* Width of the vertical scrollbar */
+}
+
+.table-scroll-container::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color of the scrollbar track */
+    border-radius: 10px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the scrollbar thumb */
+    border-radius: 10px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the scrollbar thumb on hover */
+}
