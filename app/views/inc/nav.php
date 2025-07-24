@@ -1,4 +1,4 @@
-<?php $name = $_SESSION['name']; ?>
+<!-- <?php $name = $_SESSION['name']; ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -43,23 +43,4 @@
             }
         }
    </style>
-</head>
-<body class="bg-gray-100">
-
-  <header>
-        <div class="header-content">
-            <div class="logo-container">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                </svg>
-                <h1 class="library-title">Library</h1>
-            </div>
-            <nav class="main-nav">
-                <a href="<?php echo URLROOT;?>/pages/category">HOME</a>
-                <a href="<?php echo URLROOT?>/pages/contact">CONTACT</a>
-                <a href="<?php echo URLROOT?>/pages/login">LOGOUT</a>
-                <i class="fas fa-user-circle user-icon"></i>
-                <span><?php echo $name?></span>
-            </nav>
-        </div>
-    </header>
+</head> -->

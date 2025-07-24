@@ -1,5 +1,4 @@
 <?php 
-
 class Admin extends Controller
 {
     private $db;
@@ -35,6 +34,15 @@ class Admin extends Controller
       public function reservation()
     {
         $this->view('admin/reservation');
+    }
+     public function profile()
+    {   
+       $loginuser = $this->db->getById('users',$_SESSION['session_loginuser']);
+    //    var_dump($loginuser);die();
+       $data = [
+            'loginuser' => $loginuser
+       ];
+        $this->view('admin/profile' , $data);
     }
 
     // Additional admin methods can be added here

@@ -14,10 +14,10 @@ class Pages extends Controller
         $this->view('pages/index');
     }
 
-    public function home()
-    {
-        $this->view('pages/index');
-    }
+    // public function home()
+    // {
+    //     $this->view('pages/index');
+    // }
 
     public function login()
     {
@@ -33,29 +33,29 @@ class Pages extends Controller
         $this->view('pages/category');
     }
 
-    public function literaryBook()
+    public function literarybook()
     {
-        $this->view('pages/literaryBook');
+        $this->view('pages/literarybook');
     }
-     public function historicalBook()
+     public function historicalbook()
     {
-        $this->view('pages/historicalBook');
+        $this->view('pages/historicalbook');
     }
-    public function educationBook()
+    public function educationbook()
     {
-        $this->view('pages/educationBook');
+        $this->view('pages/educationbook');
     }
-     public function romanceBook()
+     public function romancebook()
     {
-        $this->view('pages/romanceBook');
+        $this->view('pages/romancebook');
     }
-     public function horrorBook()
+     public function horrorbook()
     {
-        $this->view('pages/horrorBook');
+        $this->view('pages/horrorbook');
     }
-     public function cartoonBook()
+     public function cartoonbook()
     {
-        $this->view('pages/cartoonBook');
+        $this->view('pages/cartoonbook');
     }
       public function contact()
     {
@@ -82,7 +82,10 @@ class Pages extends Controller
     {
         $this->view('pages/profile');
     }
-
+      public function history()
+    {
+        $this->view('pages/history');
+    }
     public function dashboard()
     {
         $income = $this->db->incomeTransition();

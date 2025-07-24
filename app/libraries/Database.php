@@ -195,9 +195,6 @@ class Database
             $stm->closeCursor(); // good practice for unbuffered queries
             return $success;
         }
-
-
-
     public function unsetLogin($id)
     {
        try{ 

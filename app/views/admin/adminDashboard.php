@@ -8,10 +8,11 @@
                         <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <i class="fas fa-user-circle text-gray-700 text-2xl"></i>
-                    <span class="text-gray-700 font-medium"><?php echo $name; ?></span>
-                    
+                 <div class="flex items-center space-x-4">
+                    <a href="<?php echo URLROOT; ?>/admin/profile" class="flex items-center space-x-4 text-gray-700 hover:text-blue-600 transition duration-300">
+                        <i class="fas fa-user-circle text-2xl"></i>
+                        <span class="font-medium"><?php echo $name; ?></span>
+                    </a>
                 </div>
             </div>
 
@@ -26,7 +27,7 @@
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between transform transition duration-300 hover:scale-105">
                     <div>
-                        <p class="text-gray-500 text-sm">Issued Books</p>
+                        <p class="text-gray-500 text-sm">Borrowed Books</p>
                         <p class="text-3xl font-bold text-yellow-600">115</p>
                     </div>
                     <i class="fas fa-clipboard-check text-yellow-400 text-4xl"></i>
@@ -46,7 +47,6 @@
                     <i class="fas fa-user-friends text-green-400 text-4xl"></i>
                 </div>
             </div>
-
             <!-- Quick Actions and Today's Activity -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1">
                 <div class="bg-white p-6 rounded-lg shadow-md">
@@ -80,7 +80,7 @@
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-book-open text-blue-500 mr-3"></i>
-                            <span>24 Books Issued Today</span>
+                            <span>24 Books Borrowed Today</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-clipboard-check text-yellow-500 mr-3"></i>

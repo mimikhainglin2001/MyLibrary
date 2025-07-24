@@ -12,7 +12,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/librarycss/login.css?v=2">
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/librarycss/login.css?v=2">
 
 </head>
 <body>
@@ -35,7 +35,7 @@ if (session_status() === PHP_SESSION_NONE) {
             <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
                 Send
             </button>
-            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105" >
                 Cancel
             </button>
         </form>

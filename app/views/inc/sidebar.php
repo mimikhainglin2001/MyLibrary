@@ -1,5 +1,8 @@
 <?php 
-$name = $_SESSION['name'] ?? 'Admin'; // Default to 'Admin' if not set
+$name = $_SESSION['name'] ?? 'Admin'; ?>
+<?php
+    $currentUrl = $_SERVER['REQUEST_URI']; 
+    // example: /mvc-bus-ticket/pages/dashboard
 ?>
 
 <!DOCTYPE html>
@@ -15,15 +18,23 @@ $name = $_SESSION['name'] ?? 'Admin'; // Default to 'Admin' if not set
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Link to external CSS file (assuming admin.css handles responsive adjustments for sidebar/main content) -->
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/librarycss/adminDashboard.css">
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/librarycss/manageMember.css">
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/librarycss/manageBook.css">
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/librarycss/issueBook.css">
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/librarycss/addnewBook.css">
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/librarycss/adminDashboard.css">
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/librarycss/manageMember.css">
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/librarycss/manageBook.css">
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/librarycss/issueBook.css">
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/librarycss/addnewBook.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR3 authorization/lQfrg1Bw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
 </head>
+<style>
+.active{
+    background-color: #1D4ED8;
+    border-radius: 8px;
+
+}
+
+</style>
 <body class="bg-gray-100">
 
     <!-- Main Content Area with Sidebar -->
@@ -34,43 +45,43 @@ $name = $_SESSION['name'] ?? 'Admin'; // Default to 'Admin' if not set
             </div>
             <nav class="flex-1 mt-6">
                 <ul>
-                    <li class="mb-2">
+                    <li class="<?php echo (strpos($currentUrl, '/admin/adminDashboard') !== false) || (strpos($currentUrl, '/admin/profile') !== false) ? 'active' : ''; ?>">
                         <a href="<?php echo URLROOT;?>/admin/adminDashboard" class="flex items-center p-4 text-blue-100 hover:bg-blue-700 transition duration-300 rounded-lg">
                             <i class="fas fa-tachometer-alt mr-3"></i>
                             Dashboard
                         </a>
                     </li>
-                    <li class="mb-2">
-                        <a href="<?php echo URLROOT;?>/admin/manageMember" class="flex items-center p-4 text-blue-100 bg-blue-700 transition duration-300 rounded-lg">
+                    <li class="<?php echo (strpos($currentUrl, '/admin/manageMember') !== false) ? 'active' : ''; ?>">
+                        <a href="<?php echo URLROOT;?>/admin/manageMember" class="flex items-center p-4 text-blue-100 hover:bg-blue-700 transition duration-300 rounded-lg">
                             <i class="fas fa-users mr-3"></i>
                             Manage Members
                         </a>
                     </li>
-                    <li class="mb-2">
+                    <li  class="<?php echo (strpos($currentUrl, '/user/customer') !== false) ? 'active' : ''; ?> ">
                         <a href="<?php echo URLROOT;?>/admin/manageBook" class="flex items-center p-4 text-blue-100 hover:bg-blue-700 transition duration-300 rounded-lg">
                             <i class="fas fa-book mr-3"></i>
                             Manage Books
                         </a>
                     </li>
-                    <li class="mb-2">
+                    <li  class="<?php echo (strpos($currentUrl, '/user/customer') !== false) ? 'active' : ''; ?>">
                         <a href="<?php echo URLROOT;?>/admin/issueBook" class="flex items-center p-4 text-blue-100 hover:bg-blue-700 transition duration-300 rounded-lg">
                             <i class="fas fa-plus-circle mr-3"></i>
-                            Issue
+                            Borrow List
                         </a>
                     </li>
-                    <li class="mb-2">
+                    <li  class="<?php echo (strpos($currentUrl, '/user/customer') !== false) ? 'active' : ''; ?>">
                         <a href="<?php echo URLROOT;?>/admin/returnBook" class="flex items-center p-4 text-blue-100 hover:bg-blue-700 transition duration-300 rounded-lg">
                             <i class="fas fa-undo-alt mr-3"></i>
                             Return
                         </a>
                     </li>
-                    <li class="mb-2">
+                    <li class="<?php echo (strpos($currentUrl, '/user/customer') !== false) ? 'active' : ''; ?>">
                         <a href="<?php echo URLROOT;?>/admin/addnewBook" class="flex items-center p-4 text-blue-100 hover:bg-blue-700 transition duration-300 rounded-lg">
                             <i class="fas fa-undo-alt mr-3"></i>
                             Add New Book
                         </a>
                     </li>
-                    <li class="mb-2">
+                    <li class="<?php echo (strpos($currentUrl, '/user/customer') !== false) ? 'active' : ''; ?>">
                         <a href="<?php echo URLROOT;?>/admin/reservation" class="flex items-center p-4 text-blue-100 hover:bg-blue-700 transition duration-300 rounded-lg">
                             <i class="fas fa-clipboard-list mr-3"></i>
                             Reservations

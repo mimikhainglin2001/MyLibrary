@@ -12,7 +12,6 @@ body {
     background-color: #f8f9fa;
 }
 
-/* Header */
 .header {
     background: linear-gradient(135deg, #1D4ED8, #1D4ED8);
     padding: 1rem 0;
@@ -77,7 +76,6 @@ body {
     font-weight: 500;
     margin-left: 10px;
 }
-
 /* Main Content */
 .main-content {
     max-width: 1200px;
@@ -91,7 +89,7 @@ body {
     grid-template-columns: 1fr 1fr;
     gap: 40px;
     align-items: center;
-    padding: 60px 0;
+    padding: 40px 0;
     background: white;
     margin: 20px 0;
     border-radius: 12px;
@@ -100,7 +98,7 @@ body {
 }
 
 .hero-image {
-    height: 100%;
+    height: 300px;
 }
 
 .hero-image img {
@@ -116,7 +114,7 @@ body {
 }
 
 .search-section h1 {
-    font-size: 2.2rem;
+    font-size: 2rem;
     font-weight: 700;
     color: #333;
     margin-bottom: 30px;
@@ -135,7 +133,7 @@ body {
     overflow: hidden;
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
     width: 100%;
-    max-width: 400px;
+    max-width: 350px;
 }
 
 .search-input {
@@ -165,16 +163,16 @@ body {
     background: #218838;
 }
 
-/* Categories Section */
-.categories-section {
+/* Book Listing Section */
+.book-listing {
     background: white;
-    padding: 50px 40px;
+    padding: 40px;
     border-radius: 12px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.1);
     margin-bottom: 40px;
 }
 
-.categories-section h2 {
+.book-listing h2 {
     text-align: center;
     font-size: 1.8rem;
     font-weight: 600;
@@ -190,70 +188,163 @@ body {
     margin-bottom: 40px;
 }
 
-.book-category {
+.book-item {
     text-align: center;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
+.book-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* Book Cover Styles */
 .book-cover {
-    width: 200px;
-    height: 280px;
+    width: 120px;
+    height: 160px;
     margin: 0 auto 15px;
     border-radius: 8px;
-    overflow: hidden;
     position: relative;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 15px;
+    color: white;
+    font-weight: bold;
     cursor: pointer;
+    transition: transform 0.3s;
 }
 
 .book-cover:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    transform: scale(1.05);
 }
 
-.book-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.book-title {
-    position: absolute;
-    bottom: 20px;
-    left: 15px;
-    right: 15px;
-    color: white;
-    font-weight: bold;
+.book-cover .book-title {
     font-size: 14px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
     line-height: 1.2;
+    margin-bottom: 8px;
 }
 
-.category-name {
-    font-weight: 600;
-    color: #333;
+.book-cover .book-author {
+    font-size: 11px;
+    opacity: 0.9;
+}
+
+.book-cover .book-subtitle {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.heart-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
     font-size: 16px;
 }
 
-/* Specific Book Cover Styles */
-.myanmar-cover {
-    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), #8B4513;
+/* Specific Book Cover Colors */
+.orange-cover {
+    background: linear-gradient(135deg, #ff7f50, #ff6347);
 }
 
-.education-cover {
-    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), #4169E1;
+.green-cover {
+    background: linear-gradient(135deg, #32cd32, #228b22);
 }
 
-.romance-cover {
-    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), #FFB6C1;
+.dark-cover {
+    background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
 }
 
-.horror-cover {
-    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), #8B0000;
+.vintage-cover {
+    background: linear-gradient(135deg, #daa520, #b8860b);
 }
 
-.cartoon-cover {
-    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), #87CEEB;
+.portrait-cover {
+    background: linear-gradient(135deg, #4682b4, #2f4f4f);
+    overflow: hidden;
+}
+
+.portrait-cover img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.7;
+}
+
+.portrait-cover .book-title {
+    position: relative;
+    z-index: 2;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+}
+
+.red-cover {
+    background: linear-gradient(135deg, #dc143c, #b22222);
+}
+
+/* Book Info */
+.book-info h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+    line-height: 1.3;
+}
+
+.author {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.stars {
+    color: #ffc107;
+    font-size: 14px;
+}
+
+.rating-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.availability {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.borrow-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.borrow-btn:hover {
+    background: #218838;
+    transform: translateY(-2px);
 }
 
 /* Navigation */
@@ -294,6 +385,13 @@ body {
 }
 
 /* Responsive Design */
+@media (max-width: 968px) {
+    .books-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+}
+
 @media (max-width: 768px) {
     .header-content {
         flex-direction: column;
@@ -311,7 +409,7 @@ body {
 
     .hero-image {
         order: 2;
-        height: 250px;
+        height: 200px;
     }
 
     .hero-image img {
@@ -331,12 +429,7 @@ body {
         gap: 20px;
     }
 
-    .book-cover {
-        width: 150px;
-        height: 210px;
-    }
-
-    .categories-section {
+    .book-listing {
         padding: 30px 20px;
     }
 }
@@ -348,8 +441,8 @@ body {
     }
 
     .book-cover {
-        width: 200px;
-        height: 280px;
+        width: 140px;
+        height: 180px;
     }
 
     .search-section h1 {
@@ -359,5 +452,9 @@ body {
     .navigation {
         flex-direction: column;
         gap: 20px;
+    }
+
+    .book-info h3 {
+        font-size: 15px;
     }
 }
