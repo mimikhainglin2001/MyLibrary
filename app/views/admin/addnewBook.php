@@ -1,19 +1,19 @@
-<?php require_once APPROOT . '/views/inc/sidebar.php';?>
+<?php require_once APPROOT . '/views/inc/sidebar.php';
+?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR3authorization/lQfrg1Bw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
         <main class="flex-1 p-6 md:p-10 flex justify-center items-center">
             <div class="bg-white p-8 md:p-10 rounded-xl shadow-xl max-w-md w-full">
                 <h2 class="text-2xl font-bold text-gray-800 text-center mb-8">Add New Book</h2>
 
-                <form id="addBookForm" class="space-y-6" method="POST" action="<?php echo URLROOT;?>/book/registerBook" enctype="multipart/form-data">
-                    <div>
+               <form id="addBookForm" class="space-y-6" method="POST" action="<?php echo URLROOT; ?>/book/registerBook" enctype="multipart/form-data">
+               <?php require APPROOT . '/views/components/auth_message.php'; ?>     
+               <div>
                         <label for="chooseImage" class="sr-only">Choose Image File</label>
-                        <input type="file" name = "image" id="chooseImage" class="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="file" name="image" id="chooseImage"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
-                    <div>
-                        <label for="bookID" class="sr-only">Book ID</label>
-                        <input type="text" name = "id" id="bookID" placeholder="Book ID" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
+                    
                     <div>
                         <label for="title" class="sr-only">Title</label>
                         <input type="text" name = "title" id="title" placeholder="Title" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -29,12 +29,13 @@
                     <div>
                         <label for="category" class="block text-gray-700 text-sm font-bold mb-2">Category:</label>
                         <select name = "category" id="category" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="literaryBook">Literary Book</option>
-                            <option value="historicalBook">Historical Book</option>
-                            <option value="educationBook">Education Book</option>
-                            <option value="romanceBook">Romance Book</option>
-                            <option value="horrorBook">Horror Book</option>
-                            <option value="cartoonBook">Cartoon Book</option>
+                            <option value="Literary Book">Categories</option>
+                            <option value="Literary Book">Literary Book</option>
+                            <option value="Historical Book">Historical Book</option>
+                            <option value="Education/References Book">Education/References Book</option>
+                            <option value="Romance Book">Romance Book</option>
+                            <option value="Horror Book">Horror Book</option>
+                            <option value="Cartoon Book">Cartoon Book</option>
                         </select>
                     </div>
                     

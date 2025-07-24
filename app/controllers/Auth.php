@@ -34,15 +34,16 @@ class Auth extends Controller{
                 //     redirect('pages/login');
                 // }
              
-                if($ischeck){
-
-                    $this->db->setLogin($ischeck['id']);
+                if(!$ischeck){
+                    setMessage('error', 'Invalid email and password');
+                    redirect('pages/login');
+                }else{
+                     $this->db->setLogin($ischeck['id']);
 
                     $_SESSION['session_loginuser'] = $ischeck['id'];
 
                     if ($ischeck) {
                         $_SESSION['name'] = $ischeck['name'];
-                       
 
                         switch ($ischeck['role_id']) {
                             case Admin:
@@ -61,9 +62,12 @@ class Auth extends Controller{
                         }
                     }
                 }
+
+                   
+                }
             }
         }
-    }
+    
     public function formRegister()
     {
         if (
@@ -86,7 +90,7 @@ class Auth extends Controller{
 
             $checkmail = $this->db->columnFilter('users','email',$email);
             if($checkmail){
-                setMessage('error' , 'Email is already exit');
+                setMessage('error' , 'Email is already exist');
                 redirect('pages/register');
             }else{
                 $name = $_POST['name'];
@@ -122,8 +126,6 @@ class Auth extends Controller{
                 //    var_dump($insert);
                 //    die();
                     if($insert){
-
-
                         $mail = new Mail();
                         $sentmail = $mail->verifyMail($email,$name);
                         setMessage('success','Mail is sent');
