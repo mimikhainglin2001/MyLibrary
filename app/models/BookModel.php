@@ -6,9 +6,9 @@ class BookModel {
     private $author_id;
     private $total_quantity;
     private $available_quantity;
-    private $status;
-    //private $image; 
-    //mmmmmm
+    private $status_id;
+    private $image; 
+    
 
     public function setTitle($title){
         $this->title = $title;
@@ -52,19 +52,19 @@ class BookModel {
         return $this->available_quantity;
     }
 
-    public function setStatus($status) {
-        $this->status = $status;
+    public function setStatusID($status_id) {
+        $this->status_id = $status_id;
     }
-    public function getStatus(){
-        return $this->status;
+    public function getStatusID(){
+        return $this->status_id;
     }
 
-    // public function setImage($image) {
-    //     $this->image = $image;
-    // }
-    // public function getImage() {
-    //     return $this->image;
-    // }
+    public function setImage($image) {
+        $this->image = $image;
+    }
+    public function getImage() {
+        return $this->image;
+    }
 
     public function toArray(){
         return [
@@ -74,8 +74,8 @@ class BookModel {
             'author_id' => $this->getAuthorID(),
             'total_quantity' => $this->getTotalQuantity(),
             'available_quantity' => $this->getAvailableQuantity(),
-            'status' => $this->getStatus(),
-            //'image' => $this->getImage()
+            'status_id' => $this->getStatusID(),
+            'image' => $this->getImage()
         ];
     }
 }

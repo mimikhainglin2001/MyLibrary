@@ -35,27 +35,52 @@ class Pages extends Controller
 
     public function literarybook()
     {
-        $this->view('pages/literarybook');
+        $literaryBooks = $this->db->getLiteraryBooks('book_details','category_name',$categoryName = 'Literary Book');
+        
+        $data = [
+            'literaryBooks' => $literaryBooks
+        ];
+        $this->view('pages/literarybook', $data);
     }
      public function historicalbook()
     {
-        $this->view('pages/historicalbook');
+        $historicalBooks = $this->db->getHistoricalBooks('book_details', 'category_name', $categoryName = 'Historical Book');
+        $data = [
+            'historicalBooks' => $historicalBooks
+        ];
+        $this->view('pages/historicalbook', $data);
     }
     public function educationbook()
     {
-        $this->view('pages/educationbook');
+        $educationBooks = $this->db->getEducationBooks('book_details', 'category_name', $categoryName = 'Education/References Book');
+        $data = [
+            'educationBooks' => $educationBooks
+        ];
+        $this->view('pages/educationbook', $data);
     }
      public function romancebook()
     {
-        $this->view('pages/romancebook');
+        $romanceBooks = $this->db->getRomanceBooks('book_details', 'category_name', $categoryName = 'Romance Book');
+        $data = [
+            'romanceBooks' => $romanceBooks
+        ];
+        $this->view('pages/romancebook', $data);
     }
      public function horrorbook()
     {
-        $this->view('pages/horrorbook');
+        $horrorBooks = $this->db->getHorrorBooks('book_details', 'category_name', $categoryName = 'Horror Book');
+        $data =[
+            'horrorBooks' => $horrorBooks
+        ];
+        $this->view('pages/horrorbook', $data);
     }
      public function cartoonbook()
     {
-        $this->view('pages/cartoonbook');
+        $cartoonBooks = $this->db->getCartoonBooks('book_details', 'category_name', $categoryName = 'Cartoon Book');
+        $data = [
+            'cartoonBooks' => $cartoonBooks
+        ];
+        $this->view('pages/cartoonbook', $data);
     }
       public function contact()
     {
