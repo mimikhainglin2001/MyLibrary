@@ -8,6 +8,7 @@ class BookModel {
     private $available_quantity;
     private $status;
     //private $image; 
+    //mmmmmm
 
     public function setTitle($title){
         $this->title = $title;
