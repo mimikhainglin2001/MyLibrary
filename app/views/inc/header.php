@@ -1,4 +1,4 @@
-<!-- <?php $name = $_SESSION['name']; ?> -->
+<?php $name = $_SESSION['session_loginuser']; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +31,7 @@
                         <li><a href="<?php echo URLROOT;?>/pages/history">History</a></li>
                         <li><a href="<?php echo URLROOT;?>/pages/login">logout</a></li>
                         <i class="fas fa-user user-icon1"></i> 
-                        <span><?php echo $name?></span>
+                        <span><?php echo $name['name']?></span>
                     </ul>
             </nav>
         </div>

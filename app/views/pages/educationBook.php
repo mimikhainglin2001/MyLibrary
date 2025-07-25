@@ -27,10 +27,10 @@
                  <?php foreach($data['educationBooks'] as $book):?>
 
                 <div class="book-item">
-                    <div class="book-cover orange-cover">
+                    
                         <img src="/<?= htmlspecialchars($book['image'])?>"
                         class="book-img" />
-                    </div>
+                    
                     <div class="book-info">
                         <span><?= htmlspecialchars($book['title'])?></span>
                         <p class="author">Author: <?= htmlspecialchars($book['author_name'])?></p>
@@ -45,7 +45,10 @@
                         </div>
                        <button class="borrow-btn"
                     data-book="<?= htmlspecialchars($book['title']) ?>"
-                    data-author="<?= htmlspecialchars($book['author_name']) ?>">
+                    data-author="<?= htmlspecialchars($book['author_name']) ?>"
+                    data-isbn ="<?= htmlspecialchars($book['isbn'])?>"
+                    data-id ="<?= htmlspecialchars($book['id'])?>">
+                    
                 BORROW
             </button>
                     </div>
@@ -74,193 +77,108 @@
     </div>
 
 <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('Modern Library System Loading...');
+document.addEventListener('DOMContentLoaded', function () {
+    let currentBook = '';
+    let currentAuthor = '';
+    let currentBookId = '';
 
-            let currentBook = '';
-            let currentAuthor = '';
+    const modal = document.getElementById('confirmationModal');
+    const confirmationMessage = document.getElementById('confirmationMessage');
+    const confirmBtn = document.getElementById('confirmBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const borrowBtns = document.querySelectorAll('.borrow-btn');
+    const searchInput = document.querySelector('.search-input');
+    const searchButton = document.querySelector('.search-button');
 
-            const modal = document.getElementById('confirmationModal');
-            const confirmationMessage = document.getElementById('confirmationMessage');
-            const confirmBtn = document.getElementById('confirmBtn');
-            const cancelBtn = document.getElementById('cancelBtn');
-            const borrowBtns = document.querySelectorAll('.borrow-btn');
-            const searchInput = document.querySelector('.search-input');
-            const searchButton = document.querySelector('.search-button');
+    modal.style.display = 'none';
 
-            if (!modal || !confirmationMessage || !confirmBtn || !cancelBtn) {
-                console.error('Modal elements missing!');
-                return;
+    borrowBtns.forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const bookTitle = this.getAttribute('data-book');
+            const author = this.getAttribute('data-author');
+            const bookId = this.getAttribute('data-id');
+
+            if (bookTitle && author && bookId) {
+                showConfirmation(bookTitle, author, bookId);
             }
-
-            // Initialize
-            modal.style.display = 'none';
-
-            // Show notification function
-            function showNotification(message, type = 'success') {
-                const notification = document.createElement('div');
-                notification.className = 'notification';
-                notification.textContent = message;
-                
-                if (type === 'error') {
-                    notification.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
-                }
-                
-                document.body.appendChild(notification);
-                
-                setTimeout(() => notification.classList.add('show'), 100);
-                
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                    setTimeout(() => {
-                        if (notification.parentNode) {
-                            notification.parentNode.removeChild(notification);
-                        }
-                    }, 400);
-                }, 3000);
-            }
-
-            // Borrow buttons
-            borrowBtns.forEach(btn => {
-                btn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const bookTitle = this.getAttribute('data-book');
-                    const author = this.getAttribute('data-author');
-                    
-                    if (bookTitle && author) {
-                        showConfirmation(bookTitle, author);
-                    } else {
-                        showNotification('Book information missing!', 'error');
-                    }
-                });
-            });
-
-            // Modal events
-            confirmBtn.addEventListener('click', e => {
-                e.preventDefault();
-                confirmBorrow();
-            });
-
-            cancelBtn.addEventListener('click', e => {
-                e.preventDefault();
-                hideConfirmation();
-            });
-
-            modal.addEventListener('click', e => {
-                if (e.target === modal) {
-                    hideConfirmation();
-                }
-            });
-
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape' && modal.classList.contains('show')) {
-                    hideConfirmation();
-                }
-            });
-
-            // Search functionality
-            function performSearch() {
-                const searchTerm = searchInput.value.trim();
-                if (!searchTerm) {
-                    showNotification('Please enter a search term', 'error');
-                    return;
-                }
-
-                const bookItems = document.querySelectorAll('.book-item');
-                let foundCount = 0;
-
-                bookItems.forEach(item => {
-                    const title = item.querySelector('span').textContent.toLowerCase();
-                    const author = item.querySelector('.author').textContent.toLowerCase();
-                    const searchLower = searchTerm.toLowerCase();
-
-                    if (title.includes(searchLower) || author.includes(searchLower)) {
-                        item.style.display = 'block';
-                        item.style.animation = 'fadeIn 0.5s ease';
-                        foundCount++;
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-
-                if (foundCount === 0) {
-                    showNotification(`No books found for "${searchTerm}"`, 'error');
-                    bookItems.forEach(item => {
-                        item.style.display = 'block';
-                    });
-                } else {
-                    showNotification(`Found ${foundCount} books matching "${searchTerm}"`);
-                }
-            }
-
-            searchButton.addEventListener('click', performSearch);
-            searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    performSearch();
-                }
-            });
-
-            function showConfirmation(bookTitle, author) {
-                currentBook = bookTitle;
-                currentAuthor = author;
-                confirmationMessage.textContent = `Are you sure you want to borrow "${bookTitle}" by ${author}?`;
-                
-                modal.style.display = 'flex';
-                setTimeout(() => {
-                    modal.classList.add('show');
-                    confirmBtn.focus();
-                }, 10);
-            }
-
-            function hideConfirmation() {
-                modal.classList.remove('show');
-                setTimeout(() => {
-                    modal.style.display = 'none';
-                }, 300);
-            }
-
-            function confirmBorrow() {
-                const borrowBtn = document.querySelector(`[data-book="${currentBook}"][data-author="${currentAuthor}"]`);
-                
-                if (borrowBtn) {
-                    // Add loading state
-                    const originalText = borrowBtn.innerHTML;
-                    borrowBtn.innerHTML = '<span class="loading"></span> Processing...';
-                    borrowBtn.disabled = true;
-
-                    setTimeout(() => {
-                        borrowBtn.innerHTML = '✓ Borrowed';
-                        borrowBtn.classList.add('borrowed');
-                        borrowBtn.disabled = true;
-                        
-                        showNotification(`Successfully borrowed "${currentBook}" by ${currentAuthor}!`);
-
-                        // Reset after 5 seconds
-                        setTimeout(() => {
-                            borrowBtn.innerHTML = originalText;
-                            borrowBtn.classList.remove('borrowed');
-                            borrowBtn.disabled = false;
-                        }, 5000);
-                    }, 1500);
-                }
-
-                hideConfirmation();
-                currentBook = '';
-                currentAuthor = '';
-            }
-
-            // Add fade-in animation keyframes
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes fadeIn {
-                    from { opacity: 0; transform: translateY(20px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-            `;
-            document.head.appendChild(style);
-
-            console.log('Modern Library System Ready!');
         });
-    </script>
+    });
+
+    confirmBtn.addEventListener('click', e => {
+        e.preventDefault();
+        confirmBorrow();
+    });
+
+    cancelBtn.addEventListener('click', e => {
+        e.preventDefault();
+        hideConfirmation();
+    });
+
+    modal.addEventListener('click', e => {
+        if (e.target === modal) hideConfirmation();
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') hideConfirmation();
+    });
+
+    function showConfirmation(bookTitle, author, bookId) {
+        currentBook = bookTitle;
+        currentAuthor = author;
+        currentBookId = bookId;
+        confirmationMessage.textContent = `Are you sure you want to borrow "${bookTitle}" by ${author}?`;
+        modal.style.display = 'flex';
+        setTimeout(() => {
+            modal.classList.add('show');
+            confirmBtn.focus();
+        }, 10);
+    }
+
+    function hideConfirmation() {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+
+    function confirmBorrow() {
+        if (currentBookId) {
+            window.location.href = `/auth/borrow?id=${encodeURIComponent(currentBookId)}`;
+        } else {
+            alert('Book ID is missing.');
+        }
+
+        hideConfirmation();
+        currentBook = '';
+        currentAuthor = '';
+        currentBookId = '';
+    }
+
+    function performSearch() {
+        const searchTerm = searchInput.value.trim().toLowerCase();
+        const bookItems = document.querySelectorAll('.book-item');
+        let found = 0;
+
+        bookItems.forEach(item => {
+            const title = item.querySelector('span').textContent.toLowerCase();
+            const author = item.querySelector('.author').textContent.toLowerCase();
+            if (title.includes(searchTerm) || author.includes(searchTerm)) {
+                item.style.display = 'block';
+                found++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        if (found === 0) alert(`No books found for "${searchTerm}"`);
+    }
+
+    searchButton.addEventListener('click', performSearch);
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') performSearch();
+    });
+});
+</script>
 </body>
 </html>

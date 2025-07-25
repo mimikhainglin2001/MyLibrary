@@ -5,6 +5,7 @@ class Auth extends Controller{
 
     public function __construct(){
         $this->model('UserModel');
+        $this->model('BorrowBookModel');
         $this->db = new Database();
     }
 
@@ -39,11 +40,10 @@ class Auth extends Controller{
                     redirect('pages/login');
                 }else{
                      $this->db->setLogin($ischeck['id']);
-
-                    $_SESSION['session_loginuser'] = $ischeck['id'];
+                    
+                    $_SESSION['session_loginuser'] = $ischeck;
 
                     if ($ischeck) {
-                        $_SESSION['name'] = $ischeck['name'];
 
                         switch ($ischeck['role_id']) {
                             case Admin:
@@ -229,6 +229,26 @@ class Auth extends Controller{
         }
     }
 
+
+    public function borrow(){
+        $name = $_SESSION['session_loginuser'];
+        $id =$_GET['id'];
+        date_default_timezone_set('Asia/Yangon');
+        $currentDate = date('Y-m-d H:i:s');
+        $dueDate = date('Y-m-d H:i:s', strtotime('+7 days'));
+
+        $user = new BorrowBookModel();
+        $user->setBookID($id);
+        $user->setUserID($name['id']);
+        $user->setBorrowDate($currentDate);
+        $user->setDueDate($dueDate);
+
+        $borrowed = $this->db->create('borrowBook',$user->toArray());
+        if($borrowed){
+            setMessage('success','Book borrowed successfully');
+            redirect('pages/literarybook');
+    }
+    }
 }
 
 ?>
