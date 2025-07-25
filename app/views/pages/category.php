@@ -28,7 +28,7 @@
                     <div class="book-cover">
                         <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Literary Fiction">
                     </div>
-                    <p> <a href="<?php echo URLROOT;?>/pages/literarybook"class="category-name">Literary Fiction</p></a>
+                    <p> <a href="<?php echo URLROOT;?>/pages/literarybook"class="category-name" style="text-decoration: none;">Literary Fiction</p></a>
                 </div>
 
                 <div class="book-category">
@@ -36,7 +36,7 @@
                         <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Historical Fiction">
                         <div class="book-title">MYANMAR</div>
                     </div>
-                    <p> <a href="<?php echo URLROOT;?>/pages/historicalbook"class="category-name">Historical Fiction</p></a>
+                    <p> <a href="<?php echo URLROOT;?>/pages/historicalbook"class="category-name" style="text-decoration: none;">Historical Fiction</p></a>
                 </div>
 
                 <div class="book-category">
@@ -44,7 +44,7 @@
                         <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Educational References">
                         <div class="book-title">THE POWER OF EDUCATION</div>
                     </div>
-                    <p> <a href="<?php echo URLROOT;?>/pages/educationbook"class="category-name">Education/References Fiction</p></a>
+                    <p> <a href="<?php echo URLROOT;?>/pages/educationbook"class="category-name" style="text-decoration: none;">Education/References Fiction</p></a>
                 </div>
 
                 <!-- Row 2 -->
@@ -53,7 +53,7 @@
                         <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Romance">
                         <div class="book-title">AN OVERDUE MATCH</div>
                     </div>
-                    <p> <a href="<?php echo URLROOT;?>/pages/romancebook"class="category-name">Romance Book</p></a>
+                    <p> <a href="<?php echo URLROOT;?>/pages/romancebook"class="category-name" style="text-decoration: none;">Romance Book</p></a>
                 </div>
 
                 <div class="book-category">
@@ -61,7 +61,7 @@
                         <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Horror">
                         <div class="book-title">WOMEN IN THE WALLS</div>
                     </div>
-                    <p> <a href="<?php echo URLROOT;?>/pages/horrorbook"class="category-name">Horror</p></a>
+                    <p> <a href="<?php echo URLROOT;?>/pages/horrorbook"class="category-name" style="text-decoration: none;">Horror</p></a>
                 </div>
 
                 <div class="book-category">
@@ -69,13 +69,13 @@
                         <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Cartoon">
                         <div class="book-title">MY FRIEND ROSIE</div>
                     </div>
-                    <p> <a href="<?php echo URLROOT;?>/pages/cartoonbook"class="category-name">Cartoon</p></a>
+                    <p> <a href="<?php echo URLROOT;?>/pages/cartoonbook"class="category-name" style="text-decoration: none;">Cartoon</p></a>
                 </div>
             </div>
 
             <!-- Navigation -->
             <div class="navigation">
-                <button class="back-btn">← Back</button>
+                 <a href="<?php echo URLROOT; ?>/pages/index" class="back-btn">← Back</a>
                 <button class="see-more-btn">See More</button>
             </div>
         </section>

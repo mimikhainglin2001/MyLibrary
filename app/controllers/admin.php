@@ -12,12 +12,20 @@ class Admin extends Controller
         $this->view('admin/adminDashboard');
     }
     public function manageMember()
-    {
-        $this->view('admin/manageMember');
+    {   
+        $members = $this->db->getAllMembers('users');
+        $data = [
+            'members' => $members
+        ];
+        $this->view('admin/manageMember', $data);
     }
     public function manageBook()
     {
-        $this->view('admin/manageBook');
+        $booklist = $this->db->getBookList('book_details');
+        $data = [
+            'booklist' => $booklist
+        ];
+        $this->view('admin/manageBook', $data);
     }
     public function issueBook()
     {

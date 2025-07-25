@@ -291,8 +291,34 @@ class Database
         $row = $stm->fetch(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
     }
+    public function getAllMembers($table)
+    {
+        $sql = 'SELECT * FROM ' . $table;
+        $stm = $this->pdo->prepare($sql);
+        $success = $stm->execute();
+        $row = $stm->fetchAll(PDO::FETCH_ASSOC);
+        return ($success) ? $row : [];
+    }
 
         public function getBorrowBook($table, $user_name)
+    {
+        $sql = 'SELECT * FROM ' . $table . ' WHERE `user_name` =:user_name';
+        // print_r($sql);
+        $stm = $this->pdo->prepare($sql);
+        $stm->bindValue(':user_name', $user_name);
+        $success = $stm->execute();
+        $row = $stm->fetchAll(PDO::FETCH_ASSOC);
+        return ($success) ? $row : [];
+    }
+       public function getBookList($table)
+    {
+        $sql = 'SELECT * FROM ' . $table;
+        $stm = $this->pdo->prepare($sql);
+        $success = $stm->execute();
+        $row = $stm->fetchAll(PDO::FETCH_ASSOC);
+        return ($success) ? $row : [];
+    }
+          public function getReturnBook($table, $user_name)
     {
         $sql = 'SELECT * FROM ' . $table . ' WHERE `user_name` =:user_name';
         // print_r($sql);

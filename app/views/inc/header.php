@@ -31,7 +31,8 @@
                         <li><a href="<?php echo URLROOT;?>/pages/history">History</a></li>
                         <li><a href="<?php echo URLROOT;?>/pages/login">logout</a></li>
                         <i class="fas fa-user user-icon1"></i> 
-                        <span><?php echo $name['name']?></span>
+                        <span><?php echo htmlspecialchars($name['name'] ?? 'Guest'); ?></span>
+
                     </ul>
             </nav>
         </div>

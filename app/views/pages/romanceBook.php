@@ -6,6 +6,9 @@
     }.book-cover{
         border-radius: 0;
     }
+      .borrow-btn{
+        border-radius: 5px;
+    }
   </style>
  <main class="main-content">
      <!-- Hero Section -->
@@ -64,7 +67,7 @@
          <!-- More books can be added here -->
              <!-- Navigation -->
              <div class="navigation">
-                 <button class="back-btn">← Back</button>
+                  <a href="<?php echo URLROOT; ?>/pages/category" class="back-btn">← Back</a>
                  <button class="see-more-btn">See More</button>
              </div>
      </section>

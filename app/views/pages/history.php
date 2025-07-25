@@ -92,10 +92,15 @@
                 <button class="action-btn renew">Renew</button>
                 <button class="action-btn return">Return</button>
             </td>
+            
             </tr>
         <?php endforeach; ?>
         </tbody>
+        
         </table>
+        </div>
+        <div class="navigation">
+           <a href="<?php echo URLROOT; ?>/pages/category" class="back-btn">← Back</a>
         </div>
     </div>
     </div>

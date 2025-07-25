@@ -1,5 +1,15 @@
 <?php require_once APPROOT . '/views/inc/header.php'; ?>
 <main class="main-content">
+     <style>
+    .book-item{
+        border-radius: 0;
+    }.book-cover{
+        border-radius: 0;
+    }
+      .borrow-btn{
+        border-radius: 5px;
+    }
+  </style>
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-image">
@@ -51,7 +61,7 @@
 
         <!-- Navigation -->
         <div class="navigation">
-            <button class="back-btn">← Back</button>
+            <a href="<?php echo URLROOT; ?>/pages/category" class="back-btn">← Back</a>
             <button class="see-more-btn">See More</button>
         </div>
     </section>

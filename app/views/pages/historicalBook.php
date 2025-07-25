@@ -1,77 +1,87 @@
-<?php
-
-use Soap\Url;
-
- require_once APPROOT . '/views/inc/header.php'; ?>
-<main class="main-content">
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="hero-image">
-            <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Library books">
-        </div>
-
-        <div class="search-section">
-            <h1>Find The Book You Love</h1>
-            <div class="search-container">
-                <div class="search-box">
-                    <input type="text" placeholder="Search" class="search-input">
-                    <button class="search-button">Search</button>
+ <?php require_once APPROOT . '/views/inc/header.php';?>
+ <!-- Main Content -->
+   <style>
+    .book-item{
+        border-radius: 0;
+    }.book-cover{
+        border-radius: 0;
+    }
+    .borrow-btn{
+        border-radius: 5px;
+    }
+  </style>
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Library books">
+            </div>
+            
+            <div class="search-section">
+                <h1>Find The Book You Love</h1>
+                <div class="search-container">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search" class="search-input">
+                        <button class="search-button">Search</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Book Listing Section -->
-    <section class="book-listing">
-        <h2>Historical Book Listed</h2>
-        <div class="books-grid">
-            <?php foreach ($data['historicalBooks'] as $book): ?>
+        <!-- Book Listing Section -->
+        <section class="book-listing">
+            <h2>Historical Book Listed</h2>
+            
+            <div class="books-grid">
+                <!-- Row 1 -->
+                 <?php foreach($data['historicalBooks'] as $book ):?>
                 <div class="book-item">
                     
-                        <img src="/<?= htmlspecialchars($book['image']) ?>" class="book-img" />
-                    
+                   
+                        <img src="/<?= htmlspecialchars($book['image'])?>" class="book-img">
+
                     <div class="book-info">
                         <span><?= htmlspecialchars($book['title']) ?></span>
-                        <p class="author">Author: <?= htmlspecialchars($book['author_name']) ?></p>
-                        <p class="author">ISBN: <?= htmlspecialchars($book['isbn']) ?></p>
-                        <p class="author">Total Quantity: <?= htmlspecialchars($book['total_quantity']) ?></p>
-                        <span><?= htmlspecialchars($book['status_description']) ?></span>
-
+                        <p class="author">Author: <?= htmlspecialchars($book['author_name'])?></p>
+                        <p class="author">ISBN: <?= htmlspecialchars($book['isbn'])?></p>
+                        <p class="author">Total Quantity: <?= htmlspecialchars($book['total_quantity'])?></p>
+                        <span><?= htmlspecialchars($book['status_description'])?></span>
                         <div class="rating">
                             <span class="stars">★★★★☆</span>
                             <span class="rating-text">4.5</span>
                         </div>
-
                         <button class="borrow-btn"
-                                data-book="<?= htmlspecialchars($book['title']) ?>"
-                                data-author="<?= htmlspecialchars($book['author_name']) ?>"
-                                data-id="<?= htmlspecialchars($book['id']) ?>">
-                            BORROW
-                        </button>
+                    data-book="<?= htmlspecialchars($book['title']) ?>"
+                    data-author="<?= htmlspecialchars($book['author_name']) ?>"
+                    data-isbn="<?= htmlspecialchars($book['isbn'])?>"
+                    data-id="<?= htmlspecialchars($book['id'])?>">
+                BORROW
+            </button>
                     </div>
                 </div>
-            <?php endforeach; ?>
-        </div>
+                <?php endforeach;?>
 
-        <!-- Navigation -->
-        <div class="navigation">
-            <button class="back-btn <?php echo URLROOT;?>/pages/category">← Back</button>
-            <button class="see-more-btn<?php echo URLROOT;?>/pages/historicalBook">See More</button>
-        </div>
-    </section>
-</main>
-
-<!-- Confirmation Modal -->
+                <!-- More books can be added here -->
+            <!-- Navigation -->
+            <div class="navigation">
+                 <a href="<?php echo URLROOT; ?>/pages/category" class="back-btn">← Back</a>
+                <button class="see-more-btn">See More</button>
+            </div>
+            </div>
+        </section>
+    </main>
+    <!-- Confirmation Modal -->
 <div id="confirmationModal" class="modal-overlay">
-    <div class="modal">
-        <h3>Confirm Borrowing</h3>
-        <p id="confirmationMessage">Are you sure you want to borrow this book?</p>
-        <div class="modal-buttons">
-            <button class="confirm-btn" id="confirmBtn">Confirm</button>
-            <button class="cancel-btn" id="cancelBtn">Cancel</button>
+        <div class="modal">
+            <h3>Confirm Borrowing</h3>
+            <p id="confirmationMessage">Are you sure you want to borrow this book?</p>
+            <div class="modal-buttons">
+                <button class="confirm-btn" id="confirmBtn">Confirm</button>
+                <button class="cancel-btn" id="cancelBtn">Cancel</button>
+            </div>
         </div>
     </div>
-</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     let currentBook = '';
