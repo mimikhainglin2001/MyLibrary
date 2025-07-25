@@ -109,7 +109,12 @@ class Pages extends Controller
     }
       public function history()
     {
-        $this->view('pages/history');
+        $name = $_SESSION['session_loginuser'];
+        $isid = $this->db->getBorrowBook('borrow_full_view',$name['name']);
+        $data = [
+            'borrowedBooks' => $isid
+        ];
+        $this->view('pages/history',$data);
     }
     public function dashboard()
     {

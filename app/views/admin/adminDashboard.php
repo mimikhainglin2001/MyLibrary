@@ -11,7 +11,7 @@
                  <div class="flex items-center space-x-4">
                     <a href="<?php echo URLROOT; ?>/admin/profile" class="flex items-center space-x-4 text-gray-700 hover:text-blue-600 transition duration-300">
                         <i class="fas fa-user-circle text-2xl"></i>
-                        <span class="font-medium"><?php echo $name; ?></span>
+                        <span class="font-medium"><?= htmlspecialchars($name['name']) ?></span>
                     </a>
                 </div>
             </div>

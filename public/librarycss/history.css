@@ -263,6 +263,7 @@ body {
     display: flex;
     align-items: center;
     gap: 1rem;
+    
 }
 
 .book-cover {
@@ -270,7 +271,10 @@ body {
     height: 50px;
     border-radius: 4px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+    object-position: center;
 }
+
 
 .book-text h4 {
     margin-bottom: 0.2rem;
