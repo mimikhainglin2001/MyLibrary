@@ -273,6 +273,7 @@ body {
     cursor: pointer;
     padding: 10px 15px;
     transition: color 0.3s;
+    text-decoration: none;
 }
 
 .back-btn:hover {

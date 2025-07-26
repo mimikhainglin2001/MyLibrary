@@ -18,20 +18,20 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <div class="table-scroll-container"> 
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="table-header">Book ID</th>
-                                <th class="table-header">ISBN</th>
-                                <th class="table-header">Title</th>
-                                <th class="table-header">Author Name</th>
-                                <th class="table-header">Total Quantity</th>
-                                <th class="table-header">Available Quantity</th>
-                                <th class="table-header">Status Description</th>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="table-scroll-container">
+            <table class="table-auto w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-700">
+                                <th class="border px-4 py-2">Book ID</th>
+                                <th class="border px-4 py-2">ISBN</th>
+                                <th class="border px-4 py-2">Title</th>
+                                <th class="border px-4 py-2">Author Name</th>
+                                <th class="border px-4 py-2">Total Quantity</th>
+                                <th class="border px-4 py-2">Available Quantity</th>
+                                <th class="border px-4 py-2">Status Description</th>
                                 
-                                <th class="table-header text-center">Actions</th>
+                                <th class="border px-4 py-2">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -75,10 +75,7 @@ $statusClass = $statusText === 'available' ? 'text-green-600' : 'text-red-600';
                                     data-status="<?= htmlspecialchars($book['status_description']) ?>">
                                     Edit
                                 </button>
-                                <button class="delete-button bg-red-500 text-white px-3 py-1 rounded"
-                                    data-id="<?= $book['id'] ?>">
-                                    Delete
-                                </button>
+                               
                             </div>
                         </td>
                     </tr>
@@ -108,7 +105,7 @@ $statusClass = $statusText === 'available' ? 'text-green-600' : 'text-red-600';
         </div>
     </div>
 
-    <div id="deleteConfirmationBox" class="message-box-overlay">
+    <!-- <div id="deleteConfirmationBox" class="message-box-overlay">
         <div class="message-box-content">
             <h4 class="text-2xl font-bold text-gray-800 mb-4">Confirm Deletion</h4>
             <p class="text-gray-600 mb-6">Are you sure you want to delete this book? This action cannot be undone.</p>
@@ -121,7 +118,7 @@ $statusClass = $statusText === 'available' ? 'text-green-600' : 'text-red-600';
                 </button>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <div id="editMessageBox" class="message-box-overlay">
         <div class="message-box-content">

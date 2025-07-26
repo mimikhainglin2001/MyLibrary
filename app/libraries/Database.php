@@ -64,42 +64,41 @@ class Database
     // }
 
     public function create($table, $data)
-{
-    try {
-        $column = array_keys($data);
-        $columnSql = implode(', ', $column);
-        $bindingSql = ':' . implode(',:', $column);
+    {
+        try {
+            $column = array_keys($data);
+            $columnSql = implode(', ', $column);
+            $bindingSql = ':' . implode(',:', $column);
 
-        $sql = "INSERT INTO $table ($columnSql) VALUES ($bindingSql)";
-        $stm = $this->pdo->prepare($sql);
+            $sql = "INSERT INTO $table ($columnSql) VALUES ($bindingSql)";
+            $stm = $this->pdo->prepare($sql);
 
-        foreach ($data as $key => $value) {
-            // exit();
-            $stm->bindValue(':' . $key, $value);
-        }
+            foreach ($data as $key => $value) {
+                // exit();
+                $stm->bindValue(':' . $key, $value);
+            }
 
-        $status = $stm->execute();
+            $status = $stm->execute();
 
-        if (!$status) {
-            $errorInfo = $stm->errorInfo();
-            echo "SQLSTATE error code: " . $errorInfo[0] . "<br>";
-            echo "Driver-specific error code: " . $errorInfo[1] . "<br>";
-            echo "Driver-specific error message: " . $errorInfo[2] . "<br>";
+            if (!$status) {
+                $errorInfo = $stm->errorInfo();
+                echo "SQLSTATE error code: " . $errorInfo[0] . "<br>";
+                echo "Driver-specific error code: " . $errorInfo[1] . "<br>";
+                echo "Driver-specific error message: " . $errorInfo[2] . "<br>";
+                return false;
+            }
+
+            echo "Insert successful. Last Insert ID: " . $this->pdo->lastInsertId() . "<br>";
+            return $this->pdo->lastInsertId();
+        } catch (PDOException $e) {
+            echo "PDOException: " . $e->getMessage();
             return false;
         }
-
-        echo "Insert successful. Last Insert ID: " . $this->pdo->lastInsertId() . "<br>";
-        return $this->pdo->lastInsertId();
-
-    } catch (PDOException $e) {
-        echo "PDOException: " . $e->getMessage();
-        return false;
     }
-}
 
     // Update Query
     public function update($table, $id, $data)
-    {   
+    {
         // First, we don't want id from category table
         if (isset($data['id'])) {
             unset($data['id']);
@@ -107,7 +106,8 @@ class Database
 
         try {
             $columns = array_keys($data);
-            function map ($item) {
+            function map($item)
+            {
                 return $item . '=:' . $item;
             }
             $columns = array_map('map', $columns);
@@ -150,9 +150,7 @@ class Database
         $row = $stm->fetch(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
     }
-
-
-        public function getLiteraryBooks($table, $column, $value)
+    public function getLiteraryBooks($table, $column, $value)
     {
         // $sql = 'SELECT * FROM ' . $table . ' WHERE `' . $column . '` = :value';
         $sql = 'SELECT * FROM ' . $table . ' WHERE `' . str_replace('`', '', $column) . '` = :value';
@@ -162,53 +160,53 @@ class Database
         $row = $stm->fetchAll(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
     }
-    public function getHistoricalBooks($table, $column, $value){
+    public function getHistoricalBooks($table, $column, $value)
+    {
         $sql = 'SELECT * FROM ' . $table . ' WHERE `' . str_replace('`', '', $column) . '` = :value';
         $stm = $this->pdo->prepare($sql);
         $stm->bindValue(':value', $value);
         $success = $stm->execute();
         $row = $stm->fetchAll(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
-
     }
-      public function getEducationBooks($table, $column, $value){
+    public function getEducationBooks($table, $column, $value)
+    {
         $sql = 'SELECT * FROM ' . $table . ' WHERE `' . str_replace('`', '', $column) . '` = :value';
         $stm = $this->pdo->prepare($sql);
         $stm->bindValue(':value', $value);
         $success = $stm->execute();
         $row = $stm->fetchAll(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
-
     }
-     public function getRomanceBooks($table, $column, $value){
+    public function getRomanceBooks($table, $column, $value)
+    {
         $sql = 'SELECT * FROM ' . $table . ' WHERE `' . str_replace('`', '', $column) . '` = :value';
         $stm = $this->pdo->prepare($sql);
         $stm->bindValue(':value', $value);
         $success = $stm->execute();
         $row = $stm->fetchAll(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
-
     }
-     public function getHorrorBooks($table, $column, $value){
+    public function getHorrorBooks($table, $column, $value)
+    {
         $sql = 'SELECT * FROM ' . $table . ' WHERE `' . str_replace('`', '', $column) . '` = :value';
         $stm = $this->pdo->prepare($sql);
         $stm->bindValue(':value', $value);
         $success = $stm->execute();
         $row = $stm->fetchAll(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
-
     }
-     public function getCartoonBooks($table, $column, $value){
+    public function getCartoonBooks($table, $column, $value)
+    {
         $sql = 'SELECT * FROM ' . $table . ' WHERE `' . str_replace('`', '', $column) . '` = :value';
         $stm = $this->pdo->prepare($sql);
         $stm->bindValue(':value', $value);
         $success = $stm->execute();
         $row = $stm->fetchAll(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
-
     }
-    
-    
+
+
     public function loginCheck($email, $password)
     {
         $sql = 'SELECT * FROM users WHERE `email` = :email AND `password` = :password';
@@ -221,7 +219,7 @@ class Database
         return ($success) ? $row : [];
     }
 
-      public function checkotp($email, $otp)
+    public function checkotp($email, $otp)
     {
         $sql = 'SELECT * FROM users WHERE `otp` = :otp AND `email` = :email';
         // echo $sql;
@@ -234,40 +232,39 @@ class Database
     }
 
 
-    public function storeotp($email , $otp , $otp_expiry){
+    public function storeotp($email, $otp, $otp_expiry)
+    {
         $sql = 'UPDATE users SET `otp` = :otp ,`otp_expiry` = :otp_expiry WHERE `email` = :email';
         $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(':otp',$otp);
-        $stmt->bindValue(':otp_expiry',$otp_expiry);
-        $stmt->bindValue(':email',$email);
+        $stmt->bindValue(':otp', $otp);
+        $stmt->bindValue(':otp_expiry', $otp_expiry);
+        $stmt->bindValue(':email', $email);
         $success = $stmt->execute();
         return $success;
     }
 
-        public function setLogin($id)
-        {
-            $sql = 'UPDATE users SET is_login = 1, is_confirmed = 1, is_active = 1 WHERE id = :id';
-            $stm = $this->pdo->prepare($sql);
-            $stm->bindValue(':id', $id, PDO::PARAM_INT);
-            $success = $stm->execute();
-            $stm->closeCursor(); // good practice for unbuffered queries
-            return $success;
-        }
+    public function setLogin($id)
+    {
+        $sql = 'UPDATE users SET is_login = 1, is_confirmed = 1, is_active = 1 WHERE id = :id';
+        $stm = $this->pdo->prepare($sql);
+        $stm->bindValue(':id', $id, PDO::PARAM_INT);
+        $success = $stm->execute();
+        $stm->closeCursor(); // good practice for unbuffered queries
+        return $success;
+    }
     public function unsetLogin($id)
     {
-       try{ 
-           $sql = "UPDATE users SET is_login = :false WHERE id = :id"; //is_login = :false .is a placeholder to indicate user login(true) or not(false)
-                                                                              // id = :id also 
-           $stm = $this->pdo->prepare($sql);
-           $stm->bindValue(':false','0');
-           $stm->bindValue(':id',$id);
-           $success = $stm->execute();
-           $row     = $stm->fetch(PDO::FETCH_ASSOC);
-           return ($success) ? $row : [];
-        }
-        catch( Exception $e)
-        {
-            echo($e);
+        try {
+            $sql = "UPDATE users SET is_login = :false WHERE id = :id"; //is_login = :false .is a placeholder to indicate user login(true) or not(false)
+            // id = :id also 
+            $stm = $this->pdo->prepare($sql);
+            $stm->bindValue(':false', '0');
+            $stm->bindValue(':id', $id);
+            $success = $stm->execute();
+            $row     = $stm->fetch(PDO::FETCH_ASSOC);
+            return ($success) ? $row : [];
+        } catch (Exception $e) {
+            echo ($e);
         }
     }
 
@@ -291,6 +288,7 @@ class Database
         $row = $stm->fetch(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
     }
+    
     public function getAllMembers($table)
     {
         $sql = 'SELECT * FROM ' . $table;
@@ -300,17 +298,17 @@ class Database
         return ($success) ? $row : [];
     }
 
-        public function getBorrowBook($table, $user_name)
+    public function getBorrowBook($table, $user_name)
     {
-        $sql = 'SELECT * FROM ' . $table . ' WHERE `user_name` =:user_name';
+        $sql = 'SELECT * FROM ' . $table . ' WHERE `name` =:name';
         // print_r($sql);
         $stm = $this->pdo->prepare($sql);
-        $stm->bindValue(':user_name', $user_name);
+        $stm->bindValue(':name', $user_name);
         $success = $stm->execute();
         $row = $stm->fetchAll(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
     }
-       public function getBookList($table)
+    public function getBookList($table)
     {
         $sql = 'SELECT * FROM ' . $table;
         $stm = $this->pdo->prepare($sql);
@@ -318,16 +316,25 @@ class Database
         $row = $stm->fetchAll(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
     }
-          public function getReturnBook($table, $user_name)
+    public function getBorrowBookList($table)
     {
-        $sql = 'SELECT * FROM ' . $table . ' WHERE `user_name` =:user_name';
-        // print_r($sql);
+        $sql = 'SELECT * FROM ' . $table;
         $stm = $this->pdo->prepare($sql);
-        $stm->bindValue(':user_name', $user_name);
         $success = $stm->execute();
         $row = $stm->fetchAll(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
     }
+
+    // Fetch the book_id using isbn
+    public function getBookIdByISBN($isbn)
+    {
+        $sql = 'SELECT id FROM books WHERE isbn = :isbn';
+        $stm = $this->pdo->prepare($sql);
+        $stm->bindValue(':isbn', $isbn);
+        $stm->execute();
+        return $stm->fetch(PDO::FETCH_ASSOC);
+    }
+
 
     public function getByCategoryId($table, $column)
     {
@@ -335,7 +342,7 @@ class Database
         $stm->bindValue(':column', $column);
         $success = $stm->execute();
         $row = $stm->fetch(PDO::FETCH_ASSOC);
-       //  print_r($row);
+        //  print_r($row);
         return ($success) ? $row : [];
     }
 
@@ -357,7 +364,7 @@ class Database
     //     {
     //         echo($e);
     //     }
-     
+
     // }
 
     public function incomeTransition()
@@ -369,7 +376,7 @@ class Database
             $row = $stm->fetch(PDO::FETCH_ASSOC);
             return ($success) ? $row : [];
         } catch (Exception $e) {
-            echo($e);
+            echo ($e);
         }
     }
 
@@ -391,7 +398,7 @@ class Database
     //     {
     //         echo($e);
     //     }
-     
+
     // }
     public function expenseTransition()
     {
@@ -402,9 +409,7 @@ class Database
             $row = $stm->fetch(PDO::FETCH_ASSOC);
             return ($success) ? $row : [];
         } catch (Exception $e) {
-            echo($e);
+            echo ($e);
         }
     }
-
 }
-

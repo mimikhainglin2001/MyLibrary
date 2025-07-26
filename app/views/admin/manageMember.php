@@ -16,30 +16,31 @@
                 </div>
             </div>
 
-             <div class="bg-white p-6 rounded-lg shadow-md">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="table-header">ID</th>
-                    <th class="table-header">Name</th>
-                    <th class="table-header">Email</th>
-                    <th class="table-header">Roll No</th>
-                    <th class="table-header">Gender</th>
-                    <th class="table-header">Year</th>
-                    <th class="table-header">Status</th>
-                    <th class="table-header">Actions</th>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="table-scroll-container">
+            <table class="table-auto w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-700">
+                    <th class="border px-4 py-2">ID</th>
+                    <th class="border px-4 py-2">Name</th>
+                    <th class="border px-4 py-2">Email</th>
+                    <th class="border px-4 py-2">Roll No</th>
+                    <th class="border px-4 py-2">Gender</th>
+                    <th class="border px-4 py-2">Year</th>
+                    <th class="border px-4 py-2">Status</th>
+                    <th class="border px-4 py-2">Actions</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 <?php foreach ($data['members'] as $member): ?>
                     <tr>
-                        <td><?= htmlspecialchars($member['id']) ?></td>
-                        <td><?= htmlspecialchars($member['name']) ?></td>
-                        <td><?= htmlspecialchars($member['email']) ?></td>
-                        <td><?= htmlspecialchars($member['rollno']) ?></td>
-                        <td><?= htmlspecialchars($member['gender']) ?></td>
-                        <td><?= htmlspecialchars($member['year']) ?></td>
-                        <td>
+                        <td class="border px-4 py-2"><?= htmlspecialchars($member['id']) ?></td>
+                        <td class="border px-4 py-2"><?= htmlspecialchars($member['name']) ?></td>
+                        <td class="border px-4 py-2"><?= htmlspecialchars($member['email']) ?></td>
+                        <td class="border px-4 py-2"><?= htmlspecialchars($member['rollno']) ?></td>
+                        <td class="border px-4 py-2"><?= htmlspecialchars($member['gender']) ?></td>
+                        <td class="border px-4 py-2"><?= htmlspecialchars($member['year']) ?></td>
+                        <td class="border px-4 py-2">
                             <span class="status <?= $member['is_active'] ? 'active' : 'inactive' ?>">
                                 <?= $member['is_active'] ? 'Active' : 'Inactive' ?>
                             </span>

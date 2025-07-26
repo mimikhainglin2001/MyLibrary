@@ -34,36 +34,29 @@
             
             <div class="books-grid">
                 <!-- Row 1 -->
-                 <?php foreach($data['educationBooks'] as $book):?>
-
-                <div class="book-item">
-                    
-                        <img src="/<?= htmlspecialchars($book['image'])?>"
-                        class="book-img" />
-                    
-                    <div class="book-info">
-                        <span><?= htmlspecialchars($book['title'])?></span>
-                        <p class="author">Author: <?= htmlspecialchars($book['author_name'])?></p>
-                        <p class="author">ISBN: <?=htmlspecialchars($book['isbn'])?></p>
-                        <p class="author">Total Quantity: <?=htmlspecialchars($book['total_quantity'])?></p>
-
-                        <span><?= htmlspecialchars($book['status_description'])?></span>
-
-                        <div class="rating">
-                            <span class="stars">★★★★☆</span>
-                            <span class="rating-text">4.5</span>
-                        </div>
-                       <button class="borrow-btn"
-                    data-book="<?= htmlspecialchars($book['title']) ?>"
-                    data-author="<?= htmlspecialchars($book['author_name']) ?>"
-                    data-isbn ="<?= htmlspecialchars($book['isbn'])?>"
-                    data-id ="<?= htmlspecialchars($book['id'])?>">
-                    
-                BORROW
-            </button>
-                    </div>
-                </div>
-                <?php endforeach;?>
+                 <?php foreach ($data['educationBooks'] as $index => $book): ?>
+                 <div class="book-item <?= $index >= 6 ? 'hidden-book' : '' ?>">
+                     <img src="/<?= htmlspecialchars($book['image']) ?>" class="book-img" />
+                     <div class="book-info">
+                         <span><?= htmlspecialchars($book['title']) ?></span>
+                         <p class="author">Author: <?= htmlspecialchars($book['author_name']) ?></p>
+                         <p class="author">ISBN: <?= htmlspecialchars($book['isbn']) ?></p>
+                         <p class="author">Total Quantity: <?= htmlspecialchars($book['total_quantity']) ?></p>
+                         <span><?= htmlspecialchars($book['status_description']) ?></span>
+                         <div class="rating">
+                             <span class="stars">★★★★☆</span>
+                             <span class="rating-text">4.5</span>
+                         </div>
+                         <button class="borrow-btn"
+                             data-book="<?= htmlspecialchars($book['title']) ?>"
+                             data-author="<?= htmlspecialchars($book['author_name']) ?>"
+                             data-isbn="<?= htmlspecialchars($book['isbn']) ?>"
+                             data-id="<?= htmlspecialchars($book['id']) ?>">
+                             BORROW
+                         </button>
+                     </div>
+                 </div>
+             <?php endforeach; ?>
 
              <!-- More books can be added here -->
             <!-- Navigation -->
@@ -87,6 +80,13 @@
     </div>
 
 <script>
+    const seeMoreBtn = document.querySelector('.see-more-btn');
+seeMoreBtn.addEventListener('click', () => {
+    document.querySelectorAll('.hidden-book').forEach(book => {
+        book.classList.remove('hidden-book');
+    });
+    seeMoreBtn.style.display = 'none'; // hide button after expanding
+});
 document.addEventListener('DOMContentLoaded', function () {
     let currentBook = '';
     let currentAuthor = '';

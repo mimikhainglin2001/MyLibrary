@@ -350,6 +350,7 @@ body {
     font-size: 12px;
     cursor: pointer;
     transition: background 0.3s, transform 0.2s;
+    text-decoration: none;
 }
 
 .borrow-btn:hover {

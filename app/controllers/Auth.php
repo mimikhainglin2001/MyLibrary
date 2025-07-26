@@ -54,7 +54,7 @@ class Auth extends Controller
                                 break;
 
                             case user:
-                                redirect('pages/category');
+                                redirect('pages/home');
                                 break;
 
                             default:
@@ -240,46 +240,47 @@ class Auth extends Controller
         date_default_timezone_set('Asia/Yangon');
         $currentDate = date('Y-m-d H:i:s');
         $dueDate = date('Y-m-d H:i:s', strtotime('+7 days'));
+        $returnDate = date('Y-m-d H:i:s');
+        $renewDate = null;
+        $status = 'borrowed';
+
 
         $user = new BorrowBookModel();
         $user->setBookID($id);
         $user->setUserID($name['id']);
         $user->setBorrowDate($currentDate);
         $user->setDueDate($dueDate);
+        $user->setReturnDate(null);
+        $user->setRenewDate($renewDate);
+        $user->setStatus($status);
 
         $borrowed = $this->db->create('borrowBook', $user->toArray());
         if ($borrowed) {
             setMessage('success', 'Book borrowed successfully');
-            redirect('pages/literarybook');
+            redirect('pages/history');
         }
     }
+
     public function return()
     {
-        if (!isset($_GET['borrow_id'])) {
-            setMessage('error', 'Missing borrow ID');
-            redirect('pages/history');
-            return;
-        }
-
-        $borrowId = $_GET['borrow_id'];
-        date_default_timezone_set('Asia/Yangon');
-        $returnDate = date('Y-m-d H:i:s');
-
-        $returnData = [
-            'borrow_id' => $borrowId,
-            'return_date' => $returnDate
+        $book_id = $_GET['book_id'];
+        $return_date = date('Y=m=d H:i:s');
+        $status = 'returned';
+        $update_data = [
+            'return_date' => $return_date,
+            'status' => $status,
         ];
-
-        $inserted = $this->db->create('return', $returnData);
-
-        if ($inserted) {
+        $updated = $this->db->update('borrowBook', 'book_id', $update_data);
+        if ($updated) {
             setMessage('success', 'Book returned successfully');
+            redirect('pages/history');
         } else {
-            setMessage('error', 'Failed to return book');
+            setMessage('error', 'Return Failed');
         }
-
-        redirect('pages/literarybook');
     }
+
+
+
 
     public function logout()
     {

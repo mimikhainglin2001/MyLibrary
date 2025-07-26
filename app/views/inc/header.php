@@ -26,7 +26,7 @@
             </div>
             <nav>
                <ul class="nav">
-                        <li><a href="<?php echo URLROOT;?>/pages/index">Home</a></li>
+                        <li><a href="<?php echo URLROOT;?>/pages/home">Home</a></li>
                         <li><a href="<?php echo URLROOT;?>/pages/contact">Contact</a></li>
                         <li><a href="<?php echo URLROOT;?>/pages/history">History</a></li>
                         <li><a href="<?php echo URLROOT;?>/pages/login">logout</a></li>

@@ -29,7 +29,11 @@ class Admin extends Controller
     }
     public function issueBook()
     {
-        $this->view('admin/issueBook');
+        $borrowBookList = $this->db->getBorrowBookList('borrow_full_view');
+        $data = [
+            'borrowBookList' => $borrowBookList
+        ];
+        $this->view('admin/issueBook', $data);
     }
     public function addnewBook()
     {
