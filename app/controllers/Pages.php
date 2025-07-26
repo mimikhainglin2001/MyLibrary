@@ -8,10 +8,14 @@ class Pages extends Controller
     {
         $this->db = new Database();
     }
-
     public function index()
     {
-        $this->view('pages/index');
+     $this->view('pages/welcome');   
+    }
+
+    public function home()
+    {
+        $this->view('pages/home');
     }
 
     // public function home()

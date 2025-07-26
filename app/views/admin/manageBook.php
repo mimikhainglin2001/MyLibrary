@@ -12,401 +12,74 @@
                     </div>
                     <a href="<?php echo URLROOT; ?>/admin/profile" class="flex items-center space-x-4 text-gray-700 hover:text-blue-600 transition duration-300">
                         <i class="fas fa-user-circle text-2xl"></i>
-                        <span class="font-medium"><?php echo $name; ?></span>
+                        <span class="font-medium"><?php echo htmlspecialchars($name['name']); ?></span>
+
                     </a>
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <div class="table-scroll-container"> 
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="table-header">Book ID</th>
-                                <th class="table-header">ISBN</th>
-                                <th class="table-header">Title</th>
-                                <th class="table-header">Author</th>
-                                <th class="table-header">Quantity</th>
-                                <th class="table-header">Status</th>
-                                <th class="table-header">Details</th> <th class="table-header text-center">Actions</th>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="table-scroll-container">
+            <table class="table-auto w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-700">
+                                <th class="border px-4 py-2">Book ID</th>
+                                <th class="border px-4 py-2">ISBN</th>
+                                <th class="border px-4 py-2">Title</th>
+                                <th class="border px-4 py-2">Author Name</th>
+                                <th class="border px-4 py-2">Total Quantity</th>
+                                <th class="border px-4 py-2">Available Quantity</th>
+                                <th class="border px-4 py-2">Status Description</th>
+                                
+                                <th class="border px-4 py-2">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            <tr class="hover:bg-blue-50">
-                                <td class="table-cell book-id">1</td>
-                                <td class="table-cell book-isbn">00110</td>
-                                <td class="table-cell book-title">MyanmarMhu Myanmar Yayyar</td>
-                                <td class="table-cell book-author">Min Thu Wan</td>
-                                <td class="table-cell book-quantity">1</td>
-                                <td class="table-cell book-status">Available</td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 view-details-button" data-book-id="1">
-                                        View
-                                        </button>
-                                    </div>
-                                </td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 edit-issue-button" data-book-id="1">
-                                            <i class="fas fa-edit mr-1"></i>
-                                        </button>
-                                        <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 delete-issue-button" data-book-id="1">
-                                            <i class="fas fa-trash-alt mr-1"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-blue-50">
-                                <td class="table-cell book-id">2</td>
-                                <td class="table-cell book-isbn">00111</td>
-                                <td class="table-cell book-title">Brain and Heart - Another Book Title That Is Quite Extensive</td>
-                                <td class="table-cell book-author">Phay Myint</td>
-                                <td class="table-cell book-quantity">1</td>
-                                <td class="table-cell book-status">Available</td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 view-details-button" data-book-id="2">
-                                        View
-                                        </button>
-                                    </div>
-                                </td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 edit-issue-button" data-book-id="2">
-                                            <i class="fas fa-edit mr-1"></i>
-                                        </button>
-                                        <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 delete-issue-button" data-book-id="2">
-                                            <i class="fas fa-trash-alt mr-1"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-blue-50">
-                                <td class="table-cell book-id">3</td>
-                                <td class="table-cell book-isbn">00112</td>
-                                <td class="table-cell book-title">Sone Htuk Mg San Shar - A Classic Myanmar Novel</td>
-                                <td class="table-cell book-author">Shwe Ou Daung</td>
-                                <td class="table-cell book-quantity">3</td>
-                                <td class="table-cell book-status">Available</td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 view-details-button" data-book-id="2">
-                                        View
-                                        </button>
-                                    </div>
-                                </td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 edit-issue-button" data-book-id="3">
-                                            <i class="fas fa-edit mr-1"></i>
-                                        </button>
-                                        <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 delete-issue-button" data-book-id="3">
-                                            <i class="fas fa-trash-alt mr-1"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-blue-50">
-                                <td class="table-cell book-id">4</td>
-                                <td class="table-cell book-isbn">00113</td>
-                                <td class="table-cell book-title">Myanmar Politic - An In-depth Analysis of the Political Landscape</td>
-                                <td class="table-cell book-author">Mg Htin</td>
-                                <td class="table-cell book-quantity">1</td>
-                                <td class="table-cell book-status">Available</td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 view-details-button" data-book-id="2">
-                                        View
-                                        </button>
-                                    </div>
-                                </td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 edit-issue-button" data-book-id="4">
-                                            <i class="fas fa-edit mr-1"></i>
-                                        </button>
-                                        <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 delete-issue-button" data-book-id="4">
-                                            <i class="fas fa-trash-alt mr-1"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-blue-50">
-                                <td class="table-cell book-id">5</td>
-                                <td class="table-cell book-isbn">00114</td>
-                                <td class="table-cell book-title">Thu Lo Lu ThuKhaMain - A Philosophical Journey</td>
-                                <td class="table-cell book-author">Journal Kyaw Ma Ma Lay</td>
-                                <td class="table-cell book-quantity">2</td>
-                                <td class="table-cell book-status">Available</td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 view-details-button" data-book-id="2">
-                                        View
-                                        </button>
-                                    </div>
-                                </td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 edit-issue-button" data-book-id="5">
-                                            <i class="fas fa-edit mr-1"></i>
-                                        </button>
-                                        <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 delete-issue-button" data-book-id="5">
-                                            <i class="fas fa-trash-alt mr-1"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-blue-50">
-                                <td class="table-cell book-id">6</td>
-                                <td class="table-cell book-isbn">00115</td>
-                                <td class="table-cell book-title">A Yeik - A Poetic Collection of Short Stories</td>
-                                <td class="table-cell book-author">Ma Sandar</td>
-                                <td class="table-cell book-quantity">3</td>
-                                <td class="table-cell book-status">Available</td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 view-details-button" data-book-id="2">
-                                        View
-                                        </button>
-                                    </div>
-                                </td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 edit-issue-button" data-book-id="6">
-                                            <i class="fas fa-edit mr-1"></i>
-                                        </button>
-                                        <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 delete-issue-button" data-book-id="6">
-                                            <i class="fas fa-trash-alt mr-1"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-blue-50">
-                                <td class="table-cell book-id">7</td>
-                                <td class="table-cell book-isbn">00116</td>
-                                <td class="table-cell book-title">The Green Mile</td>
-                                <td class="table-cell book-author">Stephen King</td>
-                                <td class="table-cell book-quantity">5</td>
-                                <td class="table-cell book-status">Available</td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 view-details-button" data-book-id="2">
-                                        View
-                                        </button>
-                                    </div>
-                                </td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 edit-issue-button" data-book-id="7">
-                                            <i class="fas fa-edit mr-1"></i>
-                                        </button>
-                                        <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 delete-issue-button" data-book-id="7">
-                                            <i class="fas fa-trash-alt mr-1"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-blue-50">
-                                <td class="table-cell book-id">8</td>
-                                <td class="table-cell book-isbn">00117</td>
-                                <td class="table-cell book-title">1984</td>
-                                <td class="table-cell book-author">George Orwell</td>
-                                <td class="table-cell book-quantity">2</td>
-                                <td class="table-cell book-status">Available</td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                       <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 view-details-button" data-book-id="2">
-                                        View
-                                        </button>
-                                    </div>
-                                </td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 edit-issue-button" data-book-id="8">
-                                            <i class="fas fa-edit mr-1"></i>
-                                        </button>
-                                        <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 delete-issue-button" data-book-id="8">
-                                            <i class="fas fa-trash-alt mr-1"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-blue-50">
-                                <td class="table-cell book-id">9</td>
-                                <td class="table-cell book-isbn">00118</td>
-                                <td class="table-cell book-title">To Kill a Mockingbird</td>
-                                <td class="table-cell book-author">Harper Lee</td>
-                                <td class="table-cell book-quantity">4</td>
-                                <td class="table-cell book-status">Available</td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                       <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 view-details-button" data-book-id="2">
-                                        View
-                                        </button>
-                                    </div>
-                                </td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 edit-issue-button" data-book-id="9">
-                                            <i class="fas fa-edit mr-1"></i>
-                                        </button>
-                                        <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 delete-issue-button" data-book-id="9">
-                                            <i class="fas fa-trash-alt mr-1"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-blue-50">
-                                <td class="table-cell book-id">10</td>
-                                <td class="table-cell book-isbn">00119</td>
-                                <td class="table-cell book-title">The Great Gatsby</td>
-                                <td class="table-cell book-author">F. Scott Fitzgerald</td>
-                                <td class="table-cell book-quantity">3</td>
-                                <td class="table-cell book-status">Available</td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 view-details-button" data-book-id="2">
-                                        View
-                                        </button>
-                                    </div>
-                                </td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 edit-issue-button" data-book-id="10">
-                                            <i class="fas fa-edit mr-1"></i>
-                                        </button>
-                                        <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 delete-issue-button" data-book-id="10">
-                                            <i class="fas fa-trash-alt mr-1"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-blue-50">
-                                <td class="table-cell book-id">11</td>
-                                <td class="table-cell book-isbn">00120</td>
-                                <td class="table-cell book-title">Moby Dick</td>
-                                <td class="table-cell book-author">Herman Melville</td>
-                                <td class="table-cell book-quantity">1</td><td class="table-cell book-status">Available</td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                       <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 view-details-button" data-book-id="2">
-                                        View
-                                        </button>
-                                    </div>
-                                </td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 edit-issue-button" data-book-id="11">
-                                            <i class="fas fa-edit mr-1"></i>
-                                        </button>
-                                        <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 delete-issue-button" data-book-id="11">
-                                            <i class="fas fa-trash-alt mr-1"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-blue-50">
-                                <td class="table-cell book-id">12</td>
-                                <td class="table-cell book-isbn">00121</td>
-                                <td class="table-cell book-title">War and Peace</td>
-                                <td class="table-cell book-author">Leo Tolstoy</td>
-                                <td class="table-cell book-quantity">2</td>
-                                <td class="table-cell book-status">Available</td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 view-details-button" data-book-id="2">
-                                        View
-                                        </button>
-                                    </div>
-                                </td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 edit-issue-button" data-book-id="12">
-                                            <i class="fas fa-edit mr-1"></i>
-                                        </button>
-                                        <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 delete-issue-button" data-book-id="12">
-                                            <i class="fas fa-trash-alt mr-1"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-blue-50">
-                                <td class="table-cell book-id">13</td>
-                                <td class="table-cell book-isbn">00122</td>
-                                <td class="table-cell book-title">Pride and Prejudice</td>
-                                <td class="table-cell book-author">Jane Austen</td>
-                                <td class="table-cell book-quantity">4</td>
-                                <td class="table-cell book-status">Available</td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                       <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 view-details-button" data-book-id="2">
-                                        View
-                                        </button>
-                                    </div>
-                                </td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 edit-issue-button" data-book-id="13">
-                                            <i class="fas fa-edit mr-1"></i>
-                                        </button>
-                                        <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 delete-issue-button" data-book-id="13">
-                                            <i class="fas fa-trash-alt mr-1"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-blue-50">
-                                <td class="table-cell book-id">14</td>
-                                <td class="table-cell book-isbn">00123</td>
-                                <td class="table-cell book-title">The Catcher in the Rye</td>
-                                <td class="table-cell book-author">J.D. Salinger</td>
-                                <td class="table-cell book-quantity">3</td>
-                                <td class="table-cell book-status">Available</td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                       <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 view-details-button" data-book-id="2">
-                                        View
-                                        </button>
-                                    </div>
-                                </td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 edit-issue-button" data-book-id="14">
-                                            <i class="fas fa-edit mr-1"></i>
-                                        </button>
-                                        <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 delete-issue-button" data-book-id="14">
-                                            <i class="fas fa-trash-alt mr-1"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-blue-50">
-                                <td class="table-cell book-id">15</td>
-                                <td class="table-cell book-isbn">00124</td>
-                                <td class="table-cell book-title">The Hobbit</td>
-                                <td class="table-cell book-author">J.R.R. Tolkien</td>
-                                <td class="table-cell book-quantity">5</td>
-                                <td class="table-cell book-status">Available</td>
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 view-details-button" data-book-id="2">
-                                        View
-                                        </button>
-                                    </div>
-                                </td>
+                            <?php foreach ($data['booklist'] as $book): ?>
+                    <tr>
+                        <td class="table-cell book-id border px-4 py-2"><?= htmlspecialchars($book['id']) ?></td>
+                        <td class="table-cell book-isbn border px-4 py-2"><?= htmlspecialchars($book['isbn']) ?></td>
+                        <td class="table-cell book-title border px-4 py-2"><?= htmlspecialchars($book['title']) ?></td>
+                        <td class="table-cell book-author border px-4 py-2"><?= htmlspecialchars($book['author_name']) ?></td>
+                        <td class="table-cell book-quantity border px-4 py-2"><?= htmlspecialchars($book['total_quantity']) ?></td>
+                        <td class="table-cell book-quantity border px-4 py-2"><?= htmlspecialchars($book['available_quantity'] ?? '') ?></td>
 
-                                <td class="table-cell">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 edit-issue-button" data-book-id="15">
-                                            <i class="fas fa-edit mr-1"></i>
-                                        </button>
-                                        <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md transition duration-300 delete-issue-button" data-book-id="15">
-                                            <i class="fas fa-trash-alt mr-1"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                        <td class="table-cell book-status border px-4 py-2">
+                           <?php
+$statusText = isset($book['status_description']) ? trim(strtolower($book['status_description'])) : '';
+$statusClass = $statusText === 'available' ? 'text-green-600' : 'text-red-600';
+?>
+<span class="status <?= $statusClass ?>">
+    <?= $statusText ? htmlspecialchars(ucfirst($statusText)) : 'Unknown' ?>
+</span>
+
+
+                        </td>
+                        <td class="table-cell border px-4 py-2">
+                            <div class="flex space-x-2">
+                                <button class="view-details-button bg-blue-500 text-white px-3 py-1 rounded"
+                                    data-id="<?= $book['id'] ?>"
+                                    data-title="<?= htmlspecialchars($book['title']) ?>"
+                                    data-author="<?= htmlspecialchars($book['author_name']) ?>"
+                                    data-isbn="<?= htmlspecialchars($book['isbn']) ?>"
+                                    data-quantity="<?= htmlspecialchars($book['total_quantity']) ?>"
+                                    data-status="<?= htmlspecialchars($book['status_description']) ?>">
+                                    View
+                                </button>
+                                <button class="edit-button bg-yellow-500 text-white px-3 py-1 rounded"
+                                    data-id="<?= $book['id'] ?>"
+                                    data-title="<?= htmlspecialchars($book['title']) ?>"
+                                    data-author="<?= htmlspecialchars($book['author_name']) ?>"
+                                    data-isbn="<?= htmlspecialchars($book['isbn']) ?>"
+                                    data-quantity="<?= htmlspecialchars($book['total_quantity']) ?>"
+                                    data-status="<?= htmlspecialchars($book['status_description']) ?>">
+                                    Edit
+                                </button>
+                               
+                            </div>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div> 
@@ -432,7 +105,7 @@
         </div>
     </div>
 
-    <div id="deleteConfirmationBox" class="message-box-overlay">
+    <!-- <div id="deleteConfirmationBox" class="message-box-overlay">
         <div class="message-box-content">
             <h4 class="text-2xl font-bold text-gray-800 mb-4">Confirm Deletion</h4>
             <p class="text-gray-600 mb-6">Are you sure you want to delete this book? This action cannot be undone.</p>
@@ -445,7 +118,7 @@
                 </button>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <div id="editMessageBox" class="message-box-overlay">
         <div class="message-box-content">

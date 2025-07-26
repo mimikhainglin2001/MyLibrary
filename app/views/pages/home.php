@@ -4,7 +4,7 @@
     <div class="hero-content">
         <h1>Your Gateway To Knowledge</h1>
         <p>Discover a world of learning and exploration through our comprehensive library services</p>
-        <a href="<?php echo URLROOT;?>/pages/login" class="cta-button">Get Started</a>
+        <a href="<?php echo URLROOT;?>/pages/category" class="cta-button">Get Started</a>
     </div>
 </section>
 

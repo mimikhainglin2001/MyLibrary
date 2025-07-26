@@ -6,6 +6,13 @@
     }.book-cover{
         border-radius: 0;
     }
+      .borrow-btn{
+        border-radius: 5px;
+    }
+    .hidden-book {
+    display: none;
+}
+
   </style>
  <main class="main-content">
      <!-- Hero Section -->
@@ -31,40 +38,37 @@
 
          <div class="books-grid">
              <!-- Row 1 -->
-             <?php foreach ($data['romanceBooks'] as $book): ?>
-                 <div class="book-item">
-                     
-                         <img src="/<?= htmlspecialchars($book['image']) ?>"
-                             class="book-img" />
+             <?php foreach ($data['romanceBooks'] as $index => $book): ?>
+    <div class="book-item <?= $index >= 6 ? 'hidden-book' : '' ?>">
+        <img src="/<?= htmlspecialchars($book['image']) ?>" class="book-img" />
+        <div class="book-info">
+            <span><?= htmlspecialchars($book['title']) ?></span>
+            <p class="author">Author: <?= htmlspecialchars($book['author_name']) ?></p>
+            <p class="author">ISBN: <?= htmlspecialchars($book['isbn']) ?></p>
+            <p class="author">Total Quantity: <?= htmlspecialchars($book['total_quantity']) ?></p>
+            <span><?= htmlspecialchars($book['status_description']) ?></span>
 
-                     
-                     <div class="book-info">
-                         <span><?= htmlspecialchars($book['title']) ?></span>
-                         <p class="author">Author: <?= htmlspecialchars($book['author_name']) ?></p>
-                         <p class="author">ISBN: <?= htmlspecialchars($book['isbn']) ?></p>
-                         <p class="author">Total Quantity: <?= htmlspecialchars($book['total_quantity']) ?></p>
-                         <span><?= htmlspecialchars($book['status_description']) ?></span>
+            <div class="rating">
+                <span class="stars">★★★★☆</span>
+                <span class="rating-text">4.5</span>
+            </div>
+            <button class="borrow-btn"
+                data-book="<?= htmlspecialchars($book['title']) ?>"
+                data-author="<?= htmlspecialchars($book['author_name']) ?>"
+                data-isbn="<?= htmlspecialchars($book['isbn']) ?>"
+                data-id="<?= htmlspecialchars($book['id']) ?>">
+                BORROW
+            </button>
+        </div>
+    </div>
+<?php endforeach; ?>
 
-                         <div class="rating">
-                             <span class="stars">★★★★☆</span>
-                             <span class="rating-text">4.5</span>
-                         </div>
-                         <button class="borrow-btn"
-                             data-book="<?= htmlspecialchars($book['title']) ?>"
-                             data-author="<?= htmlspecialchars($book['author_name']) ?>"
-                             data-isbn="<?= htmlspecialchars($book['isbn']) ?>"
-                             data-id="<?= htmlspecialchars($book['id']) ?>">
-                             BORROW
-                         </button>
-                     </div>
-                 </div>
-             <?php endforeach; ?>
              
          </div>
          <!-- More books can be added here -->
              <!-- Navigation -->
              <div class="navigation">
-                 <button class="back-btn">← Back</button>
+                  <a href="<?php echo URLROOT; ?>/pages/category" class="back-btn">← Back</a>
                  <button class="see-more-btn">See More</button>
              </div>
      </section>
@@ -82,6 +86,14 @@
  </div>
 
  <script>
+    const seeMoreBtn = document.querySelector('.see-more-btn');
+seeMoreBtn.addEventListener('click', () => {
+    document.querySelectorAll('.hidden-book').forEach(book => {
+        book.classList.remove('hidden-book');
+    });
+    seeMoreBtn.style.display = 'none'; // hide button after expanding
+});
+
      document.addEventListener('DOMContentLoaded', function() {
          let currentBook = '';
          let currentAuthor = '';
@@ -151,7 +163,7 @@
              if (currentBookId) {
                  window.location.href = `/auth/borrow?id=${encodeURIComponent(currentBookId)}`;
              } else {
-                 alert('Book ID is missing.');
+                 //alert('Book ID is missing.');
              }
 
              hideConfirmation();
