@@ -1,5 +1,5 @@
-
-<?php require_once APPROOT . '/views/inc/sidebar.php'; // Your existing sidebar ?>
+<?php require_once APPROOT . '/views/inc/sidebar.php'; // Your existing sidebar 
+?>
 
 <main class="main-content-area bg-blue-100 shadow-md p-8">
     <h2 class="text-3xl font-bold text-gray-800 mb-6">Admin Profile</h2>
@@ -20,7 +20,9 @@
                     <li><strong>Name : </strong> <?php echo htmlspecialchars($data['loginuser']['name']); ?></li>
                     <li><strong>Email : </strong> <?php echo htmlspecialchars($data['loginuser']['email']); ?></li>
                     <li><strong>Gender : </strong> <?php echo htmlspecialchars($data['loginuser']['gender']); ?></li>
-                    <!-- <li><strong>Role : </strong> <?php echo htmlspecialchars($data['loginuser']['role_id']); ?></li> -->
+                    <li><strong>Role : </strong>
+                        <?php echo htmlspecialchars($data['loginuser']['role_name'] ?? 'N/A'); ?>
+                    </li>
                 </ul>
             </div>
             <!-- <div>
@@ -34,15 +36,14 @@
         </div>
 
         <div class="mt-8">
-            <h3 class="text-xl font-semibold text-gray-700 mb-3">Actions</h3>
             <div class="flex flex-wrap gap-4">
-                <a href="<?php echo URLROOT; ?>/admin/edit_profile" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">
+                <a href="<?php echo URLROOT; ?>/admin/editAdminProfile" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">
                     <i class="fas fa-edit mr-2"></i>Edit Profile
                 </a>
                 <a href="<?php echo URLROOT; ?>/admin/change_password" class="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">
                     <i class="fas fa-key mr-2"></i>Change Password
                 </a>
-                </div>
+            </div>
         </div>
     </div>
 </main>

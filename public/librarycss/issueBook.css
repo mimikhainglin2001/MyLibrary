@@ -94,7 +94,7 @@ body {
 
 /* Wrapper for the table to enable ONLY vertical scrolling */
 .table-scroll-container {
-    overflow-x: hidden; /* Explicitly hide horizontal scrollbar */
+    overflow-x: auto; /* Explicitly hide horizontal scrollbar */
     overflow-y: auto; /* Enable vertical scrolling as needed */
     max-height: 400px; /* Set a max height to enable vertical scrolling */
     -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
@@ -148,6 +148,7 @@ body {
 .table-scroll-container::-webkit-scrollbar-track {
     background: #f1f1f1; /* Color of the scrollbar track */
     border-radius: 10px;
+
 }
 
 .table-scroll-container::-webkit-scrollbar-thumb {

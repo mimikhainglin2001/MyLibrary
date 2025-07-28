@@ -34,11 +34,11 @@ if (session_status() === PHP_SESSION_NONE) {
 
           <select name="year" required>
             <option value="">Year</option>
-            <option value="year1">First Year</option>
-            <option value="year2">Second Year</option>
-            <option value="year3">Third Year</option>
-            <option value="year4">Fourth Year</option>
-            <option value="year5">Final Year</option>
+            <option value="First Year">First Year</option>
+            <option value="Second Year">Second Year</option>
+            <option value="Third Year">Third Year</option>
+            <option value="Fourth Year">Fourth Year</option>
+            <option value="Final Year">Final Year</option>
           </select>
 
           <!-- Password field with toggle -->
