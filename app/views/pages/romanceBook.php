@@ -1,19 +1,48 @@
  <?php require_once APPROOT . '/views/inc/header.php'; ?>
  <!-- Main Content -->
-  <style>
-    .book-item{
-        border-radius: 0;
-    }.book-cover{
-        border-radius: 0;
-    }
-      .borrow-btn{
-        border-radius: 5px;
-    }
-    .hidden-book {
-    display: none;
-}
+ <style>
+     .book-item {
+         border-radius: 0;
+     }
 
-  </style>
+     .book-cover {
+         border-radius: 0;
+     }
+
+     .borrow-btn {
+         border-radius: 5px;
+     }
+
+     .modal-overlay {
+         display: none;
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background: rgba(0, 0, 0, 0.5);
+         justify-content: center;
+         align-items: center;
+         z-index: 9999;
+     }
+
+     .modal {
+         background: white;
+         padding: 20px;
+         border-radius: 8px;
+         text-align: center;
+     }
+
+     .modal-buttons button {
+         margin-top: 10px;
+         padding: 8px 20px;
+         cursor: pointer;
+     }
+
+     .modal.show {
+         display: flex !important;
+     }
+ </style>
  <main class="main-content">
      <!-- Hero Section -->
      <section class="hero-section">
@@ -34,66 +63,161 @@
 
      <!-- Book Listing Section -->
      <section class="book-listing">
-         <h2>Romance Book Listed</h2>
+         <h2>Historical Book Listed</h2>
 
          <div class="books-grid">
              <!-- Row 1 -->
              <?php foreach ($data['romanceBooks'] as $index => $book): ?>
-    <div class="book-item <?= $index >= 6 ? 'hidden-book' : '' ?>">
-        <img src="/<?= htmlspecialchars($book['image']) ?>" class="book-img" />
-        <div class="book-info">
-            <span><?= htmlspecialchars($book['title']) ?></span>
-            <p class="author">Author: <?= htmlspecialchars($book['author_name']) ?></p>
-            <p class="author">ISBN: <?= htmlspecialchars($book['isbn']) ?></p>
-            <p class="author">Total Quantity: <?= htmlspecialchars($book['total_quantity']) ?></p>
-            <span><?= htmlspecialchars($book['status_description']) ?></span>
+                 <div class="book-item <?= $index >= 6 ? 'hidden-book' : '' ?>">
+                     <img src="/<?= htmlspecialchars($book['image']) ?>" class="book-img" />
+                     <div class="book-info">
+                         <span><?= htmlspecialchars($book['title']) ?></span>
+                         <p class="author">Author: <?= htmlspecialchars($book['author_name']) ?></p>
+                         <p class="author">ISBN: <?= htmlspecialchars($book['isbn']) ?></p>
+                         <p class="author">Total Quantity: <?= htmlspecialchars($book['total_quantity']) ?></p>
+                         <p class="author">Available Quantity: <?= htmlspecialchars($book['available_quantity'] ?? '0') ?></p>
+                         <span><?= htmlspecialchars($book['status_description']) ?></span>
 
-            <div class="rating">
-                <span class="stars">★★★★☆</span>
-                <span class="rating-text">4.5</span>
-            </div>
-            <button class="borrow-btn"
-                data-book="<?= htmlspecialchars($book['title']) ?>"
-                data-author="<?= htmlspecialchars($book['author_name']) ?>"
-                data-isbn="<?= htmlspecialchars($book['isbn']) ?>"
-                data-id="<?= htmlspecialchars($book['id']) ?>">
-                BORROW
-            </button>
-        </div>
-    </div>
-<?php endforeach; ?>
+                         <div class="rating">
+                             <span class="stars">★★★★☆</span>
+                             <span class="rating-text">4.5</span>
+                         </div>
+                         <button class="borrow-btn"
+                             data-book="<?= htmlspecialchars($book['title']) ?>"
+                             data-author="<?= htmlspecialchars($book['author_name']) ?>"
+                             data-id="<?= htmlspecialchars($book['id']) ?>"
+                             data-available="<?= (int)($book['available_quantity'] ?? 0) ?>"
+                             data-total="<?= (int)($book['total_quantity'] ?? 0) ?>">
+                             BORROW
+                         </button>
 
-             
-         </div>
-         <!-- More books can be added here -->
+
+                     </div>
+                 </div>
+             <?php endforeach; ?>
+
+             <!-- More books can be added here -->
              <!-- Navigation -->
              <div class="navigation">
-                  <a href="<?php echo URLROOT; ?>/pages/category" class="back-btn">← Back</a>
+                 <a href="<?php echo URLROOT; ?>/pages/category" class="back-btn">← Back</a>
                  <button class="see-more-btn">See More</button>
              </div>
+         </div>
      </section>
  </main>
- <!-- Confirmation Modal -->
  <div id="confirmationModal" class="modal-overlay">
      <div class="modal">
          <h3>Confirm Borrowing</h3>
-         <p id="confirmationMessage">Are you sure you want to borrow this book?</p>
+         <p id="confirmationMessage"></p>
          <div class="modal-buttons">
-             <button class="confirm-btn" id="confirmBtn">Confirm</button>
-             <button class="cancel-btn" id="cancelBtn">Cancel</button>
+             <button id="confirmBtn" class="confirm-btn">Confirm</button>
+             <button id="cancelBtn" class="cancel-btn">Cancel</button>
          </div>
      </div>
  </div>
 
- <script>
-    const seeMoreBtn = document.querySelector('.see-more-btn');
-seeMoreBtn.addEventListener('click', () => {
-    document.querySelectorAll('.hidden-book').forEach(book => {
-        book.classList.remove('hidden-book');
-    });
-    seeMoreBtn.style.display = 'none'; // hide button after expanding
-});
+ <div id="notAvailableModal" class="modal-overlay">
+     <div class="modal">
+         <h3>Not Available</h3>
+         <p>This book is currently not available for borrowing.</p>
+         <div class="modal-buttons">
+             <button class="cancel-btn" onclick="hideNotAvailableModal()">Close</button>
+         </div>
+     </div>
+ </div>
 
+
+
+ <script>
+     document.addEventListener('DOMContentLoaded', function() {
+         const borrowBtns = document.querySelectorAll('.borrow-btn');
+         const confirmModal = document.getElementById('confirmationModal');
+         const notAvailableModal = document.getElementById('notAvailableModal');
+         const confirmationMessage = document.getElementById('confirmationMessage');
+         const confirmBtn = document.getElementById('confirmBtn');
+         const cancelBtn = document.getElementById('cancelBtn');
+
+         let currentBookId = '';
+
+         borrowBtns.forEach(btn => {
+             btn.addEventListener('click', function() {
+                 const available = parseInt(this.dataset.available);
+                 const total = parseInt(this.dataset.total);
+                 const title = this.dataset.book;
+                 const author = this.dataset.author;
+                 const id = this.dataset.id;
+
+                 if (available <= 0 || total <= 0) {
+                     showNotAvailableModal();
+                 } else {
+                     currentBookId = id;
+                     confirmationMessage.textContent = `Are you sure you want to borrow "${title}" by ${author}?`;
+                     showConfirmationModal();
+                 }
+             });
+         });
+
+         confirmBtn.addEventListener('click', function() {
+             if (currentBookId) {
+                 window.location.href = `/borrowBook/borrow?id=${encodeURIComponent(currentBookId)}`;
+             }
+         });
+
+         cancelBtn.addEventListener('click', hideConfirmationModal);
+
+         function showConfirmationModal() {
+             confirmModal.style.display = 'flex';
+         }
+
+         function hideConfirmationModal() {
+             confirmModal.style.display = 'none';
+         }
+
+         function showNotAvailableModal() {
+             notAvailableModal.style.display = 'flex';
+         }
+
+         window.hideNotAvailableModal = function() {
+             notAvailableModal.style.display = 'none';
+         };
+     });
+     borrowBtns.forEach(btn => {
+         btn.addEventListener('click', function(e) {
+             e.preventDefault();
+
+             const bookTitle = this.getAttribute('data-book');
+             const author = this.getAttribute('data-author');
+             const bookId = this.getAttribute('data-id');
+             const available = parseInt(this.getAttribute('data-available'));
+             const total = parseInt(this.getAttribute('data-total'));
+
+             if (available === 0 || total === 0) {
+                 showNotAvailableModal();
+             } else {
+                 showConfirmation(bookTitle, author, bookId);
+             }
+         });
+     });
+
+     function showNotAvailableModal() {
+         const notAvailableModal = document.getElementById('notAvailableModal');
+         notAvailableModal.style.display = 'flex';
+         setTimeout(() => notAvailableModal.classList.add('show'), 10);
+     }
+
+     function hideNotAvailableModal() {
+         const notAvailableModal = document.getElementById('notAvailableModal');
+         notAvailableModal.classList.remove('show');
+         setTimeout(() => notAvailableModal.style.display = 'none', 300);
+     }
+
+     const seeMoreBtn = document.querySelector('.see-more-btn');
+     seeMoreBtn.addEventListener('click', () => {
+         document.querySelectorAll('.hidden-book').forEach(book => {
+             book.classList.remove('hidden-book');
+         });
+         seeMoreBtn.style.display = 'none'; // hide button after expanding
+     });
      document.addEventListener('DOMContentLoaded', function() {
          let currentBook = '';
          let currentAuthor = '';
@@ -161,9 +285,9 @@ seeMoreBtn.addEventListener('click', () => {
 
          function confirmBorrow() {
              if (currentBookId) {
-                 window.location.href = `/auth/borrow?id=${encodeURIComponent(currentBookId)}`;
+                 window.location.href = `/borrowBook/borrow?id=${encodeURIComponent(currentBookId)}`;
              } else {
-                 //alert('Book ID is missing.');
+                 alert('Book ID is missing.');
              }
 
              hideConfirmation();

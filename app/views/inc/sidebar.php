@@ -2,7 +2,7 @@
 $name = $_SESSION['session_loginuser'] ?? 'Admin'; ?>
 <?php
     $currentUrl = $_SERVER['REQUEST_URI']; 
-    // example: /mvc-bus-ticket/pages/dashboard
+    
 ?>
 
 <!DOCTYPE html>

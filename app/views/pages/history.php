@@ -57,6 +57,8 @@
                             <th>Borrow Date</th>
                             <th>Due Date</th>
                             <th>Return Date</th>
+                            <th>Renew Date</th>
+                            <th>Renew Count</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -66,7 +68,7 @@
                             <tr>
                                 <td class="book-details">
                                     <div class="book-info">
-                                        <img src="/<?= htmlspecialchars($book['image'] ?? 'default.png') ?>" class="book-cover">
+                                        <img src="/<?= htmlspecialchars($book['image'] ?? 'default.png') ?>" class="book-cover" alt="Book Cover">
                                         <div class="book-text">
                                             <h4><?= htmlspecialchars($book['title'] ?? 'Unknown') ?></h4>
                                             <span class="book-id"><?= htmlspecialchars($book['isbn'] ?? '-') ?></span>
@@ -76,17 +78,30 @@
                                 <td><?= htmlspecialchars($book['borrow_date'] ?? '-') ?></td>
                                 <td><?= htmlspecialchars($book['due_date'] ?? '-') ?></td>
                                 <td><?= htmlspecialchars($book['return_date'] ?? '-') ?></td>
+                                <td><?= htmlspecialchars($book['renew_date'] ?? '-') ?></td>
+                                <td><?= htmlspecialchars($book['renew_count'] ?? '0') ?></td>
                                 <td>
                                     <span class="status <?= htmlspecialchars($book['status'] ?? 'borrowed') ?>">
                                         <?= htmlspecialchars(ucfirst($book['status'] ?? 'Borrowed')) ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <button class="action-btn renew">Renew</button>
                                     <?php if (($book['status'] ?? '') !== 'returned'): ?>
-                                        <button class="action-btn return"
-                                            data-borrow-id="<?= htmlspecialchars($book['borrow_id'] ?? '') ?>"
-                                            data-book-id="<?= htmlspecialchars($book['book_id'] ?? '') ?>">Return</button>
+                                        <button class="action-btn renew"
+                                            data-borrow-id="<?= htmlspecialchars($book['id']) ?>"
+                                            data-book-id="<?= htmlspecialchars($book['book_id']) ?>"
+                                            data-book-title="<?= htmlspecialchars($book['title']) ?>">
+                                            Renew
+                                        </button>
+                                        <form method="POST" action="/borrowBook/return" class="return-form" style="display:inline;">
+                                            <input type="hidden" name="borrow_id" value="<?= htmlspecialchars($book['id']) ?>">
+                                            <button type="button" class="action-btn return"
+                                                data-borrow-id="<?= htmlspecialchars($book['id']) ?>"
+                                                data-book-id="<?= htmlspecialchars($book['book_id']) ?>"
+                                                data-book-title="<?= htmlspecialchars($book['title'] ?? 'Unknown') ?>">
+                                                Return
+                                            </button>
+                                        </form>
                                     <?php else: ?>
                                         <span class="action-btn disabled">Returned</span>
                                     <?php endif; ?>
@@ -107,60 +122,69 @@
 
 <!-- Scripts -->
 <script>
-    // Search
-    document.getElementById('searchInput').addEventListener('input', function () {
-        const searchTerm = this.value.toLowerCase();
-        const rows = document.querySelectorAll('.history-table tbody tr');
+    document.addEventListener('DOMContentLoaded', () => {
+        // Search
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.history-table tbody tr');
 
-        rows.forEach(row => {
-            const bookTitle = row.querySelector('.book-text h4').textContent.toLowerCase();
-            const author = row.querySelector('.book-text p')?.textContent.toLowerCase() || '';
-            row.style.display = bookTitle.includes(searchTerm) || author.includes(searchTerm) ? '' : 'none';
+            rows.forEach(row => {
+                const bookTitle = row.querySelector('.book-text h4').textContent.toLowerCase();
+                const author = row.querySelector('.book-text p')?.textContent.toLowerCase() || '';
+                row.style.display = bookTitle.includes(searchTerm) || author.includes(searchTerm) ? '' : 'none';
+            });
         });
-    });
 
-    // Status Filter
-    document.getElementById('statusFilter').addEventListener('change', function () {
-        const filterValue = this.value;
-        const rows = document.querySelectorAll('.history-table tbody tr');
+        // Filter
+        document.getElementById('statusFilter').addEventListener('change', function () {
+            const filterValue = this.value;
+            const rows = document.querySelectorAll('.history-table tbody tr');
 
-        rows.forEach(row => {
-            const status = row.querySelector('.status').textContent.toLowerCase();
-            row.style.display = (filterValue === 'all' || status.includes(filterValue)) ? '' : 'none';
+            rows.forEach(row => {
+                const status = row.querySelector('.status').textContent.toLowerCase();
+                row.style.display = (filterValue === 'all' || status.includes(filterValue)) ? '' : 'none';
+            });
         });
-    });
 
-    // Action Buttons
-    document.querySelectorAll('.action-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const action = this.textContent.trim().toLowerCase();
-            const bookTitle = this.closest('tr').querySelector('.book-text h4').textContent;
-            const borrowId = this.dataset.borrowId;
-            const bookId = this.dataset.bookId;
+        // Confirm return
+        document.querySelectorAll('.action-btn.return').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const borrowId = button.dataset.borrowId;
+                const bookId = button.dataset.bookId;
+                const bookTitle = button.dataset.bookTitle || 'this book';
 
-            if (action === 'return') {
-                if (!borrowId) {
-                    alert('Missing borrow ID.');
+                if (!borrowId || !bookId) {
+                    alert('Missing borrow ID or book ID.');
                     return;
                 }
 
                 if (confirm(`Are you sure you want to return "${bookTitle}"?`)) {
-                   
-                    let url = `/auth/return?borrow_id=${encodeURIComponent(borrowId)}`;
-                    if (bookId) {
-                        url += `&book_id=${encodeURIComponent(bookId)}`;
-                    }
+                    const url = `/borrowBook/return?id=${encodeURIComponent(borrowId)}&book_id=${encodeURIComponent(bookId)}`;
                     window.location.href = url;
                 }
-            }
+            });
+        });
 
-            if (action === 'renew') {
-                alert(`Renewing "${bookTitle}"`);
-               
-            }
+        // Renew button
+        document.querySelectorAll('.action-btn.renew').forEach(button => {
+            button.addEventListener('click', () => {
+                const borrowId = button.dataset.borrowId;
+                const bookId = button.dataset.bookId;
+                const bookTitle = button.dataset.bookTitle;
+
+                if (!borrowId || !bookId) {
+                    alert('Missing borrow ID or book ID.');
+                    return;
+                }
+
+                if (confirm(`Are you sure you want to renew "${bookTitle}"?`)) {
+                    const url = `/borrowBook/renew?id=${encodeURIComponent(borrowId)}&book_id=${encodeURIComponent(bookId)}`;
+                    window.location.href = url;
+                }
+            });
         });
     });
 </script>
-
 </body>
 </html>

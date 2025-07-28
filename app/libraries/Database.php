@@ -130,6 +130,34 @@ class Database
             echo $e;
         }
     }
+    //     public function updateWhere($table, $where, $data)
+    // {
+    //     $set = '';
+    //     foreach ($data as $key => $value) {
+    //         $set .= "$key = :set_$key, ";
+    //     }
+    //     $set = rtrim($set, ', ');
+
+    //     $conditions = '';
+    //     foreach ($where as $key => $value) {
+    //         $conditions .= "$key = :where_$key AND ";
+    //     }
+    //     $conditions = rtrim($conditions, 'AND ');
+
+    //     $sql = "UPDATE $table SET $set WHERE $conditions";
+    //     $stmt = $this->pdo->prepare($sql);
+
+    //     foreach ($data as $key => $value) {
+    //         $stmt->bindValue(":set_$key", $value);
+    //     }
+
+    //     foreach ($where as $key => $value) {
+    //         $stmt->bindValue(":where_$key", $value);
+    //     }
+
+    //     return $stmt->execute();
+    // }
+
 
     public function delete($table, $id)
     {
@@ -150,7 +178,7 @@ class Database
         $row = $stm->fetch(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
     }
-    public function getLiteraryBooks($table, $column, $value)
+    public function getbookcategory($table, $column, $value)
     {
         // $sql = 'SELECT * FROM ' . $table . ' WHERE `' . $column . '` = :value';
         $sql = 'SELECT * FROM ' . $table . ' WHERE `' . str_replace('`', '', $column) . '` = :value';
@@ -160,51 +188,7 @@ class Database
         $row = $stm->fetchAll(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
     }
-    public function getHistoricalBooks($table, $column, $value)
-    {
-        $sql = 'SELECT * FROM ' . $table . ' WHERE `' . str_replace('`', '', $column) . '` = :value';
-        $stm = $this->pdo->prepare($sql);
-        $stm->bindValue(':value', $value);
-        $success = $stm->execute();
-        $row = $stm->fetchAll(PDO::FETCH_ASSOC);
-        return ($success) ? $row : [];
-    }
-    public function getEducationBooks($table, $column, $value)
-    {
-        $sql = 'SELECT * FROM ' . $table . ' WHERE `' . str_replace('`', '', $column) . '` = :value';
-        $stm = $this->pdo->prepare($sql);
-        $stm->bindValue(':value', $value);
-        $success = $stm->execute();
-        $row = $stm->fetchAll(PDO::FETCH_ASSOC);
-        return ($success) ? $row : [];
-    }
-    public function getRomanceBooks($table, $column, $value)
-    {
-        $sql = 'SELECT * FROM ' . $table . ' WHERE `' . str_replace('`', '', $column) . '` = :value';
-        $stm = $this->pdo->prepare($sql);
-        $stm->bindValue(':value', $value);
-        $success = $stm->execute();
-        $row = $stm->fetchAll(PDO::FETCH_ASSOC);
-        return ($success) ? $row : [];
-    }
-    public function getHorrorBooks($table, $column, $value)
-    {
-        $sql = 'SELECT * FROM ' . $table . ' WHERE `' . str_replace('`', '', $column) . '` = :value';
-        $stm = $this->pdo->prepare($sql);
-        $stm->bindValue(':value', $value);
-        $success = $stm->execute();
-        $row = $stm->fetchAll(PDO::FETCH_ASSOC);
-        return ($success) ? $row : [];
-    }
-    public function getCartoonBooks($table, $column, $value)
-    {
-        $sql = 'SELECT * FROM ' . $table . ' WHERE `' . str_replace('`', '', $column) . '` = :value';
-        $stm = $this->pdo->prepare($sql);
-        $stm->bindValue(':value', $value);
-        $success = $stm->execute();
-        $row = $stm->fetchAll(PDO::FETCH_ASSOC);
-        return ($success) ? $row : [];
-    }
+  
 
 
     public function loginCheck($email, $password)
@@ -288,7 +272,22 @@ class Database
         $row = $stm->fetch(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
     }
-    
+    public function getUserWithRoleById($id)
+    {
+        $sql = "SELECT u.*, r.role_name AS role_name
+            FROM users u
+            LEFT JOIN roles r ON u.role_id = r.id
+            WHERE u.id = :id";
+
+        $stm = $this->pdo->prepare($sql);
+        $stm->bindValue(':id', $id);
+        $success = $stm->execute();
+        $row = $stm->fetch(PDO::FETCH_ASSOC);
+        return ($success) ? $row : [];
+    }
+
+
+
     public function getAllMembers($table)
     {
         $sql = 'SELECT * FROM ' . $table;
@@ -317,6 +316,14 @@ class Database
         return ($success) ? $row : [];
     }
     public function getBorrowBookList($table)
+    {
+        $sql = 'SELECT * FROM ' . $table;
+        $stm = $this->pdo->prepare($sql);
+        $success = $stm->execute();
+        $row = $stm->fetchAll(PDO::FETCH_ASSOC);
+        return ($success) ? $row : [];
+    }
+    public function getReturnBookList($table)
     {
         $sql = 'SELECT * FROM ' . $table;
         $stm = $this->pdo->prepare($sql);

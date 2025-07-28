@@ -10,7 +10,7 @@ class Pages extends Controller
     }
     public function index()
     {
-     $this->view('pages/welcome');   
+        $this->view('pages/welcome');
     }
 
     public function home()
@@ -39,98 +39,170 @@ class Pages extends Controller
 
     public function literarybook()
     {
-        $literaryBooks = $this->db->getLiteraryBooks('book_details','category_name',$categoryName = 'Literary Book');
-        
+        $literaryBooks = $this->db->getbookcategory('book_details', 'category_name', $categoryName = 'Literary Book');
+
         $data = [
             'literaryBooks' => $literaryBooks
         ];
+        foreach ($data['literaryBooks'] as &$book) {
+            $available = (int)($book['available_quantity'] ?? 0);
+            $total = (int)($book['total_quantity'] ?? 0);
+
+            if ($total === 0 && $available === 0) {
+                $book['status_description'] = 'Not Available';
+            } else {
+                $book['status_description'] = 'Available';
+            }
+        }
+
         $this->view('pages/literarybook', $data);
     }
-     public function historicalbook()
+    public function historicalbook()
     {
-        $historicalBooks = $this->db->getHistoricalBooks('book_details', 'category_name', $categoryName = 'Historical Book');
+        $historicalBooks = $this->db->getbookcategory('book_details', 'category_name', $categoryName = 'Historical Book');
         $data = [
             'historicalBooks' => $historicalBooks
         ];
+        foreach ($data['historicalBooks'] as &$book) {
+            $available = (int)($book['available_quantity'] ?? 0);
+            $total = (int)($book['total_quantity'] ?? 0);
+
+            if ($total === 0 && $available === 0) {
+                $book['status_description'] = 'Not Available';
+            } else {
+                $book['status_description'] = 'Available';
+            }
+        }
         $this->view('pages/historicalbook', $data);
     }
     public function educationbook()
     {
-        $educationBooks = $this->db->getEducationBooks('book_details', 'category_name', $categoryName = 'Education/References Book');
+        $educationBooks = $this->db->getbookcategory('book_details', 'category_name', $categoryName = 'Education/References Book');
         $data = [
             'educationBooks' => $educationBooks
         ];
+        foreach ($data['educationBooks'] as &$book) {
+            $available = (int)($book['available_quantity'] ?? 0);
+            $total = (int)($book['total_quantity'] ?? 0);
+
+            if ($total === 0 && $available === 0) {
+                $book['status_description'] = 'Not Available';
+            } else {
+                $book['status_description'] = 'Available';
+            }
+        }
         $this->view('pages/educationbook', $data);
     }
-     public function romancebook()
+    public function romancebook()
     {
-        $romanceBooks = $this->db->getRomanceBooks('book_details', 'category_name', $categoryName = 'Romance Book');
+        $romanceBooks = $this->db->getbookcategory('book_details', 'category_name', $categoryName = 'Romance Book');
         $data = [
             'romanceBooks' => $romanceBooks
         ];
+        foreach ($data['romanceBooks'] as &$book) {
+            $available = (int)($book['available_quantity'] ?? 0);
+            $total = (int)($book['total_quantity'] ?? 0);
+
+            if ($total === 0 && $available === 0) {
+                $book['status_description'] = 'Not Available';
+            } else {
+                $book['status_description'] = 'Available';
+            }
+        }
         $this->view('pages/romancebook', $data);
     }
-     public function horrorbook()
+    public function horrorbook()
     {
-        $horrorBooks = $this->db->getHorrorBooks('book_details', 'category_name', $categoryName = 'Horror Book');
-        $data =[
+        $horrorBooks = $this->db->getbookcategory('book_details', 'category_name', $categoryName = 'Horror Book');
+        $data = [
             'horrorBooks' => $horrorBooks
         ];
+        foreach ($data['horrorBooks'] as &$book) {
+            $available = (int)($book['available_quantity'] ?? 0);
+            $total = (int)($book['total_quantity'] ?? 0);
+
+            if ($total === 0 && $available === 0) {
+                $book['status_description'] = 'Not Available';
+            } else {
+                $book['status_description'] = 'Available';
+            }
+        }
         $this->view('pages/horrorbook', $data);
     }
-     public function cartoonbook()
+    public function cartoonbook()
     {
-        $cartoonBooks = $this->db->getCartoonBooks('book_details', 'category_name', $categoryName = 'Cartoon Book');
+        $cartoonBooks = $this->db->getbookcategory('book_details', 'category_name', $categoryName = 'Cartoon Book');
         $data = [
             'cartoonBooks' => $cartoonBooks
         ];
+        foreach ($data['cartoonBooks'] as &$book) {
+            $available = (int)($book['available_quantity'] ?? 0);
+            $total = (int)($book['total_quantity'] ?? 0);
+
+            if ($total === 0 && $available === 0) {
+                $book['status_description'] = 'Not Available';
+            } else {
+                $book['status_description'] = 'Available';
+            }
+        }
         $this->view('pages/cartoonbook', $data);
     }
-      public function contact()
+    public function contact()
     {
         $this->view('pages/contact');
     }
-     public function forgotPassword()
+    public function forgotPassword()
     {
         $this->view('pages/forgotPassword');
     }
-      public function otp()
+    public function otp()
     {
         $this->view('pages/otp');
     }
-     public function changePassword()
+    public function changePassword()
     {
         $this->view('pages/changePassword');
     }
-  
-        public function admin()
+
+    public function admin()
     {
         $this->view('pages/login');
     }
-         public function profile()
-    {
-        $this->view('pages/profile');
-    }
-      public function history()
+    //      public function profile()
+    // {
+    //     $this->view('pages/profile');
+    // }
+    public function history()
     {
         $name = $_SESSION['session_loginuser'];
-        $isid = $this->db->getBorrowBook('borrow_full_view',$name['name']);
+        $isid = $this->db->getBorrowBook('borrow_full_view', $name['name']);
         $data = [
             'borrowedBooks' => $isid
         ];
-        $this->view('pages/history',$data);
+        $this->view('pages/history', $data);
     }
-    public function dashboard()
+    public function userProfile()
     {
-        $income = $this->db->incomeTransition();
-        $expense = $this->db->expenseTransition();
+        $id = is_array($_SESSION['session_loginuser']) ? $_SESSION['session_loginuser']['id'] : $_SESSION['session_loginuser'];
+        $loginuser = $this->db->getUserWithRoleById($id);
 
         $data = [
-            'income' => isset($income['amount']) ? $income : ['amount' => 0],
-            'expense' => isset($expense['amount']) ? $expense : ['amount' => 0]
+            'loginuser' => $loginuser
         ];
 
-        $this->view('pages/dashboard', $data);
+        $this->view('pages/userProfile', $data);
     }
-
+    public function editProfile()
+    {
+        $id = is_array($_SESSION['session_loginuser']) ? $_SESSION['session_loginuser']['id'] : $_SESSION['session_loginuser'];
+        $loginuser = $this->db->getUserWithRoleById($id);
+        $data = [
+            'loginuser' => $loginuser
+        ];
+        $this->view('pages/editProfile', $data);
+    }
+    public function changeProfilePassword()
+    {
+        $this->view('pages/changeProfilePassword');
+    }
 }

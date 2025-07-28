@@ -10,6 +10,11 @@ class Auth extends Controller
         $this->model('BorrowBookModel');
         $this->db = new Database();
     }
+    // public function index()
+    // {
+    //     // Example: redirect to login page
+    //     redirect('auth/login');
+    // }
 
     public function login()
     {
@@ -231,53 +236,37 @@ class Auth extends Controller
             }
         }
     }
-
-
-    public function borrow()
+    public function editProfile($id)
     {
-        $name = $_SESSION['session_loginuser'];
-        $id = $_GET['id'];
-        date_default_timezone_set('Asia/Yangon');
-        $currentDate = date('Y-m-d H:i:s');
-        $dueDate = date('Y-m-d H:i:s', strtotime('+7 days'));
-        $returnDate = date('Y-m-d H:i:s');
-        $renewDate = null;
-        $status = 'borrowed';
+        $user = $this->db->getById('users', $id);
 
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = $_POST['name'];
+            $email = $_POST['email'];
+            $year = $_POST['year'];
+            $rollno = $_POST['rollno'];
 
-        $user = new BorrowBookModel();
-        $user->setBookID($id);
-        $user->setUserID($name['id']);
-        $user->setBorrowDate($currentDate);
-        $user->setDueDate($dueDate);
-        $user->setReturnDate(null);
-        $user->setRenewDate($renewDate);
-        $user->setStatus($status);
+            $updateUser = [
+                'name' => $name,
+                'email' => $email,
+                'year' => $year,
+                'rollno' => $rollno
 
-        $borrowed = $this->db->create('borrowBook', $user->toArray());
-        if ($borrowed) {
-            setMessage('success', 'Book borrowed successfully');
-            redirect('pages/history');
+            ];
+
+            $updated = $this->db->update('users', $id, $updateUser);
+
+            if ($updated) {
+                setMessage('success', 'User Profile Updated Successfully');
+                redirect('pages/userProfile');
+            } else {
+                setMessage('error', 'Failed to update user profile');
+            }
         }
+        $data = ['loginuser' => $user];
+        $this->view('auth/editProfile', $data);
     }
 
-    public function return()
-    {
-        $book_id = $_GET['book_id'];
-        $return_date = date('Y=m=d H:i:s');
-        $status = 'returned';
-        $update_data = [
-            'return_date' => $return_date,
-            'status' => $status,
-        ];
-        $updated = $this->db->update('borrowBook', 'book_id', $update_data);
-        if ($updated) {
-            setMessage('success', 'Book returned successfully');
-            redirect('pages/history');
-        } else {
-            setMessage('error', 'Return Failed');
-        }
-    }
 
 
 

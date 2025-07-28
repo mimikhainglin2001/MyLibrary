@@ -1,4 +1,5 @@
  <?php require_once APPROOT . '/views/inc/header.php';?>
+ 
     <!-- Main Content -->
     <main class="main-content">
         <!-- Hero Section -->
