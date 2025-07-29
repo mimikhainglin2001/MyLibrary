@@ -99,37 +99,38 @@ class Database
     // Update Query
     public function update($table, $id, $data)
     {
-        // First, we don't want id from category table
+        // Remove 'id' from data array if it exists
         if (isset($data['id'])) {
             unset($data['id']);
         }
 
         try {
             $columns = array_keys($data);
-            function map($item)
-            {
+
+            // Use anonymous function instead of named one
+            $columns = array_map(function ($item) {
                 return $item . '=:' . $item;
-            }
-            $columns = array_map('map', $columns);
+            }, $columns);
+
             $bindingSql = implode(',', $columns);
-            // echo $bindingSql;
-            // exit;
+
             $sql = 'UPDATE ' .  $table . ' SET ' . $bindingSql . ' WHERE `id` =:id';
             $stm = $this->pdo->prepare($sql);
 
-            // Now, we assign id to bind
+            // Add 'id' to binding data
             $data['id'] = $id;
 
             foreach ($data as $key => $value) {
                 $stm->bindValue(':' . $key, $value);
             }
-            $status = $stm->execute();
-            // print_r($status);
-            return $status;
+
+            return $stm->execute();
         } catch (PDOException $e) {
             echo $e;
+            return false;
         }
     }
+
     //     public function updateWhere($table, $where, $data)
     // {
     //     $set = '';
@@ -188,7 +189,7 @@ class Database
         $row = $stm->fetchAll(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
     }
-  
+
 
 
     public function loginCheck($email, $password)
@@ -352,6 +353,13 @@ class Database
         //  print_r($row);
         return ($success) ? $row : [];
     }
+    public function raw($sql, $params = [])
+    {
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 
     // For Dashboard
     // public function incomeTransition()

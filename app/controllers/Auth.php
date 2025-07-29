@@ -15,7 +15,11 @@ class Auth extends Controller
     //     // Example: redirect to login page
     //     redirect('auth/login');
     // }
-
+    public function index()
+    {
+        // some default behavior
+    }
+    // Login
     public function login()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -26,22 +30,6 @@ class Auth extends Controller
                 $password = base64_encode($password);
 
                 $ischeck = $this->db->loginCheck($email, $password);
-
-                // $name = $ischeck['name'] ?? '';
-
-                // var_dump($email);exit;
-
-                // if($ischeck && $ischeck['role_id'] == Admin){
-                //     $_SESSION['name'] = $ischeck['name'];
-                //     redirect('admin/adminDashboard');
-                // }elseif($ischeck && $ischeck['role_id'] == user){
-                //     $_SESSION['name'] = $ischeck['name'];
-                //     redirect('pages/category');
-                // }
-                // else{
-                //     setMessage('error','Invalid Username & Password');
-                //     redirect('pages/login');
-                // }
 
                 if (!$ischeck) {
                     setMessage('error', 'Invalid email and password');
@@ -73,7 +61,7 @@ class Auth extends Controller
             }
         }
     }
-
+    // Form Register
     public function formRegister()
     {
         if (
@@ -90,6 +78,7 @@ class Auth extends Controller
         }
     }
 
+    //Register
     public function register()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -119,10 +108,8 @@ class Auth extends Controller
                     $user->setRollno($roll);
                     $user->setGender($gender);
                     $user->setYear($year);
-                    $user->setIsConfirmed(0);
                     $user->setIsActive(0);
                     $user->setIsLogin(0);
-                    $user->setToken(0);
                     $user->setDate(date('Y-m-d H:i:s', time()));
                     $user->setPassword($password);
                     $user->setrole_id(2); // Assuming 2 is the role_id for normal users
@@ -176,7 +163,7 @@ class Auth extends Controller
         redirect('');
     }
 
-
+    // Forgot Password
     public function forgotPassword()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -218,8 +205,7 @@ class Auth extends Controller
             }
         }
     }
-
-
+    // Verify OTP
     public function verify_otp()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -232,44 +218,73 @@ class Auth extends Controller
                 redirect('pages/changepassword');
             } else {
                 setMessage('error', 'Invalid OTP');
-                redirect('pages/forgetpassword');
+                redirect('pages/forgotpassword');
             }
         }
     }
+    //Changed Password
+    public function changedPassword()
+    {
+        $user = $_SESSION['session_loginuser'];
+
+        $password = $_POST['password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
+
+        if (!$password || !$confirmPassword) {
+            setMessage('error', 'All fields are required.');
+            redirect('pages/changePassword');
+            return;
+        }
+
+        if ($password !== $confirmPassword) {
+            setMessage('error', 'Passwords do not match.');
+            redirect('pages/changePassword');
+            return;
+        }
+
+        if (strlen($password) < 6) {
+            setMessage('error', 'Password must be at least 6 characters.');
+            redirect('pages/changePassword');
+            return;
+        }
+
+        $updatedPassword = base64_encode($password);
+
+        $this->db->update('users', $user['id'], ['password' => $updatedPassword]);
+
+        setMessage('success', 'Password changed successfully. Please log in again.');
+        redirect('pages/login');
+    }
+    
+    // edit profile
     public function editProfile($id)
     {
         $user = $this->db->getById('users', $id);
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = $_POST['name'];
             $email = $_POST['email'];
-            $year = $_POST['year'];
+            $gender = $_POST['gender'];
             $rollno = $_POST['rollno'];
+            $year = $_POST['year'];
 
-            $updateUser = [
+            $updatedUser = [
                 'name' => $name,
                 'email' => $email,
-                'year' => $year,
-                'rollno' => $rollno
 
             ];
 
-            $updated = $this->db->update('users', $id, $updateUser);
-
-            if ($updated) {
-                setMessage('success', 'User Profile Updated Successfully');
-                redirect('pages/userProfile');
+            $updated = $this->db->update('users', $id, $updatedUser);
+            // var_dump($updated);
+            // die();
+            if (!$updated) {
+                setMessage('error', 'User Updated Failed');
+                redirect('pages/editProfile');
             } else {
-                setMessage('error', 'Failed to update user profile');
+                setMessage('success', 'User Updated Successfully');
+                redirect('pages/userProfile');
             }
         }
-        $data = ['loginuser' => $user];
-        $this->view('auth/editProfile', $data);
     }
-
-
-
-
 
     public function logout()
     {

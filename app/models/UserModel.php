@@ -7,9 +7,10 @@ class UserModel
     private $password;
     //private $profile_image;
     private $is_confirmed;
+    
     private $is_active;
     private $is_login;
-    private $token;
+   
     private $date;
 
     // New fields
@@ -85,14 +86,14 @@ class UserModel
         return $this->is_login;
     }
 
-    public function setToken($token)
-    {
-        $this->token = $token;
-    }
-    public function getToken()
-    {
-        return $this->token;
-    }
+    // public function setToken($token)
+    // {
+    //     $this->token = $token;
+    // }
+    // public function getToken()
+    // {
+    //     return $this->token;
+    // }
 
     public function setDate($date)
     {
@@ -168,11 +169,9 @@ class UserModel
             "name" => $this->getName(),
             "email" => $this->getEmail(),
             "password" => $this->getPassword(),
-            //"profile_image" => $this->getProfileImage(),
-            "is_confirmed" => $this->getIsConfirmed(),
+            'is_confirmed' => $this->getIsConfirmed(),
             "is_active" => $this->getIsActive(),
             "is_login" => $this->getIsLogin(),
-            "token" => $this->getToken(),
             "date" => $this->getDate(),
             "rollno" => $this->getRollno(),
             "gender" => $this->getGender(),
