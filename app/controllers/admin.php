@@ -16,7 +16,7 @@ class Admin extends Controller
     {
         $this->view('admin/adminDashboard');
     }
-    
+
     public function manageMember()
     {
         $members = $this->db->getAllMembers('users');
@@ -75,9 +75,10 @@ class Admin extends Controller
         $data = [
             'loginuser' => $loginuser
         ];
+
         $this->view('admin/editAdminProfile', $data);
     }
-
+    // admin edit profile
     public function editProfile($id)
     {
         $user = $this->db->getById('users', $id);
@@ -101,4 +102,65 @@ class Admin extends Controller
         $data = ['loginuser' => $user];
         $this->view('admin/editAdminProfile', $data);
     }
-}
+    // edit Member List
+    public function editMemberList($id)
+    {
+        $user = $this->db->getById('users', $id);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = $_POST['name'];
+            // var_dump($name);
+            // die();
+            $year = $_POST['year'];
+            $status = $_POST['id'];
+
+            $updateUser = [
+                'name' => $name,
+                'year' => $year,
+                'id' => $status
+
+            ];
+
+            $updated = $this->db->update('users', $id, $updateUser);
+            // var_dump($updated);
+            // die();
+
+            if (!$updated) {
+                setMessage('error', 'Failed to update member list');
+                //redirect('admin/manageMember');
+            } else {
+                setMessage('success', 'Member List updated successfully');
+                redirect('admin/manageMember');
+            }
+        }
+    }
+
+    // Delete Member List
+    public function deleteMemberList($id)
+    {
+        $user = $this->db->getById('users', $id);
+
+            var_dump($user);
+            die();
+            if (!$user) {
+                setMessage('error', 'User not found');
+                redirect('admin/manageMember');
+                return;
+            }
+            if ((strtolower($user['user_status_id']) !== 'active')) {
+                $deleted = $this->db->delete('users', $id);
+                var_dump($deleted);
+                die();
+                if ($deleted) {
+                    setMessage('success', 'Not active member deleted successfully');
+                    redirect('admin/manageMember');
+                } else {
+                    setMessage('error', 'Failed to delete member');
+                }
+            } else {
+                setMessage('error', 'Active members cannot be deleted');
+            }
+            redirect('admin/manageMember');
+        }
+    }
+

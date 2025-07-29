@@ -25,7 +25,7 @@ if (session_status() === PHP_SESSION_NONE) {
         <h2 class="text-3xl font-bold text-gray-800 text-center mt-8 mb-8">Change Password</h2>
         <!-- <p class="text-gray-600 text-center mb-8">Reset Your Password With Email</p> -->
 
-        <form  class="space-y-6" method = "POST" action="<?php echo URLROOT; ?>/auth/login">
+        <form  class="space-y-6" method = "POST" action="<?php echo URLROOT; ?>/auth/changedPassword">
             <?php require APPROOT.'/views/components/auth_message.php'; ?>
              <div>
                 <label for="password" class="sr-only">Password</label>

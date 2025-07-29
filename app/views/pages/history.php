@@ -10,18 +10,48 @@
         object-fit: fill;
         object-position: center;
     }
+
+    .alert.alert-warning {
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+        padding: 10px 20px;
+        border-radius: 5px;
+        color: #856404;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .overdue-row {
+        background-color: #ffe5e5 !important;
+    }
 </style>
 
 <main class="main-content">
     <div class="container">
 
+        <?php
+        $overdueCount = 0;
+        foreach ($data['borrowedBooks'] as $book) {
+            if ($book['status'] === 'overdue') {
+                $overdueCount++;
+            }
+        }
+        ?>
+
+        <?php if ($overdueCount > 0): ?>
+            <div class="alert alert-warning">
+                ⚠️ You have <?= $overdueCount ?> overdue book<?= $overdueCount > 1 ? 's' : '' ?>. Please return or renew them as soon as possible.
+            </div>
+        <?php endif; ?>
+
         <!-- User Summary -->
         <div class="user-summary">
             <div class="summary-card">
-                <div class="summary-item"><span class="summary-number">5</span><span class="summary-label">Currently Borrowed</span></div>
-                <div class="summary-item"><span class="summary-number">23</span><span class="summary-label">Total Borrowed</span></div>
-                <div class="summary-item"><span class="summary-number">18</span><span class="summary-label">Returned</span></div>
-                <div class="summary-item"><span class="summary-number">2</span><span class="summary-label">Overdue</span></div>
+                <div class="summary-item"><span class="summary-number"><?= $data['summary']['currentlyBorrowed'] ?? 0 ?></span><span class="summary-label">Currently Borrowed</span></div>
+                <div class="summary-item"><span class="summary-number"><?= $data['summary']['totalBorrowed'] ?? 0 ?></span><span class="summary-label">Total Borrowed</span></div>
+                <div class="summary-item"><span class="summary-number"><?= $data['summary']['returned'] ?? 0 ?></span><span class="summary-label">Returned</span></div>
+                <div class="summary-item"><span class="summary-number"><?= $data['summary']['overdue'] ?? 0 ?></span><span class="summary-label">Overdue</span></div>
+
             </div>
         </div>
 
@@ -65,7 +95,7 @@
                     </thead>
                     <tbody>
                         <?php foreach ($data['borrowedBooks'] as $book): ?>
-                            <tr>
+                            <tr class="<?= $book['status'] === 'overdue' ? 'overdue-row' : '' ?>">
                                 <td class="book-details">
                                     <div class="book-info">
                                         <img src="/<?= htmlspecialchars($book['image'] ?? 'default.png') ?>" class="book-cover" alt="Book Cover">
@@ -124,7 +154,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         // Search
-        document.getElementById('searchInput').addEventListener('input', function () {
+        document.getElementById('searchInput').addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase();
             const rows = document.querySelectorAll('.history-table tbody tr');
 
@@ -136,7 +166,7 @@
         });
 
         // Filter
-        document.getElementById('statusFilter').addEventListener('change', function () {
+        document.getElementById('statusFilter').addEventListener('change', function() {
             const filterValue = this.value;
             const rows = document.querySelectorAll('.history-table tbody tr');
 
@@ -187,4 +217,5 @@
     });
 </script>
 </body>
+
 </html>

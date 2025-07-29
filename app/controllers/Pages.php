@@ -46,9 +46,9 @@ class Pages extends Controller
         ];
         foreach ($data['literaryBooks'] as &$book) {
             $available = (int)($book['available_quantity'] ?? 0);
-            $total = (int)($book['total_quantity'] ?? 0);
+           // $total = (int)($book['total_quantity'] ?? 0);
 
-            if ($total === 0 && $available === 0) {
+            if ($available === 0) {
                 $book['status_description'] = 'Not Available';
             } else {
                 $book['status_description'] = 'Available';
@@ -65,9 +65,9 @@ class Pages extends Controller
         ];
         foreach ($data['historicalBooks'] as &$book) {
             $available = (int)($book['available_quantity'] ?? 0);
-            $total = (int)($book['total_quantity'] ?? 0);
+            //$total = (int)($book['total_quantity'] ?? 0);
 
-            if ($total === 0 && $available === 0) {
+            if ($available === 0) {
                 $book['status_description'] = 'Not Available';
             } else {
                 $book['status_description'] = 'Available';
@@ -83,9 +83,9 @@ class Pages extends Controller
         ];
         foreach ($data['educationBooks'] as &$book) {
             $available = (int)($book['available_quantity'] ?? 0);
-            $total = (int)($book['total_quantity'] ?? 0);
+            //$total = (int)($book['total_quantity'] ?? 0);
 
-            if ($total === 0 && $available === 0) {
+            if ($available === 0) {
                 $book['status_description'] = 'Not Available';
             } else {
                 $book['status_description'] = 'Available';
@@ -101,9 +101,9 @@ class Pages extends Controller
         ];
         foreach ($data['romanceBooks'] as &$book) {
             $available = (int)($book['available_quantity'] ?? 0);
-            $total = (int)($book['total_quantity'] ?? 0);
+            //$total = (int)($book['total_quantity'] ?? 0);
 
-            if ($total === 0 && $available === 0) {
+            if ($available === 0) {
                 $book['status_description'] = 'Not Available';
             } else {
                 $book['status_description'] = 'Available';
@@ -119,9 +119,9 @@ class Pages extends Controller
         ];
         foreach ($data['horrorBooks'] as &$book) {
             $available = (int)($book['available_quantity'] ?? 0);
-            $total = (int)($book['total_quantity'] ?? 0);
+            //$total = (int)($book['total_quantity'] ?? 0);
 
-            if ($total === 0 && $available === 0) {
+            if ($available === 0) {
                 $book['status_description'] = 'Not Available';
             } else {
                 $book['status_description'] = 'Available';
@@ -137,9 +137,9 @@ class Pages extends Controller
         ];
         foreach ($data['cartoonBooks'] as &$book) {
             $available = (int)($book['available_quantity'] ?? 0);
-            $total = (int)($book['total_quantity'] ?? 0);
+            //$total = (int)($book['total_quantity'] ?? 0);
 
-            if ($total === 0 && $available === 0) {
+            if ($available === 0) {
                 $book['status_description'] = 'Not Available';
             } else {
                 $book['status_description'] = 'Available';
