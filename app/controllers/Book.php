@@ -102,4 +102,36 @@ class Book extends Controller
             // redirect('admin/addnewBook');
         }
     }
+
+    // Edit Book
+    public function editBook($id)
+    {
+        $book = $this->db->getById('books', $id);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $title = $_POST['title'];
+            // var_dump($title);
+            // die();
+            $isbn = $_POST['isbn'];
+            $author = $_POST['author_name'];
+            $total_quantity = $_POST['total_quantity'];
+            //$available_quantity = $_POST['total_'];
+            $status_description = $_POST['status_description'];
+
+            $updateBook = [
+                'total_quantity' => $total_quantity,
+                'available_quantity' => $total_quantity,
+                'status_description' => $status_description
+            ];
+
+            $updated = $this->db->update('books', $id, $updateBook);
+            // var_dump($updated);
+            // die();
+            if (!$updated) {
+                setMessage('error', 'Failed to update books');
+                redirect('admin/manageBook');
+            }
+            setMessage('success', 'Books updated successfully');
+            redirect('admin/manageBook');
+        }
+    }
 }

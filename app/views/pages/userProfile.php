@@ -563,7 +563,7 @@
                         Edit Profile
                     </a>
                     
-                    <a href="<?php echo URLROOT; ?>/pages/changePassword/<?php echo $data['loginuser']['id']; ?>" 
+                    <a href="<?php echo URLROOT; ?>/pages/changeUserPassword/<?php echo $data['loginuser']['id']; ?>" 
                        class="action-btn btn-password">
                         <i class="fas fa-key"></i>
                         <span class="hide-mobile">Change Password</span>

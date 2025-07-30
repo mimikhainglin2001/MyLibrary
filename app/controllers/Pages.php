@@ -4,8 +4,10 @@ class Pages extends Controller
 {
 
     private $db;
+    private $user;
     public function __construct()
     {
+       // $this->user = $_SESSION['session_loginuser'];
         $this->db = new Database();
     }
     public function index()
@@ -174,7 +176,7 @@ class Pages extends Controller
     // }
     public function history()
     {
-        $name = $_SESSION['session_loginuser'];
+        $name = $this->user;
         $isid = $this->db->getBorrowBook('borrow_full_view', $name['name']);
         $data = [
             'borrowedBooks' => $isid
@@ -201,8 +203,8 @@ class Pages extends Controller
         ];
         $this->view('pages/editProfile', $data);
     }
-    public function changeProfilePassword()
+    public function changeUserPassword()
     {
-        $this->view('pages/changeProfilePassword');
+        $this->view('pages/changeUserPassword');
     }
 }

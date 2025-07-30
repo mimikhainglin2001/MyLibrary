@@ -100,33 +100,62 @@
     </div>
 </div>
 
+
 <!-- Edit Modal -->
 <div id="editModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
-    <div class="modal-content">
-        <h3 id="editModalTitle">Edit User</h3>
-        <form id="editForm" method="POST">
-            <input type="hidden" id="editId" name="id">
-            <label>Name: <input type="text" id="editName" name="name" required></label><br>
-            <label>Year: <input type="text" id="editYear" name="year" required></label><br>
-            <label>Status:
-                <select id="editStatus" name="status" required>
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
-                </select>
-            </label><br>
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded mt-2">Save</button>
-            <button type="button" onclick="closeModal('editModal')" class="bg-gray-500 text-white px-4 py-2 rounded mt-2">Cancel</button>
-        </form>
-    </div>
+  <div class="modal-content w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+    <h3 id="editModalTitle" class="text-xl font-semibold mb-4 text-gray-800 flex items-center gap-2">
+      <i class="fas fa-user-edit text-yellow-500"></i> Edit Member
+    </h3>
+    <form id="editForm" method="POST" class="space-y-4">
+      <input type="hidden" id="editId" name="id">
+
+      <div>
+        <label for="editName" class="block text-sm font-medium text-gray-700">Name</label>
+        <input type="text" id="editName" name="name" required
+               class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-yellow-400" />
+      </div>
+
+      <div>
+        <label for="editYear" class="block text-sm font-medium text-gray-700">Year</label>
+        <input type="text" id="editYear" name="year" required
+               class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-yellow-400" />
+      </div>
+
+      <div>
+        <label for="editStatus" class="block text-sm font-medium text-gray-700">Status</label>
+        <select id="editStatus" name="status" required
+                class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-yellow-400">
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+      </div>
+
+      <div class="flex justify-end space-x-3 pt-4">
+        <button type="button" onclick="closeModal('editModal')"
+                class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+          Cancel
+        </button>
+        <button type="submit"
+                class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
+
 
 <!-- Delete Modal -->
 <div id="deleteModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
     <div class="modal-content">
-        <h3 id="deleteModalTitle">Confirm Deletion</h3>
-        <p>Are you sure you want to delete this member?</p>
-        <button id="confirmDelete" class="bg-red-600 text-white px-4 py-2 rounded">Delete</button>
-        <button onclick="closeModal('deleteModal')" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+        <form id="deleteForm" method="POST">
+            <input type="hidden" id="deleteInputId" name="id">
+            <h3 id="deleteModalTitle">Confirm Deletion</h3>
+            <p>Are you sure you want to delete this member?</p>
+            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded">Delete</button>
+            <button type="button" onclick="closeModal('deleteModal')" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+        </form>
     </div>
 </div>
 
@@ -163,8 +192,6 @@
     const editButtons = document.querySelectorAll('.edit-button');
     const deleteButtons = document.querySelectorAll('.delete-button');
 
-    let deleteId = null;
-
     function closeModal(id) {
         document.getElementById(id).classList.add('hidden');
     }
@@ -173,7 +200,7 @@
         document.getElementById(id).classList.remove('hidden');
     }
 
-    // View Button Click
+    // View Modal Logic
     viewButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             document.getElementById('viewId').textContent = btn.dataset.id;
@@ -187,7 +214,7 @@
         });
     });
 
-    // Edit Button Click
+    // Edit Modal Logic
     editButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             document.getElementById('editId').value = btn.dataset.id;
@@ -198,47 +225,17 @@
         });
     });
 
-    // Edit Form Submit — dynamically sets action URL
     document.getElementById('editForm').addEventListener('submit', function (e) {
         const id = document.getElementById('editId').value;
         this.action = "<?php echo URLROOT; ?>/admin/editMemberList/" + id;
     });
 
-    // Delete Button Click — open confirmation modal
-    deleteButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            deleteId = btn.dataset.id;
-            openModal('deleteModal');
-        });
+    // Delete Modal Logic — PHP form submit
+   deleteButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        document.getElementById('deleteForm').action = "<?php echo URLROOT; ?>/admin/deleteMemberList/" + id;
+        openModal('deleteModal');
     });
-
-    // Confirm Delete
- document.getElementById('confirmDelete').addEventListener('click', () => {
-    if (deleteId) {
-        fetch("<?php echo URLROOT; ?>/admin/deleteMemberList/" + deleteId, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ id: deleteId })  // send id in body if needed by backend
-        })
-        .then(async response => {
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(errorText || 'Failed to delete member');
-            }
-            return response.text();
-        })
-        .then(result => {
-            console.log("Deleted:", result);
-            closeModal('deleteModal');
-            location.reload();
-        })
-        .catch(error => {
-            console.error("Delete failed:", error);
-            alert("Failed to delete member: " + error.message);
-        });
-    }
 });
-
 </script>
