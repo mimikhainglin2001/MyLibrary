@@ -11,9 +11,14 @@ class BorrowBook extends Controller
     //Borrow Book
     public function borrow()
     {
-        $user = $_SESSION['session_loginuser'];
-        $bookId = $_GET['id'];
-    
+        $user = $_SESSION['session_loginuser'] ?? null;
+        $bookId = $_GET['id'] ?? null;
+
+        if (!$user || !$bookId) {
+            setMessage('error', 'Invalid user or book');
+            return;
+        }
+
         date_default_timezone_set('Asia/Yangon');
         $now = date('Y-m-d H:i:s');
         $dueDate = date('Y-m-d H:i:s', strtotime('+7 days'));
@@ -23,16 +28,25 @@ class BorrowBook extends Controller
             setMessage('error', 'Book not found');
             return;
         }
+
         if ((int)$book['available_quantity'] <= 0) {
             setMessage('error', 'Book is currently not available');
             return;
         }
-        $alreadyBorrowed = $this->db->raw("SELECT * FROM borrowBook 
-        WHERE user_id = :user_id AND book_id = :book_id AND status = 'borrowed'", [
-            'user_id' => $user['id'],
-            'book_id' => $bookId
-        ]);
 
+        $countBorrows = $this->db->raw(
+            "SELECT COUNT(*) FROM borrowBook WHERE user_id = :user_id AND status = 'borrowed'",
+            ['user_id' => $user['id']]
+        );
+        if($countBorrows['count'] >2 ){
+            setMessage('error', 'You can borrow up to 2 books at a time');
+            redirect('pages/category');
+        }
+
+        $alreadyBorrowed = $this->db->raw(
+            "SELECT 1 FROM borrowBook WHERE user_id = :user_id AND book_id = :book_id AND status = 'borrowed' LIMIT 1",
+            params: ['user_id' => $user['id'], 'book_id' => $bookId]
+        );
 
         if (!empty($alreadyBorrowed)) {
             $_SESSION['modal'] = 'already_borrowed';
@@ -40,20 +54,19 @@ class BorrowBook extends Controller
             return;
         }
 
-        $borrow = new BorrowBookModel();
-        $borrow->setBookID($bookId);
-        $borrow->setUserID($user['id']);
-        $borrow->setBorrowDate($now);
-        $borrow->setDueDate($dueDate);
-        $borrow->setReturnDate(null);
-        $borrow->setRenewDate(null);
-        $borrow->setStatus('borrowed');
+        $borrowData = [
+            'book_id' => $bookId,
+            'user_id' => $user['id'],
+            'borrow_date' => $now,
+            'due_date' => $dueDate,
+            'return_date' => null,
+            'renew_date' => null,
+            'status' => 'borrowed'
+        ];
 
-        $result = $this->db->create('borrowBook', $borrow->toArray());
-
-        if ($result) {
-            $newQty = (int)$book['available_quantity'] - 1;
-            $statusDesc = ($newQty == 0) ? 'Not Available' : 'Available';
+        if ($this->db->create('borrowBook', $borrowData)) {
+            $newQty = max(0, (int)$book['available_quantity'] - 1);
+            $statusDesc = $newQty === 0 ? 'Not Available' : 'Available';
 
             $this->db->update('books', $bookId, [
                 'available_quantity' => $newQty,
@@ -70,44 +83,41 @@ class BorrowBook extends Controller
 
 
 
+
     //Return Book
     public function return()
     {
-        if (!isset($_GET['id'])) {
+        $borrowId = $_GET['id'] ?? null;
+        if (!$borrowId) {
             setMessage('error', 'Invalid request');
             redirect('pages/history');
             return;
         }
 
-        $borrowId = $_GET['id'];
         $borrowRecord = $this->db->getById('borrowBook', $borrowId);
-
         if (!$borrowRecord) {
             setMessage('error', 'Borrow record not found');
             redirect('pages/history');
             return;
         }
 
-        $bookId = $borrowRecord['book_id'];
         $returnDate = date('Y-m-d H:i:s');
 
-        // Update borrowBook status
         $updated = $this->db->update('borrowBook', $borrowId, [
             'return_date' => $returnDate,
             'status' => 'returned'
         ]);
 
         if ($updated) {
-            $book = $this->db->getById('books', $bookId);
+            $book = $this->db->getById('books', $borrowRecord['book_id']);
             if ($book) {
-                $newAvailable = $book['available_quantity'] + 1;
-                $statusDesc = ($newAvailable == 0) ? 'Not Available' : 'Available';
-                $dataUpdate = [
+                $newAvailable = (int)$book['available_quantity'] + 1;
+                $statusDesc = $newAvailable === 0 ? 'Not Available' : 'Available';
+
+                $this->db->update('books', $borrowRecord['book_id'], [
                     'available_quantity' => $newAvailable,
                     'status_description' => $statusDesc
-                ];
-
-                $this->db->update('books', $bookId, $dataUpdate);
+                ]);
             }
 
             setMessage('success', 'Book returned successfully');
@@ -117,6 +127,7 @@ class BorrowBook extends Controller
 
         redirect('pages/history');
     }
+
 
     // // Check Overdue
     // public function checkOverdue()
@@ -176,44 +187,38 @@ class BorrowBook extends Controller
     //Renew Book
     public function renew()
     {
-        $borrowId = $_GET['id'];
-
-        $borrowRecord = $this->db->getById('borrowBook', $borrowId);
-        if (!$borrowRecord || !isset($borrowRecord['due_date'])) {
-            setMessage('error', 'Due Date not found');
+        $borrowId = $_GET['id'] ?? null;
+        if (!$borrowId) {
+            setMessage('error', 'Invalid request');
             redirect('pages/history');
-            exit;
+            return;
         }
 
-        // Calculate the renew date
-        $originalDate = !empty($borrowRecord['renew_date']) ? $borrowRecord['renew_date'] : $borrowRecord['due_date'];
+        $borrowRecord = $this->db->getById('borrowBook', $borrowId);
+        if (!$borrowRecord || empty($borrowRecord['due_date'])) {
+            setMessage('error', 'Due Date not found');
+            redirect('pages/history');
+            return;
+        }
 
-        // Calculate new renew_date: 7 days after the original date
-        $renewDate = date('Y-m-d H:i:s', strtotime("$originalDate +7 days"));
-
-        $status = 'renewed';
-        $renewCount = isset($borrowRecord['renew_count']) ? (int)$borrowRecord['renew_count'] + 1 : 1;
+        $originalDate = $borrowRecord['renew_date'] ?? $borrowRecord['due_date'];
+        $renewCount = (int)($borrowRecord['renew_count'] ?? 0) + 1;
 
         if ($renewCount > 3) {
             setMessage('error', 'Maximum number of renewals reached');
             redirect('pages/history');
-            exit;
+            return;
         }
 
         $updateData = [
-            'renew_date' => $renewDate,
+            'renew_date'  => date('Y-m-d H:i:s', strtotime("$originalDate +7 days")),
             'renew_count' => $renewCount,
-            'status' => $status
+            'status'      => 'renewed',
         ];
 
         $updated = $this->db->update('borrowBook', $borrowId, $updateData);
-        if ($updated) {
-            setMessage('success', 'Book renewed successfully');
-        } else {
-            setMessage('error', 'Failed to renew book');
-        }
 
+        setMessage($updated ? 'success' : 'error', $updated ? 'Book renewed successfully' : 'Failed to renew book');
         redirect('pages/history');
-        exit;
     }
 }

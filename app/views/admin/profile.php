@@ -118,7 +118,7 @@
                         <span>Edit Profile</span>
                     </a>
 
-                    <a href="<?php echo URLROOT; ?>/pages/changePassword/"
+                    <a href="<?php echo URLROOT; ?>/admin/changeAdminPassword/"
                         class="flex-1 sm:flex-none bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center">
                         <i class="fas fa-key mr-2"></i>
                         <span>Change Password</span>

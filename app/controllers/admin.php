@@ -139,28 +139,57 @@ class Admin extends Controller
     public function deleteMemberList($id)
     {
         $user = $this->db->getById('users', $id);
-
-            var_dump($user);
-            die();
-            if (!$user) {
-                setMessage('error', 'User not found');
-                redirect('admin/manageMember');
-                return;
-            }
-            if ((strtolower($user['user_status_id']) !== 'active')) {
-                $deleted = $this->db->delete('users', $id);
-                var_dump($deleted);
-                die();
-                if ($deleted) {
-                    setMessage('success', 'Not active member deleted successfully');
-                    redirect('admin/manageMember');
-                } else {
-                    setMessage('error', 'Failed to delete member');
-                }
-            } else {
-                setMessage('error', 'Active members cannot be deleted');
-            }
+        // var_dump($id);exit;
+        if (!$user) {
+            setMessage('error', 'User not found');
             redirect('admin/manageMember');
+            return;
         }
+
+        $deleted = $this->db->delete('users', $id);
+
+        if ($deleted) {
+            setMessage('success', 'Member deleted successfully');
+        } else {
+            setMessage('error', 'Failed to delete member');
+        }
+
+        redirect('admin/manageMember');
     }
 
+    // Changed Admin Password in admin profile
+    public function changeAdminPassword(){
+        $this->view('admin/changeAdminPassword');
+    }
+
+    public function changePassword(){
+        $user = $_SESSION['session_loginuser'];
+        // var_dump($user);
+
+        $currentPassword = $_POST['currentPassword'];
+        $newPassword = $_POST['newPassword'];
+        $confirmPassword = $_POST['confirmPassword'];
+
+        if(!$currentPassword || !$newPassword || !$confirmPassword){
+            setMessage('error', 'All fields are required');
+            redirect('admin/changeAdminPassword');
+            return;
+        }
+
+        if($newPassword !== $confirmPassword){
+            setMessage('error', 'Passwords must be match');
+            //redirect('admin/changeAdminPassword');
+        }
+
+        if(strlen($newPassword < 6)){
+            setMessage('error', 'Password length must be more than 6');
+            //redirect('admin/changeAdminPassword');
+        }
+
+        $updatedPassword = base64_encode($newPassword);
+        $updated = $this->db->update('users', $user['id'], ['password' => $updatedPassword]);
+        setMessage('success', 'Password changed successfully');
+        redirect('admin/profile/');
+
+    }
+}

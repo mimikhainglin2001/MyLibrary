@@ -6,6 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,6 +20,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <!-- Custom CSS for OTP page -->
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/librarycss/otp.css">
 </head>
+
 <body class="otp-page-body">
     <div class="container">
         <div class="otp-card">
@@ -28,22 +30,36 @@ if (session_status() === PHP_SESSION_NONE) {
             <h2 class="text-3xl font-bold text-gray-800 text-center mt-8 mb-8">Enter OTP!</h2>
             <p class="text-gray-600 text-center mb-8">An OTP has been sent to <?php echo  $_SESSION['post_email'] ?></p>
 
+            <!-- OTP input form -->
             <form method="post" action="/auth/verify_otp">
                 <div class="otp-inputs">
                     <input type="text" maxlength="1" class="otp-input" name="otp[]" id="otp1" required>
-                    <input type="text" maxlength="1" class="otp-input"name="otp[]" id="otp2" required>
+                    <input type="text" maxlength="1" class="otp-input" name="otp[]" id="otp2" required>
                     <input type="text" maxlength="1" class="otp-input" name="otp[]" id="otp3" required>
                     <input type="text" maxlength="1" class="otp-input" name="otp[]" id="otp4" required>
                     <input type="text" maxlength="1" class="otp-input" name="otp[]" id="otp5" required>
                     <input type="text" maxlength="1" class="otp-input" name="otp[]" id="otp6" required>
                 </div>
 
-                 <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-full shadow-lg transition duration-300 ease-in-out transform">
-                Submit
-            </button>
+                <button type="submit"
+                    class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-full shadow-lg transition duration-300 ease-in-out transform">
+                    Submit
+                </button>
+            </form>
+
+            <!-- Separate form for Resend -->
+            <form method="post" action="<?php echo URLROOT; ?>/auth/resendOtp" style="margin-top: 1rem;">
+                <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-full shadow-lg transition duration-300 ease-in-out transform">
+                    Resend OTP
+                </button>
+            </form>
+
+
             </form>
         </div>
     </div>
+
 
     <script>
         // JavaScript for auto-tabbing and input validation in OTP fields
@@ -67,4 +83,5 @@ if (session_status() === PHP_SESSION_NONE) {
         });
     </script>
 </body>
+
 </html>

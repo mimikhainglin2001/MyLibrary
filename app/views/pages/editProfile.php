@@ -37,6 +37,13 @@
                 style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px;">
         </div>
 
+         <div style="text-align: center; margin-top: 10px;">
+            <button type="cancel" class="<?php echo URLROOT;?>/pages/userProfile/"
+                style="background-color: #3b82f6; color: white; padding: 10px 20px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer;">
+                Cancel
+            </button>
+        </div>
+
         <div style="text-align: center; margin-top: 10px;">
             <button type="submit"
                 style="background-color: #3b82f6; color: white; padding: 10px 20px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer;">

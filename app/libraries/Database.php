@@ -88,7 +88,7 @@ class Database
                 return false;
             }
 
-            echo "Insert successful. Last Insert ID: " . $this->pdo->lastInsertId() . "<br>";
+            //echo "Insert successful. Last Insert ID: " . $this->pdo->lastInsertId() . "<br>";
             return $this->pdo->lastInsertId();
         } catch (PDOException $e) {
             echo "PDOException: " . $e->getMessage();

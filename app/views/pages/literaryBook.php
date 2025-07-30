@@ -18,57 +18,34 @@
     <?php unset($_SESSION['modal']); ?>
 <?php endif; ?>
 
-
 <style>
-    .book-item {
-        border-radius: 0;
-    }
-
-    .book-cover {
-        border-radius: 0;
-    }
-
-    .borrow-btn {
-        border-radius: 5px;
-    }
-
+    .book-item { border-radius: 0; }
+    .book-cover { border-radius: 0; }
+    .borrow-btn { border-radius: 5px; }
     .modal-overlay {
         display: none;
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5);
+        justify-content: center; align-items: center;
         z-index: 9999;
     }
-
     .modal {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
+        background: white; padding: 20px; border-radius: 8px;
         text-align: center;
     }
-
     .modal-buttons button {
-        margin-top: 10px;
-        padding: 8px 20px;
-        cursor: pointer;
+        margin-top: 10px; padding: 8px 20px; cursor: pointer;
     }
-
-    .modal.show {
-        display: flex !important;
-    }
+    .modal.show { display: flex !important; }
 </style>
 
 <main class="main-content">
     <section class="hero-section">
         <div class="hero-image">
-            <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Library books">
+            <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Library books">
         </div>
-
         <div class="search-section">
             <h1>Find The Book You Love</h1>
             <div class="search-container">
@@ -119,6 +96,7 @@
     </section>
 </main>
 
+<!-- Confirm Borrow Modal -->
 <div id="confirmationModal" class="modal-overlay">
     <div class="modal">
         <h3>Confirm Borrowing</h3>
@@ -130,11 +108,13 @@
     </div>
 </div>
 
+<!-- Not Available Modal with Reserve button -->
 <div id="notAvailableModal" class="modal-overlay">
     <div class="modal">
         <h3>Not Available</h3>
         <p>This book is currently not available for borrowing.</p>
         <div class="modal-buttons">
+            <button id="reserveBtn" class="reserve-btn">Reserve</button>
             <button class="cancel-btn" onclick="hideNotAvailableModal()">Close</button>
         </div>
     </div>
@@ -148,6 +128,7 @@
         const confirmationMessage = document.getElementById('confirmationMessage');
         const confirmBtn = document.getElementById('confirmBtn');
         const cancelBtn = document.getElementById('cancelBtn');
+        const reserveBtn = document.getElementById('reserveBtn');
 
         let currentBookId = '';
 
@@ -159,10 +140,11 @@
                 const author = this.dataset.author;
                 const id = this.dataset.id;
 
+                currentBookId = id;
+
                 if (available <= 0 || total <= 0) {
                     showNotAvailableModal();
                 } else {
-                    currentBookId = id;
                     confirmationMessage.textContent = `Are you sure you want to borrow "${title}" by ${author}?`;
                     showConfirmationModal();
                 }
@@ -176,6 +158,27 @@
         });
 
         cancelBtn.addEventListener('click', hideConfirmationModal);
+
+        reserveBtn.addEventListener('click', function () {
+            if (!currentBookId) return;
+
+            fetch(`/reserveBook/reserve`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ bookId: currentBookId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message || 'Reservation request processed.');
+                hideNotAvailableModal();
+            })
+            .catch(err => {
+                alert('Failed to reserve book.');
+                hideNotAvailableModal();
+            });
+        });
 
         function showConfirmationModal() {
             confirmModal.style.display = 'flex';

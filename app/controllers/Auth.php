@@ -218,15 +218,41 @@ class Auth extends Controller
                 redirect('pages/changepassword');
             } else {
                 setMessage('error', 'Invalid OTP');
-                redirect('pages/forgotpassword');
+                redirect('pages/otp');
             }
         }
     }
+
+    public function resendOtp()
+    {
+        if (!isset($_SESSION['post_email'])) {
+            setMessage('error', 'Session expired. Please login again.');
+            redirect('auth/login');
+            return;
+        }
+
+        $newOtp = rand(100000, 999999);
+        $_SESSION['otp'] = $newOtp;
+
+        $userEmail = $_SESSION['post_email'];
+
+        if (mail($userEmail, "Your OTP Code", "Your OTP is: $newOtp")) {
+            setMessage('success', 'A new OTP has been sent to your email.');
+        } else {
+            setMessage('error', 'Failed to send OTP. Please try again.');
+        }
+
+        redirect('pages/otp');
+    }
+
+
+
     //Changed Password
     public function changedPassword()
     {
-        $user = $_SESSION['session_loginuser'];
-
+        $user = $_SESSION['post_email'];
+        // var_dump($user);
+        // die();
         $password = $_POST['password'] ?? '';
         $confirmPassword = $_POST['confirm_password'] ?? '';
 
@@ -249,13 +275,20 @@ class Auth extends Controller
         }
 
         $updatedPassword = base64_encode($password);
+        // echo $user['id'];
+        // die();
+        $update = $this->db->columnFilter('users', 'email', $user);
+        // var_dump($update);
+        // die();
 
-        $this->db->update('users', $user['id'], ['password' => $updatedPassword]);
+        $this->db->update('users', $update['id'], ['password' => $updatedPassword]);
+        // var_dump($updatedPassword);
+        // die();
 
         setMessage('success', 'Password changed successfully. Please log in again.');
         redirect('pages/login');
     }
-    
+
     // edit profile
     public function editProfile($id)
     {
@@ -284,6 +317,37 @@ class Auth extends Controller
                 redirect('pages/userProfile');
             }
         }
+    }
+
+    public function changeUserPassword()
+    {
+        $user = $_SESSION['session_loginuser'];
+        // var_dump($user);
+
+        $currentPassword = $_POST['currentPassword'];
+        $newPassword = $_POST['newPassword'];
+        $confirmPassword = $_POST['confirmPassword'];
+
+        if (!$currentPassword || !$newPassword || !$confirmPassword) {
+            setMessage('error', 'All fields are required');
+            redirect('pages/userProfile');
+            return;
+        }
+
+        if ($newPassword !== $confirmPassword) {
+            setMessage('error', 'Passwords must be match');
+            //redirect('pages/changeUserPassword');
+        }
+
+        if (strlen($newPassword < 6)) {
+            setMessage('error', 'Password length must be more than 6');
+            //redirect('pages/changeUserPassword');
+        }
+
+        $updatedPassword = base64_encode($newPassword);
+        $updated = $this->db->update('users', $user['id'], ['password' => $updatedPassword]);
+        setMessage('success', 'Password changed successfully');
+        redirect('pages/userProfile');
     }
 
     public function logout()
