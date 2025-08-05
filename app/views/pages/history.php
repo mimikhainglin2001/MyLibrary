@@ -1,110 +1,133 @@
 <?php require_once APPROOT . '/views/inc/header.php'; ?>
-<link rel="stylesheet" href="/librarycss/history.css?v=2">
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="/librarycss/history.css?v=2">
+</head>
 <style>
-    .modal {
-        position: fixed;
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        transition: opacity 0.3s ease;
-    }
-
-    .modal.show {
-        display: flex;
-    }
-
-    .modal-dialog {
-        background: white;
-        padding: 20px;
-        width: 90%;
-        max-width: 400px;
-        border-radius: 8px;
-        /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); */
-        animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-        from {
-            transform: translateY(20px);
-            opacity: 0;
-        }
-
-        to {
-            transform: translateY(0);
-            opacity: 1;
-        }
-    }
-
-    .modal-header,
-    .modal-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .modal-title {
-        font-weight: bold;
-    }
-
-    .modal-body {
-        margin: 15px 0;
-    }
-
-    .close {
-        background: none;
+    .action-btn {
+        display: inline-block;
+        padding: 8px 14px;
+        margin: 2px;
+        font-size: 14px;
+        font-weight: 500;
         border: none;
-        font-size: 22px;
+        border-radius: 6px;
         cursor: pointer;
+        transition: background-color 0.25s ease, box-shadow 0.25s ease;
+        text-align: center;
+        text-decoration: none;
+        color: #fff;
     }
 
-    .confirm-btn {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 5px;
+    .action-btn.renew {
+        background-color: #17a2b8;
     }
 
-    .cancel-btn {
+    .action-btn.return {
+        background-color: yellowgreen;
+        color: black;
+    }
+
+    .action-btn:hover {
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+        opacity: 0.9;
+    }
+
+    .action-btn.disabled {
         background-color: #ccc;
-        color: #333;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 5px;
+        color: #777;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    /* Styles for the status badges */
+    .status {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        color: #fff; /* Default text color for statuses */
+    }
+
+    .status.borrowed {
+        background-color: lightblue; /* Blue for borrowed */
+    }
+
+    .status.returned {
+        background-color: oldlace; /* Green for returned */
+    }
+
+    .status.overdue {
+        background-color: #dc3545; /* Red for overdue */
+    }
+
+    .status.reserved {
+        background-color: yellow; /* Orange/Yellow for reserved, or choose another color */
+        color: #333; /* Adjust text color for better contrast if needed */
     }
 </style>
 
+<body>
 <main class="main-content">
+      <span>    <?php require APPROOT.'/views/components/auth_message.php'; ?>
+</span>
     <div class="container">
+
         <?php
         $overdueCount = 0;
-        foreach ($data['borrowedBooks'] as $book) {
-            if ($book['status'] === 'overdue') {
-                $overdueCount++;
-            }
+        $currentlyBorrowed = 0;
+        $totalBorrowed = 0;
+        $returned = 0;
+        $reservedCount = 0; // Initialize reserved count
+
+        foreach($data['borrowedBooks'] as $book){
+            if($book['status'] === 'overdue') $overdueCount++;
+            if($book['status'] === 'borrowed') $currentlyBorrowed++;
+            if($book['status'] === 'returned') $returned++;
+            if(in_array($book['status'], ['borrowed' , 'returned', 'overdue'])) $totalBorrowed++;
+        }
+
+        // Count reserved books
+        foreach($data['reservedBooks'] as $book){
+            $reservedCount++;
         }
         ?>
-
         <?php if ($overdueCount > 0): ?>
             <div class="alert alert-warning">
-                ⚠️ You have <?= $overdueCount ?> overdue book<?= $overdueCount > 1 ? 's' : '' ?>. Please return or renew them as soon as possible.
+                ⚠️ You have <?= $overdueCount ?> overdue book<?= $overdueCount > 1 ? 's' : '' ?>.
             </div>
         <?php endif; ?>
 
         <div class="user-summary">
             <div class="summary-card">
-                <div class="summary-item"><span class="summary-number"><?= $data['summary']['currentlyBorrowed'] ?? 0 ?></span><span class="summary-label">Currently Borrowed</span></div>
-                <div class="summary-item"><span class="summary-number"><?= $data['summary']['totalBorrowed'] ?? 0 ?></span><span class="summary-label">Total Borrowed</span></div>
-                <div class="summary-item"><span class="summary-number"><?= $data['summary']['returned'] ?? 0 ?></span><span class="summary-label">Returned</span></div>
-                <div class="summary-item"><span class="summary-number"><?= $data['summary']['overdue'] ?? 0 ?></span><span class="summary-label">Overdue</span></div>
+                <div class="summary-item">
+                    <span class="summary-number"><?= $currentlyBorrowed ?></span>
+                    <span class="summary-label">Currently Borrowed</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-number"><?= $totalBorrowed ?></span>
+                    <span class="summary-label">Total Borrowed</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-number"><?= $returned ?></span>
+                    <span class="summary-label">Returned</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-number"><?= $overdueCount ?></span>
+                    <span class="summary-label">Overdue</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-number"><?= $reservedCount ?></span>
+                    <span class="summary-label">Reserved</span>
+                </div>
             </div>
         </div>
 
         <div class="filter-section">
             <div class="search-box">
-                <input type="text" placeholder="Search by book title or author..." id="searchInput">
-                <button class="search-btn">🔍</button>
+                <input type="text" placeholder="Search..." id="searchInput">
             </div>
             <div class="filter-options">
                 <select id="statusFilter">
@@ -112,12 +135,7 @@
                     <option value="borrowed">Currently Borrowed</option>
                     <option value="returned">Returned</option>
                     <option value="overdue">Overdue</option>
-                </select>
-                <select id="sortBy">
-                    <option value="recent">Most Recent</option>
-                    <option value="oldest">Oldest First</option>
-                    <option value="title">Book Title</option>
-                    <option value="author">Author</option>
+                    <option value="reserved">Reserved</option>
                 </select>
             </div>
         </div>
@@ -126,155 +144,110 @@
             <div class="table-container">
                 <table class="history-table">
                     <thead>
-                        <tr>
-                            <th>Book Details</th>
-                            <th>Borrow Date</th>
-                            <th>Due Date</th>
-                            <th>Return Date</th>
-                            <th>Renew Date</th>
-                            <th>Renew Count</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
+                    <tr>
+                        <th>Book</th>
+                        <th>Borrow Date</th>
+                        <th>Due Date</th>
+                        <th>Return Date</th>
+                        <th>Renew Date</th>
+                        <th>Renew Count</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($data['borrowedBooks'] as $book): ?>
-                            <tr class="<?= $book['status'] === 'overdue' ? 'overdue-row' : '' ?>">
-                                <td class="book-details">
-                                    <div class="book-info">
-                                        <img src="/<?= htmlspecialchars($book['image'] ?? 'default.png') ?>" class="book-cover" alt="Book Cover">
-                                        <div class="book-text">
-                                            <h4><?= htmlspecialchars($book['title'] ?? 'Unknown') ?></h4>
-                                            <span class="book-id"><?= htmlspecialchars($book['isbn'] ?? '-') ?></span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td><?= htmlspecialchars($book['borrow_date'] ?? '-') ?></td>
-                                <td><?= htmlspecialchars($book['due_date'] ?? '-') ?></td>
-                                <td><?= htmlspecialchars($book['return_date'] ?? '-') ?></td>
-                                <td><?= htmlspecialchars($book['renew_date'] ?? '-') ?></td>
-                                <td><?= htmlspecialchars($book['renew_count'] ?? '0') ?></td>
-                                <td>
-                                    <span class="status <?= htmlspecialchars($book['status'] ?? 'borrowed') ?>">
-                                        <?= htmlspecialchars(ucfirst($book['status'] ?? 'Borrowed')) ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <?php if (($book['status'] ?? '') !== 'returned'): ?>
-                                        <button class="action-btn renew"
-                                            data-borrow-id="<?= htmlspecialchars($book['id']) ?>"
-                                            data-book-id="<?= htmlspecialchars($book['book_id']) ?>"
-                                            data-book-title="<?= htmlspecialchars($book['title']) ?>">
-                                            Renew
-                                        </button>
-                                        <button class="action-btn return"
-                                            data-borrow-id="<?= htmlspecialchars($book['id']) ?>"
-                                            data-book-id="<?= htmlspecialchars($book['book_id']) ?>"
-                                            data-book-title="<?= htmlspecialchars($book['title']) ?>">
-                                            Return
-                                        </button>
-                                    <?php else: ?>
-                                        <span class="action-btn disabled">Returned</span>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
+                    <?php foreach ($data['borrowedBooks'] as $book): ?>
+                        <tr class="<?= $book['status'] === 'overdue' ? 'overdue-row' : '' ?>">
+                            <td>
+                                <img src="/<?= ltrim($book['image'] ?? 'images/default.png', '/') ?>" width="70">
+                                <div>
+                                    <strong><?= htmlspecialchars($book['title']) ?></strong><br>
+                                    ISBN: <?= htmlspecialchars($book['isbn']) ?>
+                                </div>
+                            </td>
+                            <td><?= htmlspecialchars($book['borrow_date']) ?></td>
+                            <td><?= htmlspecialchars($book['due_date']) ?></td>
+                            <td><?= htmlspecialchars($book['return_date'] ?? '-') ?></td>
+                            <td><?= htmlspecialchars($book['renew_date'] ?? '-') ?></td>
+                            <td><?= htmlspecialchars($book['renew_count'] ?? '0') ?></td>
+                            <td><span class="status <?= $book['status'] ?>"><?= ucfirst($book['status']) ?></span></td>
+                            <td>
+                                <?php if ($book['status'] !== 'returned'): ?>
+                                    <button class="action-btn renew">
+                                        <a href="/borrowBook/renew?id=<?= $book['id'] ?>&book_id=<?= $book['book_id'] ?>" style="text-decoration: none; color: inherit;">Renew</a>
+                                    </button>
+                                    <button class="action-btn return">
+                                        <a href="/borrowBook/return?id=<?= $book['id'] ?>&book_id=<?= $book['book_id'] ?>" style="text-decoration: none; color: inherit;">Return</a>
+                                    </button>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+
+                    <?php foreach ($data['reservedBooks'] as $book): ?>
+                        <tr>
+                            <td>
+                                <img src="/<?= ltrim($book['book_image'] ?? 'images/default.png', '/') ?>" width="70">
+                                <div>
+                                    <strong><?= htmlspecialchars($book['book_title']) ?></strong><br>
+                                    ISBN: <?= htmlspecialchars($book['book_isbn']) ?>
+                                </div>
+                            </td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td><span class="status reserved">Reserved</span></td>
+                            <td>
+                                <button class="action-btn return">
+                                    <a href="/BorrowBook/cancel?id=<?= $book['id'] ?>" style="text-decoration: none; color: inherit;">Cancel Reservation</a>
+                                </button>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
-
-            <div class="navigation">
-                <a href="<?php echo URLROOT; ?>/pages/category" class="back-btn">← Back</a>
-            </div>
         </div>
+
+        <div class="navigation">
+            <a href="<?= URLROOT ?>/pages/category" class="back-btn">&larr; Back</a>
+        </div>
+
     </div>
 </main>
 
-<!-- Modal -->
-<div class="modal" id="confirmModal">
-    <div class="modal-dialog">
-        <div class="modal-header">
-            <span class="modal-title" id="confirmModalTitle">Confirm</span>
-            <button class="close" onclick="closeModal()">&times;</button>
-        </div>
-        <div class="modal-body" id="confirmModalBody">
-            Are you sure?
-        </div>
-        <div class="modal-footer">
-            <button class="cancel-btn" onclick="closeModal()">Cancel</button>
-            <button class="confirm-btn" id="confirmYesBtn">Yes</button>
-        </div>
-    </div>
-</div>
-
 <script>
-    function openModal(title, message, onConfirm) {
-        const modal = document.getElementById('confirmModal');
-        modal.style.display = 'flex';
-        requestAnimationFrame(() => modal.classList.add('show'));
-        document.getElementById('confirmModalTitle').textContent = title;
-        document.getElementById('confirmModalBody').textContent = message;
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
 
-        const yesBtn = document.getElementById('confirmYesBtn');
-        const newYesBtn = yesBtn.cloneNode(true); // Reset listeners
-        yesBtn.parentNode.replaceChild(newYesBtn, yesBtn);
+    let debounceTimeout;
 
-        newYesBtn.addEventListener('click', () => {
-            onConfirm();
-            closeModal();
+    function filterRows() {
+        const searchValue = searchInput.value.toLowerCase();
+        const statusValue = statusFilter.value;
+
+        document.querySelectorAll('.history-table tbody tr').forEach(row => {
+            const title = row.querySelector('td div strong')?.textContent.toLowerCase() || '';
+            const statusSpan = row.querySelector('.status');
+            const status = statusSpan ? statusSpan.textContent.toLowerCase() : '';
+
+            const matchesSearch = title.includes(searchValue);
+            const matchesStatus = (statusValue === 'all') || (status === statusValue);
+
+            row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
         });
     }
 
-    function closeModal() {
-        const modal = document.getElementById('confirmModal');
-        modal.classList.remove('show');
-        setTimeout(() => {
-            modal.style.display = 'none';
-        }, 200);
+    function debounceFilter() {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(filterRows, 300); // 300ms delay
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        // Search
-        document.getElementById('searchInput').addEventListener('input', function () {
-            const searchTerm = this.value.toLowerCase();
-            document.querySelectorAll('.history-table tbody tr').forEach(row => {
-                const title = row.querySelector('.book-text h4').textContent.toLowerCase();
-                row.style.display = title.includes(searchTerm) ? '' : 'none';
-            });
-        });
-
-        // Filter
-        document.getElementById('statusFilter').addEventListener('change', function () {
-            const filter = this.value;
-            document.querySelectorAll('.history-table tbody tr').forEach(row => {
-                const status = row.querySelector('.status').textContent.toLowerCase();
-                row.style.display = (filter === 'all' || status.includes(filter)) ? '' : 'none';
-            });
-        });
-
-        // Renew/Return
-        document.querySelectorAll('.action-btn.return').forEach(button => {
-            button.addEventListener('click', () => {
-                const bookTitle = button.dataset.bookTitle;
-                const borrowId = button.dataset.borrowId;
-                const bookId = button.dataset.bookId;
-                openModal(`Return "${bookTitle}"?`, `Confirm return of "${bookTitle}"?`, () => {
-                    window.location.href = `/borrowBook/return?id=${borrowId}&book_id=${bookId}`;
-                });
-            });
-        });
-
-        document.querySelectorAll('.action-btn.renew').forEach(button => {
-            button.addEventListener('click', () => {
-                const bookTitle = button.dataset.bookTitle;
-                const borrowId = button.dataset.borrowId;
-                const bookId = button.dataset.bookId;
-                openModal(`Renew "${bookTitle}"?`, `Confirm renewal of "${bookTitle}"?`, () => {
-                    window.location.href = `/borrowBook/renew?id=${borrowId}&book_id=${bookId}`;
-                });
-            });
-        });
-    });
+    searchInput.addEventListener('input', debounceFilter);
+    statusFilter.addEventListener('change', filterRows);
 </script>
+
 </body>
 </html>

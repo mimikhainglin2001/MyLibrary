@@ -16,10 +16,24 @@ class Admin extends Controller
     {
         $this->view('admin/adminDashboard');
     }
+    public function adminregister()
+    {
+        $this->view('admin/adminregister');
+    }
+
+   public function adminlist()
+{
+    $admins = $this->db->getAllAdmins('users',1);
+    $data = [
+        'admins' => $admins
+    ];
+    $this->view('admin/adminlist', $data);
+}
+
 
     public function manageMember()
     {
-        $members = $this->db->getAllMembers('users');
+        $members = $this->db->getAllMembers('users',2);
         $data = [
             'members' => $members
         ];
@@ -55,7 +69,11 @@ class Admin extends Controller
     }
     public function reservation()
     {
-        $this->view('admin/reservation');
+        $reservedBookList = $this->db->getReservedBookList('reservation_view');
+        $data = [
+            'reservedBookList' => $reservedBookList
+        ];
+        $this->view('admin/reservation',$data);
     }
     public function profile()
     {
@@ -191,5 +209,59 @@ class Admin extends Controller
         setMessage('success', 'Password changed successfully');
         redirect('admin/profile/');
 
+    }
+    // Edit Admin List
+    public function editadminlist($id)
+    {
+        $user = $this->db->getById('users', $id);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = $_POST['name'];
+            // var_dump($name);
+            // die();
+            $department = $_POST['department'];
+            $status = $_POST['id'];
+
+            $updateUser = [
+                'name' => $name,
+                'department' => $department,
+                'id' => $status
+
+            ];
+
+            $updated = $this->db->update('users', $id, $updateUser);
+            // var_dump($updated);
+            // die();
+
+            if (!$updated) {
+                setMessage('error', 'Failed to update member list');
+                //redirect('admin/adminlist');
+            } else {
+                setMessage('success', 'Member List updated successfully');
+                redirect('admin/adminlist');
+            }
+        }
+    }
+
+    // Delete Admin List
+    public function deleteadminlist($id)
+    {
+        $user = $this->db->getById('users', $id);
+        // var_dump($id);exit;
+        if (!$user) {
+            setMessage('error', 'User not found');
+            redirect('admin/adminlist');
+            return;
+        }
+
+        $deleted = $this->db->delete('users', $id);
+
+        if ($deleted) {
+            setMessage('success', 'Member deleted successfully');
+        } else {
+            setMessage('error', 'Failed to delete member');
+        }
+
+        redirect('admin/adminlist');
     }
 }
