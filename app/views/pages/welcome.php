@@ -6,6 +6,24 @@
     <title>Welcome to Central Library</title>
     <link rel="stylesheet" href="<?php echo URLROOT;?>/librarycss/welcome.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .book-1 {
+    background-image: url('/images/book1.avif');
+    background-size: cover;
+    background-position: center;
+}
+.book-2 {
+    background-image: url('/images/book2.avif');
+    background-size: cover;
+    background-position: center;
+}
+.book-3 {
+    background-image: url('/images/book3.avif');
+    background-size: cover;
+    background-position: center;
+}
+
+    </style>
 </head>
 <body>
     <main>
@@ -23,7 +41,8 @@
             </div>
             <div class="hero-visual">
                 <div class="book-stack">
-                    <div class="book book-1"></div>
+                    <div class="book book-1" >
+                    </div>
                     <div class="book book-2"></div>
                     <div class="book book-3"></div>
                 </div>
@@ -69,62 +88,6 @@
             </div>
         </section>
 
-        <!-- Quick Info Section -->
-        <section class="quick-info">
-            <div class="container">
-                <div class="info-grid">
-                    <div class="info-card">
-                        <h3>Library Hours</h3>
-                        <div class="hours-list">
-                            <div class="hours-item">
-                                <span>Monday - Thursday</span>
-                                <span>9:00 AM - 9:00 PM</span>
-                            </div>
-                            <div class="hours-item">
-                                <span>Friday - Saturday</span>
-                                <span>9:00 AM - 6:00 PM</span>
-                            </div>
-                            <div class="hours-item">
-                                <span>Sunday</span>
-                                <span>12:00 PM - 5:00 PM</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="info-card">
-                        <h3>Getting Started</h3>
-                        <ul class="getting-started-list">
-                            <li>Visit us with a valid ID</li>
-                            <li>Fill out the registration form</li>
-                            <li>Receive your library card instantly</li>
-                            <li>Start borrowing up to 10 items</li>
-                            <li>Access digital resources online</li>
-                        </ul>
-                    </div>
-                    <div class="info-card">
-                        <h3>Contact Information</h3>
-                        <div class="contact-details">
-                            <p><strong>Address:</strong><br>123 Knowledge Street<br>Learning City, LC 12345</p>
-                            <p><strong>Phone:</strong><br>(555) 123-BOOK</p>
-                            <p><strong>Email:</strong><br>info@centrallibrary.org</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Call to Action Section -->
-        <section class="cta">
-            <div class="container">
-                <div class="cta-content">
-                    <h2>Ready to Begin Your Journey?</h2>
-                    <p>Join thousands of readers, researchers, and learners who call our library home.</p>
-                    <div class="cta-buttons">
-                        <button class="btn btn-light">Visit Today</button>
-                        <button class="btn btn-outline">Browse Online Catalog</button>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
 
     <script>

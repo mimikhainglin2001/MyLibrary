@@ -2,9 +2,9 @@
 
 <main class="main-content-area bg-blue-100 shadow-md">
     <div class="flex items-center justify-between pb-6 border-b border-blue-200 mb-8">
-        <h2 class="text-2xl font-bold text-gray-800">User List</h2>
+        <h2 class="text-2xl font-bold text-gray-800">Admin List</h2>
         <div class="flex items-center space-x-4">
-          
+           
             <a href="<?php echo URLROOT; ?>/admin/profile"
                 class="flex items-center space-x-4 text-gray-700 hover:text-blue-600 transition duration-300">
                 <i class="fas fa-user-circle text-2xl"></i>
@@ -14,6 +14,17 @@
     </div>
 
     <div class="bg-white p-6 rounded-lg shadow-md">
+        <!-- Add Admin Button Section -->
+        <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+            <div>
+            </div>
+            <a href="<?php echo URLROOT; ?>/admin/adminregister"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">
+                <i class="fas fa-plus"></i>
+                <span>Add New Admin</span>
+            </a>
+        </div>
+
         <div class="table-scroll-container">
             <table class="table-auto w-full border-collapse border border-gray-300">
                 <thead>
@@ -21,52 +32,48 @@
                         <th class="border px-4 py-2">ID</th>
                         <th class="border px-4 py-2">Name</th>
                         <th class="border px-4 py-2">Email</th>
-                        <th class="border px-4 py-2">Roll No</th>
+                        <th class="border px-4 py-2">Department</th>
                         <th class="border px-4 py-2">Gender</th>
-                        <th class="border px-4 py-2">Year</th>
                         <th class="border px-4 py-2">Status</th>
                         <th class="border px-4 py-2">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    <?php foreach ($data['members'] as $member): ?>
+                    <?php foreach ($data['admins'] as $admins): ?>
                         <tr>
-                            <td class="border px-4 py-2"><?= htmlspecialchars($member['id']) ?></td>
-                            <td class="border px-4 py-2"><?= htmlspecialchars($member['name']) ?></td>
-                            <td class="border px-4 py-2"><?= htmlspecialchars($member['email']) ?></td>
-                            <td class="border px-4 py-2"><?= htmlspecialchars($member['rollno'] ?? '') ?></td>
-                            <td class="border px-4 py-2"><?= htmlspecialchars($member['gender']) ?></td>
-                            <td class="border px-4 py-2"><?= htmlspecialchars($member['year'] ?? '')?></td>
+                            <td class="border px-4 py-2"><?= htmlspecialchars($admins['id']) ?></td>
+                            <td class="border px-4 py-2"><?= htmlspecialchars($admins['name']) ?></td>
+                            <td class="border px-4 py-2"><?= htmlspecialchars($admins['email']) ?></td>
+                            <td class="border px-4 py-2"><?= htmlspecialchars($admins['department'] ?? '') ?></td>
+                            <td class="border px-4 py-2"><?= htmlspecialchars($admins['gender']) ?></td>
                             <td class="border px-4 py-2">
-                                <span class="<?= $member['is_active'] ? 'text-green-600' : 'text-red-600' ?>">
-                                    <?= $member['is_active'] ? 'Active' : 'Inactive' ?>
+                                <span class="<?= $admins['is_active'] ? 'text-green-600' : 'text-red-600' ?>">
+                                    <?= $admins['is_active'] ? 'Active' : 'Inactive' ?>
                                 </span>
                             </td>
                             <td class="flex space-x-2">
                                 <button
                                     class="view-details-button bg-blue-500 text-white px-3 py-1 rounded"
-                                    data-id="<?= htmlspecialchars($member['id']) ?>"
-                                    data-name="<?= htmlspecialchars($member['name']) ?>"
-                                    data-email="<?= htmlspecialchars($member['email']) ?>"
-                                    data-rollno="<?= htmlspecialchars($member['rollno']) ?>"
-                                    data-gender="<?= htmlspecialchars($member['gender']) ?>"
-                                    data-year="<?= htmlspecialchars($member['year']) ?>"
-                                    data-status="<?= $member['is_active'] ? 'Active' : 'Inactive' ?>">
+                                    data-id="<?= htmlspecialchars($admins['id']) ?>"
+                                    data-name="<?= htmlspecialchars($admins['name']) ?>"
+                                    data-email="<?= htmlspecialchars($admins['email']) ?>"
+                                    data-department="<?= htmlspecialchars($admins['department']) ?>"
+                                    data-gender="<?= htmlspecialchars($admins['gender']) ?>"
+                                    data-status="<?= $admins['is_active'] ? 'Active' : 'Inactive' ?>">
                                     View
                                 </button>
 
                                 <button
                                     class="edit-button bg-yellow-500 text-white px-3 py-1 rounded"
-                                    data-id="<?= htmlspecialchars($member['id']) ?>"
-                                    data-name="<?= htmlspecialchars($member['name']) ?>"
-                                    data-year="<?= htmlspecialchars($member['year']) ?>"
+                                    data-id="<?= htmlspecialchars($admins['id']) ?>"
+                                    data-name="<?= htmlspecialchars($admins['name']) ?>"
+                                    data-department="<?= htmlspecialchars($admins['department']) ?>"
                                     data-status="<?= $member['is_active'] ? 'Active' : 'Inactive' ?>">
                                     Edit
                                 </button>
-
                                 <button
                                     class="delete-button bg-red-500 text-white px-3 py-1 rounded"
-                                    data-id="<?= htmlspecialchars($member['id']) ?>">
+                                    data-id="<?= htmlspecialchars($admins['id']) ?>">
                                     Delete
                                 </button>
                             </td>
@@ -85,9 +92,8 @@
         <p><strong>ID:</strong> <span id="viewId"></span></p>
         <p><strong>Name:</strong> <span id="viewName"></span></p>
         <p><strong>Email:</strong> <span id="viewEmail"></span></p>
-        <p><strong>Roll No:</strong> <span id="viewRoll"></span></p>
+        <p><strong>Department:</strong> <span id="viewDepartment"></span></p>
         <p><strong>Gender:</strong> <span id="viewGender"></span></p>
-        <p><strong>Year:</strong> <span id="viewYear"></span></p>
         <p><strong>Status:</strong> <span id="viewStatus"></span></p>
         <button onclick="closeModal('viewModal')" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">Close</button>
     </div>
@@ -110,8 +116,8 @@
             </div>
 
             <div>
-                <label for="editYear" class="block text-sm font-medium text-gray-700">Year</label>
-                <input type="text" id="editYear" name="year" required
+                <label for="editDepartment" class="block text-sm font-medium text-gray-700">Department</label>
+                <input type="text" id="editDepartment" name="department" required
                     class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-yellow-400" />
             </div>
 
@@ -210,9 +216,8 @@
             document.getElementById('viewId').textContent = btn.dataset.id;
             document.getElementById('viewName').textContent = btn.dataset.name;
             document.getElementById('viewEmail').textContent = btn.dataset.email;
-            document.getElementById('viewRoll').textContent = btn.dataset.rollno;
+            document.getElementById('viewDepartment').textContent = btn.dataset.department;
             document.getElementById('viewGender').textContent = btn.dataset.gender;
-            document.getElementById('viewYear').textContent = btn.dataset.year;
             document.getElementById('viewStatus').textContent = btn.dataset.status;
             openModal('viewModal');
         });
@@ -223,7 +228,7 @@
         btn.addEventListener('click', () => {
             document.getElementById('editId').value = btn.dataset.id;
             document.getElementById('editName').value = btn.dataset.name;
-            document.getElementById('editYear').value = btn.dataset.year;
+            document.getElementById('editDepartment').value = btn.dataset.department;
             document.getElementById('editStatus').value = btn.dataset.status;
             openModal('editModal');
         });
@@ -231,14 +236,14 @@
 
     document.getElementById('editForm').addEventListener('submit', function(e) {
         const id = document.getElementById('editId').value;
-        this.action = "<?php echo URLROOT; ?>/admin/editMemberList/" + id;
+        this.action = "<?php echo URLROOT; ?>/admin/editadminList/" + id;
     });
 
     // Delete Modal Logic — PHP form submit
     deleteButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             const id = btn.dataset.id;
-            document.getElementById('deleteForm').action = "<?php echo URLROOT; ?>/admin/deleteMemberList/" + id;
+            document.getElementById('deleteForm').action = "<?php echo URLROOT; ?>/admin/deleteadminList/" + id;
             openModal('deleteModal');
         });
     });

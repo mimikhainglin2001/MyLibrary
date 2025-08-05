@@ -77,6 +77,65 @@ class Auth extends Controller
             }
         }
     }
+    // Admin register
+    public function adminRegister()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $email = $_POST['email'];
+
+            // Check if email already exists
+            $checkmail = $this->db->columnFilter('users', 'email', $email);
+            if ($checkmail) {
+                setMessage('error', 'Email already exists');
+                redirect('pages/adminregister');
+                return; // stop execution
+            }
+
+            $name = $_POST['name'];
+            $gender = $_POST['gender'];
+            $department = $_POST['department'];
+            $password = $_POST['password'];
+            $confirmpassword = $_POST['confirm_password'];
+
+            // Check if passwords match
+            if ($password !== $confirmpassword) {
+                setMessage('error', 'Password does not match');
+                redirect('pages/adminregister');
+                return; // stop execution
+            }
+
+            // Hash password securely
+            $password = base64_encode($password);
+            $user = new UserModel();
+            $user->name = $name;
+            $user->email = $email;
+            $user->gender = $gender;
+            $user->department = $department;
+            $user->year = null;
+            $user->password = $password;
+            $user->is_active = 0;
+            $user->is_login = 0;
+            $user->date = date('Y-m-d H:i:s');
+            $user->role_id = 1;
+            $user->otp = null;
+            $user->otp_expiry = null;
+
+            $insert = $this->db->create('users', $user->toArray());
+
+            if ($insert) {
+                $mail = new Mail();
+                $sentMail = $mail->verifyMail($email, $name);
+                setMessage('success', 'Mail is sent');
+                redirect('admin/adminlist');
+                return;
+            } else {
+                setMessage('error', 'Failed to register');
+                redirect('admin/adminregister');
+                return;
+            }
+        }
+    }
+
 
     //Register
     public function register()
@@ -84,54 +143,59 @@ class Auth extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = $_POST['email'];
 
+            // Check if email already exists
             $checkmail = $this->db->columnFilter('users', 'email', $email);
             if ($checkmail) {
-                setMessage('error', 'Email is already exist');
+                setMessage('error', 'Email already exists.');
                 redirect('pages/register');
+                return;
+            }
+
+            $name = $_POST['name'];
+            $roll = $_POST['rollno'];
+            $gender = $_POST['gender'];
+            $year  = $_POST['year'];
+            $password = $_POST['password'];
+            $confirmpassword = $_POST['confirm_password'];
+
+            if ($password !== $confirmpassword) {
+                setMessage('error', 'Password does not match.');
+                redirect('pages/register');
+                return;
+            }
+
+            // Encrypt or hash the password (base64 is NOT secure)
+            $password = base64_encode($password);// ✅ Use secure hashing
+
+            $user = new UserModel();
+            $user->name = $name;
+            $user->email = $email;
+            $user->rollno = $roll;
+            $user->gender = $gender;
+            $user->year = $year;
+            $user->is_active = 0;
+            $user->is_login = 0;
+            $user->date = date('Y-m-d H:i:s');
+            $user->password = $password;
+            $user->role_id = 2;
+            $user->otp = null;
+            $user->otp_expiry = null;
+
+            $insert = $this->db->create('users', $user->toArray());
+
+            if ($insert) {
+                $mail = new Mail();
+                $sentmail = $mail->verifyMail($email, $name);
+                setMessage('success', 'Mail is sent.');
+                redirect('pages/login');
             } else {
-                $name = $_POST['name'];
-                $roll = $_POST['rollno'];
-                $gender = $_POST['gender'];
-                $year  = $_POST['year'];
-                $password = $_POST['password'];
-                $confirmpassword = $_POST['confirm_password'];
-
-                if ($password !== $confirmpassword) {
-                    setMessage('error', 'password does not match');
-                    redirect('pages/register');
-                } else {
-
-                    $password = base64_encode($password);
-                    $user = new UserModel();
-                    $user->setName($name);
-                    $user->setEmail($email);
-                    $user->setRollno($roll);
-                    $user->setGender($gender);
-                    $user->setYear($year);
-                    $user->setIsActive(0);
-                    $user->setIsLogin(0);
-                    $user->setDate(date('Y-m-d H:i:s', time()));
-                    $user->setPassword($password);
-                    $user->setrole_id(2); // Assuming 2 is the role_id for normal users
-                    $user->setotp(null);
-                    $user->setotp_expiry(null);
-
-                    $insert = $this->db->create('users', $user->toArray());
-                    //    var_dump($insert);
-                    //    die();
-                    if ($insert) {
-                        $mail = new Mail();
-                        $sentmail = $mail->verifyMail($email, $name);
-                        setMessage('success', 'Mail is sent');
-                        redirect('pages/login');
-                    } else {
-                        setMessage('error', 'Failed to register');
-                        redirect('pages/register');
-                    }
-                }
+                setMessage('error', 'Failed to register.');
+                redirect('pages/register');
             }
         }
     }
+
+
     public function verify($token = null)
     {
         echo "Incoming token: $token<br>";
@@ -223,27 +287,27 @@ class Auth extends Controller
         }
     }
 
-    public function resendOtp()
-    {
-        if (!isset($_SESSION['post_email'])) {
-            setMessage('error', 'Session expired. Please login again.');
-            redirect('auth/login');
-            return;
-        }
+    // public function resendOtp()
+    // {
+    //     if (!isset($_SESSION['post_email'])) {
+    //         setMessage('error', 'Session expired. Please login again.');
+    //         redirect('auth/login');
+    //         return;
+    //     }
 
-        $newOtp = rand(100000, 999999);
-        $_SESSION['otp'] = $newOtp;
+    //     $newOtp = rand(100000, 999999);
+    //     $_SESSION['otp'] = $newOtp;
 
-        $userEmail = $_SESSION['post_email'];
+    //     $userEmail = $_SESSION['post_email'];
 
-        if (mail($userEmail, "Your OTP Code", "Your OTP is: $newOtp")) {
-            setMessage('success', 'A new OTP has been sent to your email.');
-        } else {
-            setMessage('error', 'Failed to send OTP. Please try again.');
-        }
+    //     if (mail($userEmail, "Your OTP Code", "Your OTP is: $newOtp")) {
+    //         setMessage('success', 'A new OTP has been sent to your email.');
+    //     } else {
+    //         setMessage('error', 'Failed to send OTP. Please try again.');
+    //     }
 
-        redirect('pages/otp');
-    }
+    //     redirect('pages/otp');
+    // }
 
 
 

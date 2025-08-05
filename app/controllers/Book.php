@@ -36,9 +36,9 @@ class Book extends Controller
 
         $categoryName = $_POST['category'];
         $getcategoryid = $this->db->columnFilter('categories', 'name', $categoryName);
-        $categoryId = $getcategoryid ? $getcategoryid['id'] : null;
+        $category_id = $getcategoryid ? $getcategoryid['id'] : null;
 
-        if (!$categoryId) {
+        if (!$category_id) {
             setMessage('error', 'Invalid category.');
             return;
         }
@@ -46,7 +46,7 @@ class Book extends Controller
         $authorName = $_POST['author'];
         $getauthorid = $this->db->columnFilter('authors', 'name', $authorName);
         if ($getauthorid) {
-            $authorId = $getauthorid['id'];
+            $author_id = $getauthorid['id'];
         } else {
             $authorModel = new AuthorModel();
             $authorModel->setName($authorName);
@@ -54,10 +54,10 @@ class Book extends Controller
 
             // Get the newly created author ID
             $getauthorid = $this->db->columnFilter('authors', 'name', $authorName);
-            $authorId = $getauthorid['id'];
+            $author_id = $getauthorid['id'];
         }
 
-        $imagePath = null;
+        $image = null;
 
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = 'public/images/';
@@ -72,7 +72,7 @@ class Book extends Controller
 
 
             if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-                $imagePath = $targetPath;
+                $image = $targetPath;
             } else {
                 setMessage('error', ' Failed to move uploaded file.');
                 return;
@@ -83,23 +83,25 @@ class Book extends Controller
         }
 
         $book = new BookModel();
-        $book->setTitle($_POST['title']);
-        $book->setAuthorID($authorId);
-        $book->setIsbn($isbn);
-        $book->setCategoryID($categoryId);
-        $book->setTotalQuantity($_POST['total_quantity']);
-        $book->setAvailableQuantity(null);
-        $book->setStatusID(1);
-        $book->setImage($imagePath);
+        $book->title = $_POST['title'];
+        $book->author_id = $author_id;
+        $book->isbn = $isbn;
+        $book->category_id = $category_id;
+        $book->total_quantity = $_POST['total_quantity'];
+        $book->available_quantity = $_POST['total_quantity'];
+        $book->status_id = 1;
+        $book->image = $image;
 
         $insert = $this->db->create('books', $book->toArray());
+        // var_dump($insert);
+        // die();
 
         if ($insert) {
             setMessage('success', ' Book added successfully.');
-            // redirect('admin/manageBook');
+            redirect('admin/manageBook');
         } else {
             setMessage('error', ' Failed to add book.');
-            // redirect('admin/addnewBook');
+            redirect('admin/addnewBook');
         }
     }
 

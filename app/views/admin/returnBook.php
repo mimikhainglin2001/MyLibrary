@@ -3,10 +3,7 @@
     <div class="flex items-center justify-between pb-6 border-b border-blue-200 mb-8">
         <h2 class="text-2xl font-bold text-gray-800">Return Book List</h2>
         <div class="flex items-center space-x-4">
-            <div class="relative">
-                <input type="text" placeholder="Search" class="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-48 sm:w-64">
-                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-            </div>
+           
             <a href="<?php echo URLROOT; ?>/admin/profile" class="flex items-center space-x-4 text-gray-700 hover:text-blue-600 transition duration-300">
                 <i class="fas fa-user-circle text-2xl"></i>
                 <span class="font-medium"><?php echo htmlentities($name['name']); ?></span>

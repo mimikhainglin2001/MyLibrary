@@ -39,16 +39,22 @@ $name = $_SESSION['session_loginuser'] ?? 'Admin'; ?>
 
     <!-- Main Content Area with Sidebar -->
     <div class="body-flex-container">
-        <aside class="sidebar-container bg-blue-900 text-white flex flex-col shadow-lg">
+        <aside class="sidebar-container bg-blue-900 text-white flex flex-col shadow-lg w-70">
             <div class="p-6 text-2xl font-bold border-b border-blue-800 hidden sm:block">
                 ADMIN DASHBOARD
             </div>
-            <nav class="flex-1 mt-6">
-                <ul>
+            <nav class="flex-1 mt-6 mr-6 w-50">
+                <ul class="space-y-2">
                     <li class="<?php echo (strpos($currentUrl, '/admin/adminDashboard') !== false) || (strpos($currentUrl, '/admin/profile') !== false) ? 'active' : ''; ?>">
                         <a href="<?php echo URLROOT;?>/admin/adminDashboard" class="flex items-center p-4 text-blue-100 hover:bg-blue-700 transition duration-300 rounded-lg">
                             <i class="fas fa-tachometer-alt mr-3"></i>
                             Dashboard
+                        </a>
+                    </li>
+                     <li class="<?php echo (strpos($currentUrl, '/admin/adminlist') !== false) ? 'active' : ''; ?>">
+                        <a href="<?php echo URLROOT;?>/admin/adminlist" class="flex items-center p-4 text-blue-100 hover:bg-blue-700 transition duration-300 rounded-lg">
+                            <i class="fas fa-users mr-3"></i>
+                            Manage Admin
                         </a>
                     </li>
                     <li class="<?php echo (strpos($currentUrl, '/admin/manageMember') !== false) ? 'active' : ''; ?>">

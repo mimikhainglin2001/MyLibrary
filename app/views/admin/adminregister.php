@@ -5,15 +5,14 @@ if (session_status() === PHP_SESSION_NONE) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Register — MySite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -49,7 +48,7 @@ if (session_status() === PHP_SESSION_NONE) {
             left: 0;
             width: 100%;
             height: 100%;
-            background-image:
+            background-image: 
                 radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
                 radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
                 radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
@@ -78,16 +77,56 @@ if (session_status() === PHP_SESSION_NONE) {
                 opacity: 0;
                 transform: translateY(30px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        .left-section {
-            background: linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%);
+        /* Back Button Styles */
+        .back-button {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            z-index: 100;
             display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.25rem;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            color: white;
+            text-decoration: none;
+        }
+
+        .back-button:active {
+            transform: translateY(-1px);
+        }
+
+        .back-button i {
+            font-size: 1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .back-button:hover i {
+            transform: translateX(-2px);
+        }
+        .left-section {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%);            display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -128,15 +167,8 @@ if (session_status() === PHP_SESSION_NONE) {
         }
 
         @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-15px);
-            }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
         }
 
         .welcome-icon i {
@@ -404,7 +436,7 @@ if (session_status() === PHP_SESSION_NONE) {
             box-shadow: 0 0 0 3px rgba(17, 153, 142, 0.1);
         }
 
-        .custom-checkbox input:checked~.checkmark {
+        .custom-checkbox input:checked ~ .checkmark {
             background: var(--success-gradient);
             border-color: #11998e;
         }
@@ -422,7 +454,7 @@ if (session_status() === PHP_SESSION_NONE) {
             transform: rotate(45deg);
         }
 
-        .custom-checkbox input:checked~.checkmark::after {
+        .custom-checkbox input:checked ~ .checkmark::after {
             display: block;
         }
 
@@ -543,6 +575,13 @@ if (session_status() === PHP_SESSION_NONE) {
                 min-height: auto;
             }
 
+            .back-button {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.625rem 1rem;
+                font-size: 0.85rem;
+            }
+
             .left-section {
                 padding: 2rem;
                 min-height: 300px;
@@ -588,6 +627,14 @@ if (session_status() === PHP_SESSION_NONE) {
                 border-radius: 16px;
             }
 
+            .back-button {
+                top: 0.75rem;
+                left: 0.75rem;
+                padding: 0.5rem 0.875rem;
+                font-size: 0.8rem;
+                gap: 0.5rem;
+            }
+
             .left-section {
                 padding: 1.5rem;
             }
@@ -627,19 +674,9 @@ if (session_status() === PHP_SESSION_NONE) {
         }
 
         @keyframes shake {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            25% {
-                transform: translateX(-5px);
-            }
-
-            75% {
-                transform: translateX(5px);
-            }
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
         /* Loading state for submit button */
@@ -663,19 +700,19 @@ if (session_status() === PHP_SESSION_NONE) {
         }
 
         @keyframes spin {
-            0% {
-                transform: translateY(-50%) rotate(0deg);
-            }
-
-            100% {
-                transform: translateY(-50%) rotate(360deg);
-            }
+            0% { transform: translateY(-50%) rotate(0deg); }
+            100% { transform: translateY(-50%) rotate(360deg); }
         }
     </style>
 </head>
-
 <body>
     <div class="main-container">
+        <!-- Back Button -->
+        <a href="<?php echo URLROOT; ?>/admin/adminDashboard" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back</span>
+        </a>
+        
         <!-- Left Section - Library Image -->
         <div class="left-section">
             <div class="left-content">
@@ -684,7 +721,6 @@ if (session_status() === PHP_SESSION_NONE) {
                 </div>
                 <h1 class="welcome-title">Welcome to Our Library</h1>
                 <p class="welcome-subtitle">Discover endless knowledge and join our community of learners</p>
-
                 <ul class="feature-list">
                     <li class="feature-item">
                         <i class="fas fa-check"></i>
@@ -705,7 +741,6 @@ if (session_status() === PHP_SESSION_NONE) {
                 </ul>
             </div>
         </div>
-
         <!-- Right Section - Registration Form -->
         <div class="right-section">
             <div class="form-header">
@@ -715,22 +750,18 @@ if (session_status() === PHP_SESSION_NONE) {
                 <h2 class="form-title">Create Account</h2>
                 <p class="form-subtitle">Join our library to expand your knowledge</p>
             </div>
-
-            <form method="post" action="<?php echo URLROOT; ?>/auth/register" id="registerForm">
-                <?php require APPROOT . '/views/components/auth_message.php'; ?>
-
+            <form method="post" action="<?php echo URLROOT; ?>/auth/adminRegister" id="registerForm">
+                <?php require APPROOT.'/views/components/auth_message.php'; ?>
+                
                 <div class="form-group">
                     <input type="text" name="name" placeholder="Full Name" required class="form-input" />
                 </div>
-
+                
                 <div class="form-group">
                     <input type="email" name="email" placeholder="Email Address" required class="form-input" />
                 </div>
-
-                <div class="form-group">
-                    <input type="text" name="rollno" placeholder="Roll Number" required class="form-input" />
-                </div>
-
+                
+               
                 <div class="form-group">
                     <div class="gender-selection">
                         <label class="gender-option">
@@ -744,15 +775,8 @@ if (session_status() === PHP_SESSION_NONE) {
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <select name="year" required class="form-input">
-                        <option value="">Select Academic Year</option>
-                        <option value="First Year">First Year</option>
-                        <option value="Second Year">Second Year</option>
-                        <option value="Third Year">Third Year</option>
-                        <option value="Fourth Year">Fourth Year</option>
-                        <option value="Final Year">Final Year</option>
-                    </select>
+               <div class="form-group">
+                    <input type="text" name="department" placeholder="Department" required class="form-input" />
                 </div>
 
                 <div class="form-group">
@@ -780,20 +804,20 @@ if (session_status() === PHP_SESSION_NONE) {
                         </div>
                         <h3 class="terms-title">Terms & Conditions</h3>
                     </div>
-
+                    
                     <div class="terms-content">
                         By creating an account, you agree to our privacy policy and terms of service. We'll protect your data and provide you with the best learning experience.
                     </div>
-
+                    
                     <div class="terms-agreement">
                         <label class="custom-checkbox">
                             <input type="checkbox" id="terms" required />
                             <span class="checkmark"></span>
                         </label>
                         <div class="terms-text">
-                            I have read and agree to the
-                            <a href="#" class="terms-link" onclick="openTermsModal()">Terms of Service</a>
-                            and
+                            I have read and agree to the 
+                            <a href="#" class="terms-link" onclick="openTermsModal()">Terms of Service</a> 
+                            and 
                             <a href="#" class="terms-link" onclick="openPrivacyModal()">Privacy Policy</a>
                         </div>
                     </div>
@@ -805,7 +829,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
                 <div class="login-link">
                     <p>
-                        Already have an account?
+                        Already have an account? 
                         <a href="<?php echo URLROOT; ?>/pages/login">Login in here</a>
                     </p>
                 </div>
@@ -841,7 +865,7 @@ if (session_status() === PHP_SESSION_NONE) {
             // Form validation
             const form = document.getElementById('registerForm');
             const inputs = form.querySelectorAll('.form-input');
-
+            
             inputs.forEach(input => {
                 input.addEventListener('blur', function() {
                     if (!this.checkValidity()) {
@@ -861,7 +885,7 @@ if (session_status() === PHP_SESSION_NONE) {
             // Password confirmation validation
             const password = document.getElementById('password');
             const confirmPassword = document.getElementById('confirm_password');
-
+            
             function validatePasswords() {
                 if (confirmPassword.value && password.value !== confirmPassword.value) {
                     confirmPassword.setCustomValidity('Passwords do not match');
@@ -893,5 +917,4 @@ if (session_status() === PHP_SESSION_NONE) {
         }
     </script>
 </body>
-
 </html>

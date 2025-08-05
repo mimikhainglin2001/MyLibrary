@@ -5,11 +5,16 @@ class Pages extends Controller
 
     private $db;
     private $user;
-    public function __construct()
-    {
-       // $this->user = $_SESSION['session_loginuser'];
-        $this->db = new Database();
+   public function __construct()
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
     }
+    $this->user = $_SESSION['session_loginuser'] ?? null;
+
+    $this->db = new Database();
+}
+
     public function index()
     {
         $this->view('pages/welcome');
@@ -34,6 +39,7 @@ class Pages extends Controller
     {
         $this->view('pages/register');
     }
+    
     public function category()
     {
         $this->view('pages/category');
@@ -178,9 +184,12 @@ class Pages extends Controller
     {
         $name = $this->user;
         $isid = $this->db->getBorrowBook('borrow_full_view', $name['name']);
+        $reserved = $this->db->getReservationBook('reservation_view',$name['name']);
         $data = [
-            'borrowedBooks' => $isid
+            'borrowedBooks' => $isid,
+            'reservedBooks' => $reserved
         ];
+     
         $this->view('pages/history', $data);
     }
     public function userProfile()
@@ -207,4 +216,6 @@ class Pages extends Controller
     {
         $this->view('pages/changeUserPassword');
     }
+
+    
 }
