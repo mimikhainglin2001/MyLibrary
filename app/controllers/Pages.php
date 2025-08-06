@@ -1,5 +1,5 @@
 <?php
-
+require_once APPROOT .'/middleware/authmiddleware.php';
 class Pages extends Controller
 {
 
@@ -42,11 +42,13 @@ class Pages extends Controller
     
     public function category()
     {
+        AuthMiddleware::userOnly();
         $this->view('pages/category');
     }
 
     public function literarybook()
     {
+        AuthMiddleware::userOnly();
         $literaryBooks = $this->db->getbookcategory('book_details', 'category_name', $categoryName = 'Literary Book');
 
         $data = [
@@ -67,6 +69,7 @@ class Pages extends Controller
     }
     public function historicalbook()
     {
+        AuthMiddleware::userOnly();
         $historicalBooks = $this->db->getbookcategory('book_details', 'category_name', $categoryName = 'Historical Book');
         $data = [
             'historicalBooks' => $historicalBooks
@@ -85,6 +88,7 @@ class Pages extends Controller
     }
     public function educationbook()
     {
+        AuthMiddleware::userOnly();
         $educationBooks = $this->db->getbookcategory('book_details', 'category_name', $categoryName = 'Education/References Book');
         $data = [
             'educationBooks' => $educationBooks
@@ -103,6 +107,7 @@ class Pages extends Controller
     }
     public function romancebook()
     {
+        AuthMiddleware::userOnly();
         $romanceBooks = $this->db->getbookcategory('book_details', 'category_name', $categoryName = 'Romance Book');
         $data = [
             'romanceBooks' => $romanceBooks
@@ -121,6 +126,7 @@ class Pages extends Controller
     }
     public function horrorbook()
     {
+        AuthMiddleware::userOnly();
         $horrorBooks = $this->db->getbookcategory('book_details', 'category_name', $categoryName = 'Horror Book');
         $data = [
             'horrorBooks' => $horrorBooks
@@ -139,6 +145,7 @@ class Pages extends Controller
     }
     public function cartoonbook()
     {
+        AuthMiddleware::userOnly();
         $cartoonBooks = $this->db->getbookcategory('book_details', 'category_name', $categoryName = 'Cartoon Book');
         $data = [
             'cartoonBooks' => $cartoonBooks
@@ -182,6 +189,7 @@ class Pages extends Controller
     // }
     public function history()
     {
+        AuthMiddleware::userOnly();
         $name = $this->user;
         $isid = $this->db->getBorrowBook('borrow_full_view', $name['name']);
         $reserved = $this->db->getReservationBook('reservation_view',$name['name']);
@@ -194,6 +202,7 @@ class Pages extends Controller
     }
     public function userProfile()
     {
+        AuthMiddleware::userOnly();
         $id = is_array($_SESSION['session_loginuser']) ? $_SESSION['session_loginuser']['id'] : $_SESSION['session_loginuser'];
         $loginuser = $this->db->getUserWithRoleById($id);
 
@@ -205,6 +214,7 @@ class Pages extends Controller
     }
     public function editProfile()
     {
+        AuthMiddleware::userOnly();
         $id = is_array($_SESSION['session_loginuser']) ? $_SESSION['session_loginuser']['id'] : $_SESSION['session_loginuser'];
         $loginuser = $this->db->getUserWithRoleById($id);
         $data = [
