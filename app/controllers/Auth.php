@@ -165,7 +165,7 @@ class Auth extends Controller
             }
 
             // Encrypt or hash the password (base64 is NOT secure)
-            $password = base64_encode($password);// ✅ Use secure hashing
+            $password = base64_encode($password); // ✅ Use secure hashing
 
             $user = new UserModel();
             $user->name = $name;
@@ -416,9 +416,14 @@ class Auth extends Controller
 
     public function logout()
     {
-        session_start();
-        unset($_SESSION['session_loginuser']);
+        $id = $_SESSION['session_loginuser']['id'] ?? null;
+        if ($id) {
+            $this->db->unsetLogin($id);
+        }
+
+
         session_destroy();
-        redirect('pages/home');
+        $this->view('pages/login');
+        exit();
     }
 }

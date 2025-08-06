@@ -5,14 +5,15 @@ if (session_status() === PHP_SESSION_NONE) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register — MySite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -48,7 +49,7 @@ if (session_status() === PHP_SESSION_NONE) {
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
                 radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
                 radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
@@ -57,19 +58,20 @@ if (session_status() === PHP_SESSION_NONE) {
         }
 
         .main-container {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
+            /* background: var(--glass-bg); */
+            /* backdrop-filter: blur(20px); */
             border-radius: 24px;
             border: 1px solid var(--glass-border);
             box-shadow: var(--shadow-soft);
-            width: 100%;
-            max-width: 1200px;
-            min-height: 700px;
+            width: 60%;
+            /* height: 40%; */
+            /* max-width: 1200px; */
+            max-height: 650px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             overflow: hidden;
             position: relative;
-            animation: slideUp 0.8s ease-out;
+            /* animation: slideUp 0.8s ease-out; */
         }
 
         @keyframes slideUp {
@@ -77,56 +79,17 @@ if (session_status() === PHP_SESSION_NONE) {
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        /* Back Button Styles */
-        .back-button {
-            position: absolute;
-            top: 2rem;
-            left: 2rem;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1.25rem;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.9rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .back-button:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-            color: white;
-            text-decoration: none;
-        }
-
-        .back-button:active {
-            transform: translateY(-1px);
-        }
-
-        .back-button i {
-            font-size: 1rem;
-            transition: transform 0.2s ease;
-        }
-
-        .back-button:hover i {
-            transform: translateX(-2px);
-        }
         .left-section {
-            background: linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%);            display: flex;
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%);
+            display: flex;
+
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -136,7 +99,15 @@ if (session_status() === PHP_SESSION_NONE) {
             position: relative;
         }
 
-        .left-section::before {
+        .left-section img {
+            border-radius: 20px;
+        }
+
+        /* .img{
+            box-shadow: 2px 2px 20px #f3f4f8ff;
+        } */
+
+        /* .left-section::before {
             content: '';
             position: absolute;
             top: 0;
@@ -145,7 +116,7 @@ if (session_status() === PHP_SESSION_NONE) {
             bottom: 0;
             background: linear-gradient(135deg, rgba(30, 58, 138, 0.85) 0%, rgba(30, 58, 138, 0.75) 100%);
             z-index: 1;
-        }
+        } */
 
         .left-content {
             position: relative;
@@ -167,8 +138,15 @@ if (session_status() === PHP_SESSION_NONE) {
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
         }
 
         .welcome-icon i {
@@ -177,7 +155,7 @@ if (session_status() === PHP_SESSION_NONE) {
         }
 
         .welcome-title {
-            font-size: 3rem;
+            font-size: 2rem;
             font-weight: 800;
             margin-bottom: 1rem;
             text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -224,7 +202,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
         .form-header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-top: 10px;
+            /* margin-bottom: 2rem; */
         }
 
         .form-logo {
@@ -352,6 +331,60 @@ if (session_status() === PHP_SESSION_NONE) {
             background: linear-gradient(135deg, rgba(17, 153, 142, 0.1) 0%, rgba(56, 239, 125, 0.1) 100%);
         }
 
+        /* NEW STYLES FOR ROLL NUMBER AND RADIO BUTTONS */
+        .rollno-input-group {
+            display: flex;
+            /* Use flexbox to align items in a row */
+            align-items: center;
+            /* Vertically align items */
+            gap: 0.75rem;
+            /* Space between input and radio buttons */
+        }
+
+        .rollno-input-group .form-input {
+            flex-grow: 1;
+            /* Allow the input to grow and take available space */
+            max-width: 60%;
+            /* Adjust width of the roll number input */
+        }
+
+        .rollno-radio-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.625rem 1rem;
+            /* Slightly adjust padding for radio buttons */
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            background: white;
+            font-weight: 500;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            /* Prevent text from wrapping */
+        }
+
+        .rollno-radio-option:hover {
+            border-color: #11998e;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(17, 153, 142, 0.15);
+        }
+
+        .rollno-radio-option input[type="radio"] {
+            margin-right: 0.5rem;
+            width: 18px;
+            height: 18px;
+            accent-color: #11998e;
+        }
+
+        .rollno-radio-option.selected {
+            border-color: #11998e;
+            background: linear-gradient(135deg, rgba(17, 153, 142, 0.1) 0%, rgba(56, 239, 125, 0.1) 100%);
+        }
+
+        /* END NEW STYLES */
+
+
         .terms-section {
             background: #f8fafc;
             border: 2px solid #e2e8f0;
@@ -436,7 +469,7 @@ if (session_status() === PHP_SESSION_NONE) {
             box-shadow: 0 0 0 3px rgba(17, 153, 142, 0.1);
         }
 
-        .custom-checkbox input:checked ~ .checkmark {
+        .custom-checkbox input:checked~.checkmark {
             background: var(--success-gradient);
             border-color: #11998e;
         }
@@ -454,7 +487,7 @@ if (session_status() === PHP_SESSION_NONE) {
             transform: rotate(45deg);
         }
 
-        .custom-checkbox input:checked ~ .checkmark::after {
+        .custom-checkbox input:checked~.checkmark::after {
             display: block;
         }
 
@@ -575,13 +608,6 @@ if (session_status() === PHP_SESSION_NONE) {
                 min-height: auto;
             }
 
-            .back-button {
-                top: 1rem;
-                left: 1rem;
-                padding: 0.625rem 1rem;
-                font-size: 0.85rem;
-            }
-
             .left-section {
                 padding: 2rem;
                 min-height: 300px;
@@ -616,6 +642,19 @@ if (session_status() === PHP_SESSION_NONE) {
             .gender-option {
                 justify-content: center;
             }
+
+            /* Responsive adjustments for rollno-input-group */
+            .rollno-input-group {
+                flex-direction: column;
+                /* Stack vertically on smaller screens */
+                align-items: stretch;
+                /* Stretch items to full width */
+            }
+
+            .rollno-input-group .form-input {
+                max-width: 100%;
+                /* Full width on small screens */
+            }
         }
 
         @media (max-width: 480px) {
@@ -625,14 +664,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
             .main-container {
                 border-radius: 16px;
-            }
-
-            .back-button {
-                top: 0.75rem;
-                left: 0.75rem;
-                padding: 0.5rem 0.875rem;
-                font-size: 0.8rem;
-                gap: 0.5rem;
             }
 
             .left-section {
@@ -674,9 +705,19 @@ if (session_status() === PHP_SESSION_NONE) {
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
         }
 
         /* Loading state for submit button */
@@ -700,68 +741,48 @@ if (session_status() === PHP_SESSION_NONE) {
         }
 
         @keyframes spin {
-            0% { transform: translateY(-50%) rotate(0deg); }
-            100% { transform: translateY(-50%) rotate(360deg); }
+            0% {
+                transform: translateY(-50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(-50%) rotate(360deg);
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="main-container">
-        <!-- Back Button -->
-        <a href="<?php echo URLROOT; ?>/admin/adminDashboard" class="back-button">
-            <i class="fas fa-arrow-left"></i>
-            <span>Back</span>
-        </a>
-        
-        <!-- Left Section - Library Image -->
         <div class="left-section">
-            <div class="left-content">
-                <div class="welcome-icon">
-                    <i class="fas fa-book-open"></i>
-                </div>
-                <h1 class="welcome-title">Welcome to Our Library</h1>
-                <p class="welcome-subtitle">Discover endless knowledge and join our community of learners</p>
-                <ul class="feature-list">
-                    <li class="feature-item">
-                        <i class="fas fa-check"></i>
-                        <span>Access thousands of books</span>
-                    </li>
-                    <li class="feature-item">
-                        <i class="fas fa-check"></i>
-                        <span>Digital resources available</span>
-                    </li>
-                    <li class="feature-item">
-                        <i class="fas fa-check"></i>
-                        <span>Study spaces & quiet zones</span>
-                    </li>
-                    <li class="feature-item">
-                        <i class="fas fa-check"></i>
-                        <span>Expert librarian support</span>
-                    </li>
-                </ul>
-            </div>
+            <h1 class="welcome-title">Create an Account</h1>
+
+            <img src="/images/b1.png" class="img">
+
         </div>
-        <!-- Right Section - Registration Form -->
+
         <div class="right-section">
-            <div class="form-header">
+            <!-- <div class="form-header">
                 <div class="form-logo">
                     <i class="fas fa-book-open"></i>
                 </div>
-                <h2 class="form-title">Create Account</h2>
-                <p class="form-subtitle">Join our library to expand your knowledge</p>
-            </div>
+            </div> -->
+
             <form method="post" action="<?php echo URLROOT; ?>/auth/adminRegister" id="registerForm">
-                <?php require APPROOT.'/views/components/auth_message.php'; ?>
-                
+                <?php require APPROOT . '/views/components/auth_message.php'; ?>
+
                 <div class="form-group">
                     <input type="text" name="name" placeholder="Full Name" required class="form-input" />
                 </div>
-                
+
                 <div class="form-group">
                     <input type="email" name="email" placeholder="Email Address" required class="form-input" />
                 </div>
-                
-               
+
+                <div class="form-group">
+                    <input type="text" name="department" placeholder="Department" required class="form-input" />
+                </div>
+
                 <div class="form-group">
                     <div class="gender-selection">
                         <label class="gender-option">
@@ -773,10 +794,6 @@ if (session_status() === PHP_SESSION_NONE) {
                             <span>Female</span>
                         </label>
                     </div>
-                </div>
-
-               <div class="form-group">
-                    <input type="text" name="department" placeholder="Department" required class="form-input" />
                 </div>
 
                 <div class="form-group">
@@ -797,31 +814,31 @@ if (session_status() === PHP_SESSION_NONE) {
                     </div>
                 </div>
 
-                <div class="terms-section">
+                <!-- <div class="terms-section">
                     <div class="terms-header">
                         <div class="terms-icon">
                             <i class="fas fa-shield-alt"></i>
                         </div>
                         <h3 class="terms-title">Terms & Conditions</h3>
                     </div>
-                    
+
                     <div class="terms-content">
                         By creating an account, you agree to our privacy policy and terms of service. We'll protect your data and provide you with the best learning experience.
                     </div>
-                    
+
                     <div class="terms-agreement">
                         <label class="custom-checkbox">
                             <input type="checkbox" id="terms" required />
                             <span class="checkmark"></span>
                         </label>
                         <div class="terms-text">
-                            I have read and agree to the 
-                            <a href="#" class="terms-link" onclick="openTermsModal()">Terms of Service</a> 
-                            and 
+                            I have read and agree to the
+                            <a href="#" class="terms-link" onclick="openTermsModal()">Terms of Service</a>
+                            and
                             <a href="#" class="terms-link" onclick="openPrivacyModal()">Privacy Policy</a>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <button type="submit" class="submit-btn">
                     Create My Account
@@ -829,7 +846,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
                 <div class="login-link">
                     <p>
-                        Already have an account? 
+                        Already have an account?
                         <a href="<?php echo URLROOT; ?>/pages/login">Login in here</a>
                     </p>
                 </div>
@@ -862,10 +879,23 @@ if (session_status() === PHP_SESSION_NONE) {
                 });
             });
 
+            // NEW: Roll Number radio button styling
+            const rollnoTypeOptions = document.querySelectorAll('.rollno-radio-option');
+            rollnoTypeOptions.forEach(option => {
+                const radio = option.querySelector('input[name="rollno_type"]');
+                radio.addEventListener('change', function() {
+                    rollnoTypeOptions.forEach(opt => opt.classList.remove('selected'));
+                    if (this.checked) {
+                        option.classList.add('selected');
+                    }
+                });
+            });
+
+
             // Form validation
             const form = document.getElementById('registerForm');
             const inputs = form.querySelectorAll('.form-input');
-            
+
             inputs.forEach(input => {
                 input.addEventListener('blur', function() {
                     if (!this.checkValidity()) {
@@ -885,7 +915,7 @@ if (session_status() === PHP_SESSION_NONE) {
             // Password confirmation validation
             const password = document.getElementById('password');
             const confirmPassword = document.getElementById('confirm_password');
-            
+
             function validatePasswords() {
                 if (confirmPassword.value && password.value !== confirmPassword.value) {
                     confirmPassword.setCustomValidity('Passwords do not match');
@@ -917,4 +947,5 @@ if (session_status() === PHP_SESSION_NONE) {
         }
     </script>
 </body>
+
 </html>

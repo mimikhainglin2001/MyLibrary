@@ -1,9 +1,11 @@
 <?php
+require_once APPROOT . '/middleware/authmiddleware.php';
 class Admin extends Controller
 {
     private $db;
     public function __construct()
     {
+        AuthMiddleware::adminOnly();
         $this->db = new Database();
     }
     public function index()

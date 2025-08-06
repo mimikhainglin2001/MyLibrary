@@ -1,9 +1,11 @@
 <?php
+require_once APPROOT .'/middleware/authmiddleware.php';
 class BorrowBook extends Controller
 {
     private $db;
     public function __construct()
     {
+        AuthMiddleware::userOnly();
         $this->model('BorrowBookModel');
         $this->model('ReservationModel');
         $this->db = new Database();

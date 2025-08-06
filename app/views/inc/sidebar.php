@@ -96,7 +96,7 @@ $name = $_SESSION['session_loginuser'] ?? 'Admin'; ?>
                 </ul>
             </nav>
             <div class="mt-auto p-6 border-t border-blue-800">
-                <a href="<?php echo URLROOT;?>/pages/login" id="logoutButton" class="flex items-center p-4 text-blue-100 hover:bg-blue-700 transition duration-300 rounded-lg">
+                <a href="<?php echo URLROOT;?>/auth/logout" id="logoutButton" class="flex items-center p-4 text-blue-100 hover:bg-blue-700 transition duration-300 rounded-lg">
                     <i class="fas fa-sign-out-alt mr-3"></i>
                     Logout
                 </a>

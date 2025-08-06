@@ -1,10 +1,12 @@
 <?php
+require_once APPROOT .'/middleware/authmiddleware.php';
 class Book extends Controller
 {
     private $db;
 
     public function __construct()
     {
+        AuthMiddleware::adminOnly();
         $this->model('BookModel'); // optional if autoloading
         $this->model('AuthorModel'); // optional if autoloading
         $this->db = new Database();
