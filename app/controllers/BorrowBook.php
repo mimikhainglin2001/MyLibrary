@@ -1,11 +1,11 @@
 <?php
-require_once APPROOT .'/middleware/authmiddleware.php';
+require_once APPROOT . '/middleware/authmiddleware.php';
 class BorrowBook extends Controller
 {
     private $db;
     public function __construct()
     {
-        AuthMiddleware::userOnly();
+        // AuthMiddleware::userOnly();
         $this->model('BorrowBookModel');
         $this->model('ReservationModel');
         $this->db = new Database();
@@ -15,6 +15,7 @@ class BorrowBook extends Controller
     //Borrow Book
     public function borrow()
     {
+        AuthMiddleware::userOnly();
         $user = $_SESSION['session_loginuser'] ?? null;
         $bookId = $_GET['id'] ?? null;
 
@@ -41,7 +42,7 @@ class BorrowBook extends Controller
         )['count'] ?? 0;
 
         if ($borrowCount >= 2) {
-            return $this->failRedirect('You have already borrowed 2 books. Please return one.', 'pages/romancebook');
+            return $this->failRedirect('You have already borrowed 2 books. Please return one.', 'pages/history');
         }
 
         $alreadyBorrowed = $this->db->raw(
@@ -93,6 +94,7 @@ class BorrowBook extends Controller
     //Return Book
     public function return()
     {
+        AuthMiddleware::userOnly();
         $borrowId = $_GET['id'] ?? null;
 
         if (!$borrowId) {
@@ -151,6 +153,7 @@ class BorrowBook extends Controller
     //Renew Book
     public function renew()
     {
+        AuthMiddleware::userOnly();
         $borrowId = $_GET['id'] ?? null;
         if (!$borrowId) {
             setMessage('error', 'Invalid request');
@@ -189,6 +192,7 @@ class BorrowBook extends Controller
     // Reserve 
     public function reserve()
     {
+        AuthMiddleware::userOnly();
         $users = $_SESSION['session_loginuser'];
         $userId = $users['id'];
         $id = $_GET['id'];
@@ -219,6 +223,7 @@ class BorrowBook extends Controller
 
     public function confirmreservation()
     {
+        AuthMiddleware::adminOnly();
         $user_id = $_GET['user_id'] ?? null;
         $book_id = $_GET['book_id'] ?? null;
         $available_quantity = $_GET['available_quantity'] ?? null;
@@ -239,6 +244,8 @@ class BorrowBook extends Controller
         $user->status = 'borrowed';
 
         $iscreated = $this->db->create('borrowBook', $user->toArray());
+        // var_dump($iscreated);
+        // die();
 
         $isdelete = $this->db->delete('reservations', $reservationid['id']);
 
@@ -259,6 +266,7 @@ class BorrowBook extends Controller
 
     public function cancel()
     {
+        AuthMiddleware::userOnly();
         $reservationId = $_GET['id'];
         // var_dump($reservationId);
         // die();
@@ -278,5 +286,30 @@ class BorrowBook extends Controller
             setMessage('success', 'Successfully delete reservations');
             redirect('pages/history');
         }
+    }
+    //Check Overdue 
+    public function checkOverdue()
+    {
+        AuthMiddleware::adminOnly(); // Only admins can trigger this
+
+        // Get all borrowed or renewed books where due or renewed date is past today
+        $now = date('Y-m-d H:i:s');
+
+        $overdueRecords = $this->db->rawAll(
+            "SELECT * FROM borrowBook 
+         WHERE status IN ('borrowed', 'renewed') 
+         AND (
+             (renew_date IS NOT NULL AND renew_date < :now)
+             OR (renew_date IS NULL AND due_date < :now)
+         )",
+            ['now' => $now]
+        );
+
+        foreach ($overdueRecords as $record) {
+            $this->db->update('borrowBook', $record['id'], ['status' => 'overdue']);
+        }
+
+        setMessage('success', 'Overdue check completed. ' . count($overdueRecords) . ' records updated.');
+        redirect('admin/issueBook');
     }
 }

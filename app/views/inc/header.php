@@ -25,7 +25,7 @@ $currentUrl = $_SERVER['REQUEST_URI'];
 
 <body>
     <!-- Header -->
-    <header class="header">
+    <!-- <header class="header"> -->
         <div class="header-content">
             <div class="logo">
                 <div class="logo-icon">📚</div>
@@ -48,4 +48,4 @@ $currentUrl = $_SERVER['REQUEST_URI'];
                 </ul>
             </nav>
         </div>
-    </header>
+    <!-- </header> -->

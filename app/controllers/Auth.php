@@ -47,7 +47,7 @@ class Auth extends Controller
                                 break;
 
                             case user:
-                                redirect('pages/home');
+                                redirect('pages/category');
                                 break;
 
                             default:
@@ -163,7 +163,6 @@ class Auth extends Controller
                 redirect('pages/register');
                 return;
             }
-
             // Encrypt or hash the password (base64 is NOT secure)
             $password = base64_encode($password); // ✅ Use secure hashing
 

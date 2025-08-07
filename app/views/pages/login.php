@@ -136,7 +136,7 @@ if (session_status() === PHP_SESSION_NONE) {
         }
 
         .image-title {
-            font-size: 2.5rem;
+            font-size: 1.5rem;
             font-weight: 800;
             margin-bottom: 1rem;
             line-height: 1.2;
@@ -552,7 +552,7 @@ if (session_status() === PHP_SESSION_NONE) {
             </div>
             
             <div class="image-content">
-                <h3 class="image-title">Welcome Back</h3>
+                
                 <img src="/images/b1.png" class="img">
                 
             </div>
@@ -562,8 +562,8 @@ if (session_status() === PHP_SESSION_NONE) {
         <div class="form-section">
             <div class="hero-section">
                 
-            
-                <p class="subtitle">Enter your credentials to continue </p>
+            <h5 class="image-title">Welcome Back</h5>
+                <h3>Enter Your Email And Password To Continue</h3>
             </div>
 
             <form method="POST" action="<?php echo URLROOT; ?>/auth/login" id="loginForm">
