@@ -436,6 +436,21 @@ class Database
         $stmt->execute($params);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    public function rawAll($sql, $params = [])
+    {
+        $stm = $this->pdo->prepare($sql);
+
+        // Bind parameters securely
+        foreach ($params as $key => $value) {
+            $stm->bindValue(":$key", $value);
+        }
+
+        // Execute the statement
+        $stm->execute();
+
+        // Return all rows as associative arrays
+        return $stm->fetchAll(PDO::FETCH_ASSOC);
+    }
 
 
     // For Dashboard

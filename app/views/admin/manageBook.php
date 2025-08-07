@@ -6,7 +6,6 @@
     <div class="flex items-center justify-between pb-6 border-b border-blue-200 mb-8">
         <h2 class="text-2xl font-bold text-gray-800">Book List</h2>
         <div class="flex items-center space-x-4">
-            
             <a href="<?php echo URLROOT; ?>/admin/profile" class="flex items-center space-x-4 text-gray-700 hover:text-blue-600 transition duration-300">
                 <i class="fas fa-user-circle text-2xl"></i>
                 <span class="font-medium"><?php echo htmlspecialchars($name['name']); ?></span>
@@ -15,6 +14,12 @@
     </div>
 
     <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="flex justify-end mb-4">
+            <a href="<?php echo URLROOT; ?>/admin/addNewBook" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full shadow-md transition duration-300">
+                Add New Book 📚
+            </a>
+        </div>
+        
         <div class="table-scroll-container">
             <table class="table-auto w-full border-collapse border border-gray-300">
                 <thead>
@@ -74,14 +79,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-8 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-            <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-full shadow-md transition duration-300" onclick="window.location.href='<?php echo URLROOT; ?>/admin/adminDashboard'">
-                <i class="fas fa-arrow-left mr-2"></i>Back
-            </button>
-            <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full shadow-md transition duration-300" onclick="window.location.href='<?php echo URLROOT; ?>/admin/addNewBook'">
-                Add New Book
-            </button>
-        </div>
+        
     </div>
 </main>
 </div>
@@ -96,7 +94,6 @@
     </div>
 </div>
 
-<!-- View Details Modal -->
 <div id="viewDetailsMessageBox" class="fixed inset-0 z-50 bg-black bg-opacity-50 hidden flex items-center justify-center">
     <div class="bg-white rounded-lg shadow-lg p-6 w-96">
         <h2 class="text-xl font-bold mb-4">Book Details</h2>
@@ -114,7 +111,6 @@
     </div>
 </div>
 
-<!-- Edit Book Modal -->
 <div id="editModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 hidden flex items-center justify-center">
     <div class="bg-white rounded-lg shadow-lg p-6 w-[500px] max-w-full">
         <h2 class="text-xl font-bold mb-4">Edit Book</h2>

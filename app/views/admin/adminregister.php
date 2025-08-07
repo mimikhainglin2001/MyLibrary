@@ -749,10 +749,51 @@ if (session_status() === PHP_SESSION_NONE) {
                 transform: translateY(-50%) rotate(360deg);
             }
         }
+
+        /* New styles for the back button */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #3b82f6;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .back-button:hover {
+            background-color: rgba(255, 255, 255, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .back-button {
+                top: 10px;
+                left: 10px;
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 
 <body>
+    <a href="<?php echo URLROOT;?>/admin/adminlist" class="back-button" title="Go Back">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
     <div class="main-container">
         <div class="left-section">
             <h1 class="welcome-title">Create an Account</h1>
@@ -762,12 +803,6 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
 
         <div class="right-section">
-            <!-- <div class="form-header">
-                <div class="form-logo">
-                    <i class="fas fa-book-open"></i>
-                </div>
-            </div> -->
-
             <form method="post" action="<?php echo URLROOT; ?>/auth/adminRegister" id="registerForm">
                 <?php require APPROOT . '/views/components/auth_message.php'; ?>
 
@@ -813,32 +848,6 @@ if (session_status() === PHP_SESSION_NONE) {
                         </span>
                     </div>
                 </div>
-
-                <!-- <div class="terms-section">
-                    <div class="terms-header">
-                        <div class="terms-icon">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <h3 class="terms-title">Terms & Conditions</h3>
-                    </div>
-
-                    <div class="terms-content">
-                        By creating an account, you agree to our privacy policy and terms of service. We'll protect your data and provide you with the best learning experience.
-                    </div>
-
-                    <div class="terms-agreement">
-                        <label class="custom-checkbox">
-                            <input type="checkbox" id="terms" required />
-                            <span class="checkmark"></span>
-                        </label>
-                        <div class="terms-text">
-                            I have read and agree to the
-                            <a href="#" class="terms-link" onclick="openTermsModal()">Terms of Service</a>
-                            and
-                            <a href="#" class="terms-link" onclick="openPrivacyModal()">Privacy Policy</a>
-                        </div>
-                    </div>
-                </div> -->
 
                 <button type="submit" class="submit-btn">
                     Create My Account

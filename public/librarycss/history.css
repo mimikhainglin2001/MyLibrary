@@ -13,12 +13,12 @@ body {
 }
 
 /* Header */
-.header {
-    background: linear-gradient(135deg, #1D4ED8, #1D4ED8);
+/* .header {
+    background: linear-gradient(135deg, rgba(30, 58, 138), rgba(30, 58, 138));
     padding: 1rem 0;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     color: white;
-}
+} */
 
 .header-content {
     max-width: 1200px;

@@ -589,11 +589,13 @@ if (session_status() === PHP_SESSION_NONE) {
             }
 
             .welcome-title {
-                font-size: 2.5rem;
+                font-size: 1rem;
+                text-align: center;
             }
 
             .welcome-subtitle {
                 font-size: 1.1rem;
+                
             }
         }
 
@@ -751,10 +753,11 @@ if (session_status() === PHP_SESSION_NONE) {
         }
     </style>
 </head>
+
 <body>
     <div class="main-container">
         <div class="left-section">
-            <h1 class="welcome-title">Create an Account</h1>
+
 
             <img src="/images/b1.png" class="img">
 
@@ -766,7 +769,8 @@ if (session_status() === PHP_SESSION_NONE) {
                     <i class="fas fa-book-open"></i>
                 </div>
             </div> -->
-
+            <h1 style="font-weight: bold;
+            font-size:1rem;">Create an Account</h1>
             <form method="post" action="<?php echo URLROOT; ?>/auth/register" id="registerForm">
                 <?php require APPROOT . '/views/components/auth_message.php'; ?>
 

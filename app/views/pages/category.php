@@ -23,7 +23,7 @@
         /* Main Content */
         .main-content {
             min-height: 100vh;
-            padding-top: 80px; /* Account for fixed header if any */
+            
         }
 
         /* Hero Section */
@@ -106,7 +106,7 @@
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
             background: white;
         }
-
+/* 
         .search-box::after {
             content: '\f002';
             font-family: 'Font Awesome 6 Free';
@@ -117,7 +117,7 @@
             transform: translateY(-50%);
             color: #666;
             font-size: 1.2rem;
-        }
+        } */
 
         /* Categories Section */
         .categories-section {
