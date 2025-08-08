@@ -47,7 +47,7 @@ class Auth extends Controller
                                 break;
 
                             case user:
-                                redirect('pages/home');
+                                redirect('pages/category');
                                 break;
 
                             default:
@@ -106,21 +106,38 @@ class Auth extends Controller
 
             // Hash password securely
             $password = base64_encode($password);
-            $user = new UserModel();
-            $user->name = $name;
-            $user->email = $email;
-            $user->gender = $gender;
-            $user->department = $department;
-            $user->year = null;
-            $user->password = $password;
-            $user->is_active = 0;
-            $user->is_login = 0;
-            $user->date = date('Y-m-d H:i:s');
-            $user->role_id = 1;
-            $user->otp = null;
-            $user->otp_expiry = null;
+            // $user = new UserModel();
+            // $user->name = $name;
+            // $user->email = $email;
+            // $user->gender = $gender;
+            // $user->department = $department;
+            // $user->year = null;
+            // $user->password = $password;
+            // $user->is_active = 0;
+            // $user->is_login = 0;
+            // $user->date = date('Y-m-d H:i:s');
+            // $user->role_id = 1;
+            // $user->otp = null;
+            // $user->otp_expiry = null;
 
-            $insert = $this->db->create('users', $user->toArray());
+            $department = $_POST['department']; // or wherever this comes from
+
+            $params = [
+                $name,            // p_name
+                $email,           // p_email
+                $department,      // p_department  <--- Must be here!
+                $gender,          // p_gender
+                $password,        // p_password
+                0,                // p_is_confirmed (default 0)
+                0,                // p_is_active (default 0)
+                0,                // p_is_login (default 0)
+                date('Y-m-d H:i:s'), // p_date
+                2,                // p_role_id (assuming 2 means 'user')
+                null,             // p_otp
+                null              // p_otp_expiry
+            ];
+
+            $insert = $this->db->storeprocedure('InsertUser', $params);
 
             if ($insert) {
                 $mail = new Mail();
@@ -165,23 +182,45 @@ class Auth extends Controller
             }
 
             // Encrypt or hash the password (base64 is NOT secure)
-            $password = base64_encode($password);// ✅ Use secure hashing
+            $password = base64_encode($password); // ✅ Use secure hashing
 
             $user = new UserModel();
-            $user->name = $name;
-            $user->email = $email;
-            $user->rollno = $roll;
-            $user->gender = $gender;
-            $user->year = $year;
-            $user->is_active = 0;
-            $user->is_login = 0;
-            $user->date = date('Y-m-d H:i:s');
-            $user->password = $password;
-            $user->role_id = 2;
-            $user->otp = null;
-            $user->otp_expiry = null;
+            // $user->name = $name;
+            // $user->email = $email;
+            // $user->rollno = $roll;
+            // $user->gender = $gender;
+            // $user->year = $year;
+            // $user->is_active = 0;
+            // $user->is_login = 0;
+            // $user->date = date('Y-m-d H:i:s');
+            // $user->password = $password;
+            // $user->role_id = 2;
+            // $user->otp = null;
+            // $user->otp_expiry = null;
 
-            $insert = $this->db->create('users', $user->toArray());
+            $department = $_POST['department']; // or wherever this comes from
+
+            $params = [
+                $name,            // p_name
+                $email,           // p_email
+                $roll,            // p_rollno
+                $department,      // p_department  <--- Must be here!
+                $gender,          // p_gender
+                $year,            // p_year
+                $password,        // p_password
+                0,                // p_is_confirmed (default 0)
+                0,                // p_is_active (default 0)
+                0,                // p_is_login (default 0)
+                date('Y-m-d H:i:s'), // p_date
+                2,                // p_role_id (assuming 2 means 'user')
+                null,             // p_otp
+                null              // p_otp_expiry
+            ];
+
+
+
+
+            $insert = $this->db->storeprocedure('InsertUser', $params);
 
             if ($insert) {
                 $mail = new Mail();
@@ -416,9 +455,14 @@ class Auth extends Controller
 
     public function logout()
     {
-        session_start();
-        unset($_SESSION['session_loginuser']);
+        $id = $_SESSION['session_loginuser']['id'] ?? null;
+        if ($id) {
+            $this->db->unsetLogin($id);
+        }
+
+
         session_destroy();
-        redirect('pages/home');
+        $this->view('pages/login');
+        exit();
     }
 }

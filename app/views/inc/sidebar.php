@@ -18,7 +18,7 @@ $name = $_SESSION['session_loginuser'] ?? 'Admin'; ?>
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Link to external CSS file (assuming admin.css handles responsive adjustments for sidebar/main content) -->
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/librarycss/adminDashboard.css">
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/librarycss/adminDashboard.css?v=2">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/librarycss/manageMember.css">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/librarycss/manageBook.css">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/librarycss/issueBook.css">
@@ -82,23 +82,20 @@ $name = $_SESSION['session_loginuser'] ?? 'Admin'; ?>
                         </a>
                     </li>
                     <li class="<?php echo (strpos($currentUrl, '/user/customer') !== false) ? 'active' : ''; ?>">
-                        <a href="<?php echo URLROOT;?>/admin/addnewBook" class="flex items-center p-4 text-blue-100 hover:bg-blue-700 transition duration-300 rounded-lg">
-                            <i class="fas fa-undo-alt mr-3"></i>
-                            Add New Book
-                        </a>
-                    </li>
-                    <li class="<?php echo (strpos($currentUrl, '/user/customer') !== false) ? 'active' : ''; ?>">
                         <a href="<?php echo URLROOT;?>/admin/reservation" class="flex items-center p-4 text-blue-100 hover:bg-blue-700 transition duration-300 rounded-lg">
                             <i class="fas fa-clipboard-list mr-3"></i>
                             Reservations
                         </a>
                     </li>
-                </ul>
-            </nav>
-            <div class="mt-auto p-6 border-t border-blue-800">
-                <a href="<?php echo URLROOT;?>/pages/login" id="logoutButton" class="flex items-center p-4 text-blue-100 hover:bg-blue-700 transition duration-300 rounded-lg">
+                    <li>
+                        <a href="<?php echo URLROOT;?>/auth/logout" id="logoutButton" class="flex items-center p-4 text-blue-100 hover:bg-blue-700 transition duration-300 rounded-lg">
                     <i class="fas fa-sign-out-alt mr-3"></i>
                     Logout
                 </a>
-            </div>
+                    </li>
+                </ul>
+            </nav>
+            <!-- <div class="mt-auto p-6 border-t border-blue-800">
+                
+            </div> -->
         </aside>

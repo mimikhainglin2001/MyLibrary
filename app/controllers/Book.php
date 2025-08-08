@@ -1,10 +1,13 @@
 <?php
+require_once APPROOT . '/middleware/authmiddleware.php';
 class Book extends Controller
 {
     private $db;
 
     public function __construct()
+
     {
+        AuthMiddleware::adminOnly();
         $this->model('BookModel'); // optional if autoloading
         $this->model('AuthorModel'); // optional if autoloading
         $this->db = new Database();
@@ -12,98 +15,105 @@ class Book extends Controller
 
     public function registerBook()
     {
-
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             setMessage('error', 'Invalid request.');
             return;
         }
 
-
-        $requiredFields = ['title', 'author', 'isbn', 'category', 'total_quantity'];
-        foreach ($requiredFields as $field) {
+        // Validate required fields
+        $required = ['title', 'author', 'isbn', 'category', 'total_quantity'];
+        foreach ($required as $field) {
             if (empty($_POST[$field])) {
                 setMessage('error', 'All fields are required.');
                 return;
             }
         }
 
+        $title         = trim($_POST['title']);
+        $authorName    = trim($_POST['author']);
+        $isbn          = trim($_POST['isbn']);
+        $categoryName  = trim($_POST['category']);
+        $totalQuantity = (int) $_POST['total_quantity'];
+        $availableQty  = $totalQuantity;
+        $statusId      = 1;
+        $statusDesc    = 'Available';
 
-        $isbn = $_POST['isbn'];
+        // Prevent duplicate books by ISBN
         if ($this->db->columnFilter('books', 'isbn', $isbn)) {
             setMessage('error', 'This book already exists.');
             redirect('admin/addnewBook');
-        }
-
-        $categoryName = $_POST['category'];
-        $getcategoryid = $this->db->columnFilter('categories', 'name', $categoryName);
-        $category_id = $getcategoryid ? $getcategoryid['id'] : null;
-
-        if (!$category_id) {
-            setMessage('error', 'Invalid category.');
             return;
         }
 
-        $authorName = $_POST['author'];
-        $getauthorid = $this->db->columnFilter('authors', 'name', $authorName);
-        if ($getauthorid) {
-            $author_id = $getauthorid['id'];
-        } else {
-            $authorModel = new AuthorModel();
-            $authorModel->setName($authorName);
-            $this->db->create('authors', $authorModel->toArray());
+        // Get category ID
+        $category = $this->db->columnFilter('categories', 'name', $categoryName);
+        if (!$category || !isset($category['id'])) {
+            setMessage('error', 'Invalid category.');
+            return;
+        }
+        $categoryId = $category['id'];
 
-            // Get the newly created author ID
-            $getauthorid = $this->db->columnFilter('authors', 'name', $authorName);
-            $author_id = $getauthorid['id'];
+        // Get or create author ID
+        $author = $this->db->columnFilter('authors', 'name', $authorName);
+        if (!$author) {
+            $authorModel = new AuthorModel();
+            $params = [$authorName];
+            $this->db->storeprocedure('InsertAuthor', $params);
+
+            $author = $this->db->columnFilter('authors', 'name', $authorName);
         }
 
+        if (!$author || !isset($author['id'])) {
+            setMessage('error', 'Failed to assign author.');
+            return;
+        }
+        $authorId = $author['id'];
+
+        // Handle image upload
         $image = null;
-
-        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        if (!empty($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = 'public/images/';
-            $originalName = basename($_FILES['image']['name']);
-            $imageName = uniqid('book_') . '_' . $originalName;
+            $imageName = uniqid('book_') . '_' . basename($_FILES['image']['name']);
             $targetPath = $uploadDir . $imageName;
-
 
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0755, true);
             }
 
-
-            if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-                $image = $targetPath;
-            } else {
-                setMessage('error', ' Failed to move uploaded file.');
+            if (!move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
+                setMessage('error', 'Failed to upload image.');
                 return;
             }
+
+            $image = $targetPath;
         } else {
-            setMessage('error', ' Image not uploaded or error occurred.');
+            setMessage('error', 'Image is required.');
             return;
         }
 
-        $book = new BookModel();
-        $book->title = $_POST['title'];
-        $book->author_id = $author_id;
-        $book->isbn = $isbn;
-        $book->category_id = $category_id;
-        $book->total_quantity = $_POST['total_quantity'];
-        $book->available_quantity = $_POST['total_quantity'];
-        $book->status_id = 1;
-        $book->image = $image;
+        // Prepare parameters for stored procedure
+        $params = [
+            $title,
+            $image,
+            $isbn,
+            $categoryId,
+            $authorId,
+            $totalQuantity,
+            $availableQty,
+            $statusId,
+            $statusDesc
+        ];
 
-        $insert = $this->db->create('books', $book->toArray());
-        // var_dump($insert);
-        // die();
-
-        if ($insert) {
-            setMessage('success', ' Book added successfully.');
+        // Insert via stored procedure
+        if ($this->db->storeprocedure('InsertBook', $params)) {
+            setMessage('success', 'Book added successfully.');
             redirect('admin/manageBook');
         } else {
-            setMessage('error', ' Failed to add book.');
+            setMessage('error', 'Failed to add book.');
             redirect('admin/addnewBook');
         }
     }
+
 
     // Edit Book
     public function editBook($id)
@@ -116,12 +126,17 @@ class Book extends Controller
             $isbn = $_POST['isbn'];
             $author = $_POST['author_name'];
             $total_quantity = $_POST['total_quantity'];
-            //$available_quantity = $_POST['total_'];
             $status_description = $_POST['status_description'];
+
+            $bookid = $this->db->columnFilter('books', 'isbn', $isbn);
+
+            $possible = $total_quantity - $bookid['total_quantity'];
+            $available_quantity = $bookid['available_quantity'] + $possible;
+
 
             $updateBook = [
                 'total_quantity' => $total_quantity,
-                'available_quantity' => $total_quantity,
+                'available_quantity' => $available_quantity,
                 'status_description' => $status_description
             ];
 

@@ -64,9 +64,8 @@ if (session_status() === PHP_SESSION_NONE) {
             border: 1px solid var(--glass-border);
             box-shadow: var(--shadow-soft);
             overflow: hidden;
-            max-width: 1200px;
-            width: 100%;
-            min-height: 600px;
+            width: 60%;
+            max-height: 650px;
             animation: slideUp 0.6s ease-out;
         }
 
@@ -84,7 +83,7 @@ if (session_status() === PHP_SESSION_NONE) {
         .image-section {
             flex: 1;
             position: relative;
-            background: linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%), 
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%);
                         /* url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80') center/cover; */
             display: flex;
             flex-direction: column;
@@ -137,7 +136,7 @@ if (session_status() === PHP_SESSION_NONE) {
         }
 
         .image-title {
-            font-size: 2.5rem;
+            font-size: 1.5rem;
             font-weight: 800;
             margin-bottom: 1rem;
             line-height: 1.2;
@@ -553,24 +552,18 @@ if (session_status() === PHP_SESSION_NONE) {
             </div>
             
             <div class="image-content">
-                <div class="image-icon">
-                    <i class="fas fa-book-open"></i>
-                </div>
-                <h2 class="image-title">Welcome to Our Digital Library</h2>
-                <p class="image-subtitle">
-                    Discover endless knowledge and unlock your potential through our comprehensive learning platform
-                </p>
+                
+                <img src="/images/b1.png" class="img">
+                
             </div>
         </div>
 
         <!-- Right Side - Login Form -->
         <div class="form-section">
             <div class="hero-section">
-                <div class="logo-icon">
-                    <i class="fas fa-book-open"></i>
-                </div>
-                <h1 class="main-title">Welcome Back</h1>
-                <p class="subtitle">Enter your credentials to continue </p>
+                
+            <h5 class="image-title">Welcome Back</h5>
+                <h3>Enter Your Email And Password To Continue</h3>
             </div>
 
             <form method="POST" action="<?php echo URLROOT; ?>/auth/login" id="loginForm">

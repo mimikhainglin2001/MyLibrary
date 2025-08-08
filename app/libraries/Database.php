@@ -430,78 +430,59 @@ class Database
         //  print_r($row);
         return ($success) ? $row : [];
     }
-    public function raw($sql, $params = [])
+    
+    ////--------------------STORE PROCEDURE --------------------------------------//
+    // public function InsertBook($title, $image, $isbn, $category_id, $author_id, $total_quantity, $available_quantity, $status_id, $status_description)
+    // {
+    //     $sql = 'CALL InsertBook (:title, :image, :isbn, :category_id, :author_id, :total_quantity, :available_quantity, :status_is, :status_description)';
+    //     $stm = $this->pdo->prepare($sql);
+    //     $stm->bindParam(':title', $title, PDO::PARAM_INT);
+    //     $stm->bindParam(':image', $image, PDO::PARAM_INT);
+    //     $stm->bindParam(':isbn', $isbn, PDO::PARAM_INT);
+    //     $stm->bindParam(':category_id', $category_id, PDO::PARAM_INT);
+    //     $stm->bindParam(':author_id', $author_id, PDO::PARAM_INT);
+    //     $stm->bindParam(':total_quantity', $total_quantity, PDO::PARAM_INT);
+    //     $stm->bindParam(':available_quantity', $available_quantity, PDO::PARAM_INT);
+    //     $stm->bindParam(':status_id', $status_id, PDO::PARAM_INT);
+    //     $stm->bindParam(':status_description', $status_description, PDO::PARAM_INT);
+    //     return $stm->execute();
+
+    // }
+
+    public function storeprocedure($name, $params = [])
     {
+        $placeholders = implode(',', array_fill(0, count($params), '?'));
+        $sql = "CALL $name($placeholders)";
+        $stm = $this->pdo->prepare($sql);
+        $stm->execute(array_values($params));
+        return true;
+    }
+
+    // Method to get borrow count by user
+    public function getBorrowCountByUser(int $userId): int
+    {
+        $sql = "SELECT COUNT(*) as count FROM borrowBook WHERE user_id = :uid AND status = 'borrowed'";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->execute(['uid' => $userId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)($result['count'] ?? 0);
     }
 
-
-    // For Dashboard
-    // public function incomeTransition()
-    // {
-    //    try{
-
-    //        $sql        = "SELECT *,SUM(amount) AS amount FROM incomes WHERE
-    //        (date = { fn CURDATE() }) ";
-    //        $stm = $this->pdo->prepare($sql);
-    //        $success = $stm->execute();
-
-    //        $row     = $stm->fetch(PDO::FETCH_ASSOC);
-    //        return ($success) ? $row : [];
-
-    //     }
-    //     catch( Exception $e)
-    //     {
-    //         echo($e);
-    //     }
-
-    // }
-
-    public function incomeTransition()
+    // Method to check if user borrowed a specific book
+    public function hasUserBorrowedBook(int $userId, int $bookId): bool
     {
-        try {
-            $sql = "SELECT SUM(amount) AS total_amount FROM incomes WHERE date = CURDATE()";
-            $stm = $this->pdo->prepare($sql);
-            $success = $stm->execute();
-            $row = $stm->fetch(PDO::FETCH_ASSOC);
-            return ($success) ? $row : [];
-        } catch (Exception $e) {
-            echo ($e);
-        }
+        $sql = "SELECT 1 FROM borrowBook WHERE user_id = :uid AND book_id = :bid AND status = 'borrowed' LIMIT 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['uid' => $userId, 'bid' => $bookId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return !empty($result);
     }
-
-
-    // public function expenseTransition()
-    // {
-    //    try{
-
-    //        $sql        = "SELECT * ,SUM(amount*qty) AS amount FROM expenses WHERE
-    //        (date = { fn CURDATE() }) ";
-    //        $stm = $this->pdo->prepare($sql);
-    //        $success = $stm->execute();
-
-    //        $row     = $stm->fetch(PDO::FETCH_ASSOC);
-    //        return ($success) ? $row : [];
-
-    //     }
-    //     catch( Exception $e)
-    //     {
-    //         echo($e);
-    //     }
-
-    // }
-    public function expenseTransition()
+    public function hasPendingReservation(int $userId, int $bookId): bool
     {
-        try {
-            $sql = "SELECT SUM(amount * qty) AS total_expense FROM expenses WHERE date = CURDATE()";
-            $stm = $this->pdo->prepare($sql);
-            $success = $stm->execute();
-            $row = $stm->fetch(PDO::FETCH_ASSOC);
-            return ($success) ? $row : [];
-        } catch (Exception $e) {
-            echo ($e);
-        }
+        $sql = "SELECT 1 FROM reservations WHERE user_id = :user_id AND book_id = :book_id AND status = 'pending' LIMIT 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['user_id' => $userId, 'book_id' => $bookId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return !empty($result);
     }
 }

@@ -5,19 +5,19 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: MyLibrary-app
+    container_name: Test-app
     ports:
       - "8000:80"
     volumes:
       - .:/var/www/html
     networks:
-      - MyLibrary-network
+      - Test-network
     depends_on:
       - db
 
   db:
     image: mysql:8.0
-    container_name: MyLibrary-db
+    container_name: Test-db
     ports:
       - "3307:3306"
     environment:
@@ -27,11 +27,11 @@ services:
       - db_data:/var/lib/mysql
       - ./my_custom.cnf:/etc/mysql/conf.d/my_custom.cnf  # add this line
     networks:
-      - MyLibrary-network
+      - Test-network
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: MyLibrary-phpmyadmin
+    container_name: Test-phpmyadmin
     ports:
       - "8080:80"
     environment:
@@ -40,10 +40,10 @@ services:
     depends_on:
       - db
     networks:
-      - MyLibrary-network
+      - Test-network
 
 volumes:
   db_data:
 
 networks:
-  MyLibrary-network:
+ Test-network:

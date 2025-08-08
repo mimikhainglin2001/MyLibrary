@@ -1,5 +1,3 @@
-<?php require_once APPROOT . '/views/inc/sidebar.php'; ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,31 +6,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Book</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR3authorization/lQfrg1Bw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
+        /* Basic reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        /* Body as a flex container for sidebar and main content */
         body {
             font-family: Inter, sans-serif;
             font-weight: 16px;
             min-height: 100vh;
-            padding: 20px;
-            background: #DBEAFE;
+            background: #DBEAFE; /* Light blue background as seen in the image */
+            display: flex; /* Makes direct children (sidebar and main-content-area) arrange horizontally */
+            /* Removed padding from body, as the main-content-area will handle its own padding */
         }
 
+        /* Adjustments for main content area to sit next to the sidebar and center its content */
+        .main-content-area {
+            flex-grow: 1; /* Allows this area to take up all remaining horizontal space */
+            padding: 20px; /* Padding for the content inside the main area */
+            /* This margin-left is crucial. It creates space for the sidebar.
+               Adjust 256px if your sidebar's width (w-64 in Tailwind) is different. */
+            margin-left: 256px;
+            /* 👇👇👇 NEW FLEXBOX PROPERTIES FOR CENTERING THE FORM 👇👇👇 */
+            display: flex; /* Make this div a flex container */
+            justify-content: center; /* Center horizontally along the main axis */
+            align-items: center; /* Center vertically along the cross axis */
+            min-height: 100vh; /* Ensure it takes full viewport height for vertical centering */
+            /* 👆👆👆 END NEW FLEXBOX PROPERTIES 👆👆👆 */
+        }
+
+        /* Existing styles for the form container and elements */
         .container {
-            max-width: 500px;
-            margin: 0 auto;
+            max-width: 900px; /* Increased max-width for landscape */
+            /* margin: 0 auto; -- Removed this as centering is handled by parent flexbox */
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             animation: slideUp 0.8s ease-out;
+            /* Optional: Adjust vertical position slightly if perfect center isn't aesthetically pleasing */
+            margin-top: -50px; /* Moves the form up by 50px from the perfect center */
         }
 
         @keyframes slideUp {
@@ -40,7 +59,6 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -84,8 +102,21 @@
             padding: 30px;
         }
 
+        /* Landscape specific styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Default to single column for small screens */
+            gap: 20px; /* Space between grid items */
+        }
+
+        @media (min-width: 768px) { /* Apply landscape on tablets and desktops */
+            .form-grid {
+                grid-template-columns: 1fr 1fr; /* Two columns for larger screens */
+            }
+        }
+
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 0; /* Remove default margin as grid handles spacing */
         }
 
         .form-group label {
@@ -185,6 +216,13 @@
             outline: none;
         }
 
+        .full-width-buttons {
+            grid-column: 1 / -1; /* Make buttons span all columns in the grid */
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Space between buttons */
+        }
+
         .submit-btn {
             width: 100%;
             background: #1e3a8a;
@@ -196,7 +234,6 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-bottom: 15px;
         }
 
         .submit-btn:hover {
@@ -245,66 +282,6 @@
             border: 1px solid #f5c6cb;
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .container {
-                margin: 10px auto;
-                border-radius: 15px;
-            }
-
-            .header {
-                padding: 20px 15px;
-            }
-
-            .header h2 {
-                font-size: 1.5rem;
-            }
-
-            .header .icon {
-                font-size: 2rem;
-            }
-
-            .form-container {
-                padding: 20px;
-            }
-
-            .form-group {
-                margin-bottom: 16px;
-            }
-
-            .form-input,
-            .submit-btn,
-            .back-btn {
-                padding: 10px 12px;
-            }
-
-            .quantity-btn {
-                padding: 10px 12px;
-            }
-
-            .quantity-input {
-                padding: 10px 12px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header h2 {
-                font-size: 1.3rem;
-            }
-
-            .form-container {
-                padding: 16px;
-            }
-
-            .form-input {
-                font-size: 0.95rem;
-            }
-        }
-
         /* Loading animation for form submission */
         .loading {
             position: relative;
@@ -330,93 +307,122 @@
             0% {
                 transform: rotate(0deg);
             }
-
             100% {
                 transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive adjustments for sidebar */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column; /* Stack sidebar and main content vertically on small screens */
+            }
+            .main-content-area {
+                margin-left: 0; /* Remove left margin when stacked */
+                padding-top: 20px; /* Add some top padding if sidebar becomes a top bar */
+                min-height: auto; /* Allow height to adjust naturally */
+                display: block; /* Revert to block layout to remove centering for small screens */
+                justify-content: initial;
+                align-items: initial;
+            }
+            .container {
+                max-width: 100%; /* Allow the form to take full width on smaller screens */
+                margin-left: auto; /* Re-center if it was pushed by a fixed element */
+                margin-right: auto;
+                margin-top: 0; /* Remove top margin adjustment on small screens */
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="icon">
-                <i class="fas fa-book-open"></i>
+    <?php
+    // Include the sidebar file directly inside the body.
+    // Ensure that sidebar.php itself creates a fixed/absolute positioned element
+    // like <aside class="fixed top-0 left-0 w-64 min-h-screen bg-blue-800 text-white p-6 shadow-lg z-50">
+    require_once APPROOT . '/views/inc/sidebar.php';
+    ?>
+
+    <div class="main-content-area">
+        <div class="container">
+            <div class="header">
+                <div class="icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h2>Add New Book</h2>
             </div>
-            <h2>Add New Book</h2>
-        </div>
 
-        <div class="form-container">
-            <form id="addBookForm" method="POST" action="<?php echo URLROOT; ?>/book/registerBook" enctype="multipart/form-data">
-                <?php require APPROOT . '/views/components/auth_message.php'; ?>
+            <div class="form-container">
+                <form id="addBookForm" method="POST" action="<?php echo URLROOT; ?>/book/registerBook" enctype="multipart/form-data">
+                    <?php require APPROOT . '/views/components/auth_message.php'; ?>
 
-                <!-- Message placeholder -->
-                <div id="messageContainer"></div>
+                    <div id="messageContainer"></div>
 
-                <div class="form-group">
-                    <label for="chooseImage">Book Cover Image</label>
-                    <div class="file-input-wrapper">
-                        <input type="file" name="image" id="chooseImage" class="file-input" accept="image/*">
-                        <div class="file-input-display">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <span>Choose book cover image</span>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="chooseImage">Book Cover Image</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" name="image" id="chooseImage" class="file-input" accept="image/*">
+                                <div class="file-input-display">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>Choose book cover image</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="title">Book Title</label>
+                            <input type="text" name="title" id="title" class="form-input" placeholder="Enter book title" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="author">Author</label>
+                            <input type="text" name="author" id="author" class="form-input" placeholder="Enter author name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="isbn">ISBN</label>
+                            <input type="text" name="isbn" id="isbn" class="form-input" placeholder="Enter ISBN number" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select name="category" id="category" class="form-input" required>
+                                <option value="">Select a category</option>
+                                <option value="Literary Book">Literary Book</option>
+                                <option value="Historical Book">Historical Book</option>
+                                <option value="Education/References Book">Education/References Book</option>
+                                <option value="Romance Book">Romance Book</option>
+                                <option value="Horror Book">Horror Book</option>
+                                <option value="Cartoon Book">Cartoon Book</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quantityInput">Quantity</label>
+                            <div class="quantity-wrapper">
+                                <button type="button" id="decrementQuantity" class="quantity-btn">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" name="total_quantity" id="quantityInput" value="1" min="1" class="quantity-input" readonly>
+                                <button type="button" id="incrementQuantity" class="quantity-btn">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="full-width-buttons">
+                            <button type="submit" name="submit" class="submit-btn" id="submitBtn">
+                                <i class="fas fa-plus-circle"></i> Add Book
+                            </button>
+
+                            <button type="button" class="back-btn" onclick="window.location.href='<?php echo URLROOT; ?>/admin/adminDashboard'">
+                                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                            </button>
                         </div>
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="title">Book Title</label>
-                    <input type="text" name="title" id="title" class="form-input" placeholder="Enter book title" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="author">Author</label>
-                    <input type="text" name="author" id="author" class="form-input" placeholder="Enter author name" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="isbn">ISBN</label>
-                    <input type="text" name="isbn" id="isbn" class="form-input" placeholder="Enter ISBN number" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="category">Category</label>
-                    <select name="category" id="category" class="form-input" required>
-                        <option value="">Select a category</option>
-                        <option value="Literary Book">Literary Book</option>
-                        <option value="Historical Book">Historical Book</option>
-                        <option value="Education/References Book">Education/References Book</option>
-                        <option value="Romance Book">Romance Book</option>
-                        <option value="Horror Book">Horror Book</option>
-                        <option value="Cartoon Book">Cartoon Book</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="quantityInput">Quantity</label>
-                    <div class="quantity-wrapper">
-                        <button type="button" id="decrementQuantity" class="quantity-btn">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                        <input type="number" name="total_quantity" id="quantityInput" value="1" min="1" class="quantity-input" readonly>
-                        <button type="button" id="incrementQuantity" class="quantity-btn">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <button type="submit" name="submit" class="submit-btn" id="submitBtn">
-                    <i class="fas fa-plus-circle"></i>
-                    Add Book
-                </button>
-
-                <button type="button" class="back-btn" onclick="window.location.href='<?php echo URLROOT; ?>/admin/adminDashboard'">
-                    <i class="fas fa-arrow-left"></i>
-                    Back to Dashboard
-                </button>
-
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -463,23 +469,17 @@
             submitBtn.disabled = true;
         });
 
-        // Back button function
-        // function goBack() {
-        //     if (confirm('Are you sure you want to go back? Any unsaved changes will be lost.')) {
-        //         window.history.back();
-        //     }
-        // }
-
         // Add some basic form validation
         form.addEventListener('submit', (e) => {
             const title = document.getElementById('title').value.trim();
             const author = document.getElementById('author').value.trim();
             const isbn = document.getElementById('isbn').value.trim();
             const category = document.getElementById('category').value;
+            const image = document.getElementById('chooseImage').files.length; // Check if an image is selected
 
-            if (!title || !author || !isbn || !category) {
+            if (!title || !author || !isbn || !category || image === 0) { // Added image check
                 e.preventDefault();
-                showMessage('Please fill in all required fields.', 'error');
+                showMessage('Please fill in all required fields and choose an image.', 'error');
                 submitBtn.classList.remove('loading');
                 submitBtn.disabled = false;
                 return;

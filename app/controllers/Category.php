@@ -1,10 +1,11 @@
 <?php
-
+require_once APPROOT . '/middleware/authmiddleware.php';
 class Category extends Controller
 {
     private $db;
     public function __construct()
     {
+        AuthMiddleware::userOnly();
         $this->model('CategoryModel');
     
         $this->db = new Database();

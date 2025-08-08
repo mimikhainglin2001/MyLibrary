@@ -58,19 +58,20 @@ if (session_status() === PHP_SESSION_NONE) {
         }
 
         .main-container {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
+            /* background: var(--glass-bg); */
+            /* backdrop-filter: blur(20px); */
             border-radius: 24px;
             border: 1px solid var(--glass-border);
             box-shadow: var(--shadow-soft);
-            width: 100%;
-            max-width: 1200px;
-            min-height: 700px;
+            width: 60%;
+            /* height: 40%; */
+            /* max-width: 1200px; */
+            max-height: 650px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             overflow: hidden;
             position: relative;
-            animation: slideUp 0.8s ease-out;
+            /* animation: slideUp 0.8s ease-out; */
         }
 
         @keyframes slideUp {
@@ -88,6 +89,7 @@ if (session_status() === PHP_SESSION_NONE) {
         .left-section {
             background: linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(30, 58, 138, 0.8) 100%);
             display: flex;
+
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -97,7 +99,15 @@ if (session_status() === PHP_SESSION_NONE) {
             position: relative;
         }
 
-        .left-section::before {
+        .left-section img {
+            border-radius: 20px;
+        }
+
+        /* .img{
+            box-shadow: 2px 2px 20px #f3f4f8ff;
+        } */
+
+        /* .left-section::before {
             content: '';
             position: absolute;
             top: 0;
@@ -106,7 +116,7 @@ if (session_status() === PHP_SESSION_NONE) {
             bottom: 0;
             background: linear-gradient(135deg, rgba(30, 58, 138, 0.85) 0%, rgba(30, 58, 138, 0.75) 100%);
             z-index: 1;
-        }
+        } */
 
         .left-content {
             position: relative;
@@ -145,7 +155,7 @@ if (session_status() === PHP_SESSION_NONE) {
         }
 
         .welcome-title {
-            font-size: 3rem;
+            font-size: 2rem;
             font-weight: 800;
             margin-bottom: 1rem;
             text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -192,7 +202,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
         .form-header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-top: 10px;
+            /* margin-bottom: 2rem; */
         }
 
         .form-logo {
@@ -319,6 +330,60 @@ if (session_status() === PHP_SESSION_NONE) {
             border-color: #11998e;
             background: linear-gradient(135deg, rgba(17, 153, 142, 0.1) 0%, rgba(56, 239, 125, 0.1) 100%);
         }
+
+        /* NEW STYLES FOR ROLL NUMBER AND RADIO BUTTONS */
+        .rollno-input-group {
+            display: flex;
+            /* Use flexbox to align items in a row */
+            align-items: center;
+            /* Vertically align items */
+            gap: 0.75rem;
+            /* Space between input and radio buttons */
+        }
+
+        .rollno-input-group .form-input {
+            flex-grow: 1;
+            /* Allow the input to grow and take available space */
+            max-width: 60%;
+            /* Adjust width of the roll number input */
+        }
+
+        .rollno-radio-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.625rem 1rem;
+            /* Slightly adjust padding for radio buttons */
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            background: white;
+            font-weight: 500;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            /* Prevent text from wrapping */
+        }
+
+        .rollno-radio-option:hover {
+            border-color: #11998e;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(17, 153, 142, 0.15);
+        }
+
+        .rollno-radio-option input[type="radio"] {
+            margin-right: 0.5rem;
+            width: 18px;
+            height: 18px;
+            accent-color: #11998e;
+        }
+
+        .rollno-radio-option.selected {
+            border-color: #11998e;
+            background: linear-gradient(135deg, rgba(17, 153, 142, 0.1) 0%, rgba(56, 239, 125, 0.1) 100%);
+        }
+
+        /* END NEW STYLES */
+
 
         .terms-section {
             background: #f8fafc;
@@ -524,11 +589,13 @@ if (session_status() === PHP_SESSION_NONE) {
             }
 
             .welcome-title {
-                font-size: 2.5rem;
+                font-size: 1rem;
+                text-align: center;
             }
 
             .welcome-subtitle {
                 font-size: 1.1rem;
+                
             }
         }
 
@@ -576,6 +643,19 @@ if (session_status() === PHP_SESSION_NONE) {
 
             .gender-option {
                 justify-content: center;
+            }
+
+            /* Responsive adjustments for rollno-input-group */
+            .rollno-input-group {
+                flex-direction: column;
+                /* Stack vertically on smaller screens */
+                align-items: stretch;
+                /* Stretch items to full width */
+            }
+
+            .rollno-input-group .form-input {
+                max-width: 100%;
+                /* Full width on small screens */
             }
         }
 
@@ -676,46 +756,21 @@ if (session_status() === PHP_SESSION_NONE) {
 
 <body>
     <div class="main-container">
-        <!-- Left Section - Library Image -->
         <div class="left-section">
-            <div class="left-content">
-                <div class="welcome-icon">
-                    <i class="fas fa-book-open"></i>
-                </div>
-                <h1 class="welcome-title">Welcome to Our Library</h1>
-                <p class="welcome-subtitle">Discover endless knowledge and join our community of learners</p>
 
-                <ul class="feature-list">
-                    <li class="feature-item">
-                        <i class="fas fa-check"></i>
-                        <span>Access thousands of books</span>
-                    </li>
-                    <li class="feature-item">
-                        <i class="fas fa-check"></i>
-                        <span>Digital resources available</span>
-                    </li>
-                    <li class="feature-item">
-                        <i class="fas fa-check"></i>
-                        <span>Study spaces & quiet zones</span>
-                    </li>
-                    <li class="feature-item">
-                        <i class="fas fa-check"></i>
-                        <span>Expert librarian support</span>
-                    </li>
-                </ul>
-            </div>
+
+            <img src="/images/b1.png" class="img">
+
         </div>
 
-        <!-- Right Section - Registration Form -->
         <div class="right-section">
-            <div class="form-header">
+            <!-- <div class="form-header">
                 <div class="form-logo">
                     <i class="fas fa-book-open"></i>
                 </div>
-                <h2 class="form-title">Create Account</h2>
-                <p class="form-subtitle">Join our library to expand your knowledge</p>
-            </div>
-
+            </div> -->
+            <h1 style="font-weight: bold;
+            font-size:1rem;">Create an Account</h1>
             <form method="post" action="<?php echo URLROOT; ?>/auth/register" id="registerForm">
                 <?php require APPROOT . '/views/components/auth_message.php'; ?>
 
@@ -728,11 +783,8 @@ if (session_status() === PHP_SESSION_NONE) {
                 </div>
 
                 <div class="form-group">
-                    <input type="text" name="rollno" placeholder="Roll Number" required class="form-input" />
-                </div>
-
-                <div class="form-group">
-                    <div class="gender-selection">
+                    <div class="rollno-input-group">
+                        <input type="text" name="rollno" placeholder="Roll No" required class="form-input" />
                         <label class="gender-option">
                             <input type="radio" name="gender" value="male" required />
                             <span>Male</span>
@@ -743,6 +795,19 @@ if (session_status() === PHP_SESSION_NONE) {
                         </label>
                     </div>
                 </div>
+
+                <!-- <div class="form-group">
+                    <div class="gender-selection">
+                        <label class="gender-option">
+                            <input type="radio" name="gender" value="male" required />
+                            <span>Male</span>
+                        </label>
+                        <label class="gender-option">
+                            <input type="radio" name="gender" value="female" />
+                            <span>Female</span>
+                        </label>
+                    </div>
+                </div> -->
 
                 <div class="form-group">
                     <select name="year" required class="form-input">
@@ -773,7 +838,7 @@ if (session_status() === PHP_SESSION_NONE) {
                     </div>
                 </div>
 
-                <div class="terms-section">
+                <!-- <div class="terms-section">
                     <div class="terms-header">
                         <div class="terms-icon">
                             <i class="fas fa-shield-alt"></i>
@@ -797,7 +862,7 @@ if (session_status() === PHP_SESSION_NONE) {
                             <a href="#" class="terms-link" onclick="openPrivacyModal()">Privacy Policy</a>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <button type="submit" class="submit-btn">
                     Create My Account
@@ -837,6 +902,19 @@ if (session_status() === PHP_SESSION_NONE) {
                     }
                 });
             });
+
+            // NEW: Roll Number radio button styling
+            const rollnoTypeOptions = document.querySelectorAll('.rollno-radio-option');
+            rollnoTypeOptions.forEach(option => {
+                const radio = option.querySelector('input[name="rollno_type"]');
+                radio.addEventListener('change', function() {
+                    rollnoTypeOptions.forEach(opt => opt.classList.remove('selected'));
+                    if (this.checked) {
+                        option.classList.add('selected');
+                    }
+                });
+            });
+
 
             // Form validation
             const form = document.getElementById('registerForm');

@@ -1,7 +1,10 @@
 <?php
+require_once APPROOT . '/middleware/authmiddleware.php';
 class  ReservationModel extends Controller{
     private $db;
-    public function __construct(){
+    public function __construct()
+    {
+        AuthMiddleware::userOnly();
         $this->db = new Database();
         $this->model('ReservationModel');
     }
