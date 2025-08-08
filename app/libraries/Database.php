@@ -33,36 +33,6 @@ class Database
         }
     }
 
-    // public function create($table, $data)
-    // {
-    //     // print_r($data);  
-    //     // exit;
-    //     try {
-    //         $column = array_keys($data);
-    //         $columnSql = implode(', ', $column);
-    //         $bindingSql = ':' . implode(',:', $column);
-    //         //echo $bindingSql;
-    //         $sql = "INSERT INTO $table ($columnSql) VALUES ($bindingSql)";
-    //         // echo $sql;
-    //         // exit;
-    //         $stm = $this->pdo->prepare($sql);  
-    //         // print_r($stm);
-    //         // exit;
-    //         foreach ($data as $key => $value) {
-    //             // echo $key . ' => ' . $value . '<br>';
-    //             // echo ':' . $key . ' => ' . $value . '<br>';
-
-    //             $stm->bindValue(':' . $key, $value);
-    //         }
-    //         // print_r($stm);
-    //         $status = $stm->execute();
-    //         // echo $status;
-    //         return ($status) ? $this->pdo->lastInsertId() : false;
-    //     } catch (PDOException $e) {
-    //         echo $e;
-    //     }
-    // }
-
     public function create($table, $data)
     {
         try {
@@ -163,35 +133,6 @@ class Database
             return false;
         }
     }
-
-
-    //     public function updateWhere($table, $where, $data)
-    // {
-    //     $set = '';
-    //     foreach ($data as $key => $value) {
-    //         $set .= "$key = :set_$key, ";
-    //     }
-    //     $set = rtrim($set, ', ');
-
-    //     $conditions = '';
-    //     foreach ($where as $key => $value) {
-    //         $conditions .= "$key = :where_$key AND ";
-    //     }
-    //     $conditions = rtrim($conditions, 'AND ');
-
-    //     $sql = "UPDATE $table SET $set WHERE $conditions";
-    //     $stmt = $this->pdo->prepare($sql);
-
-    //     foreach ($data as $key => $value) {
-    //         $stmt->bindValue(":set_$key", $value);
-    //     }
-
-    //     foreach ($where as $key => $value) {
-    //         $stmt->bindValue(":where_$key", $value);
-    //     }
-
-    //     return $stmt->execute();
-    // }
 
 
     public function delete($table, $id)
@@ -333,9 +274,6 @@ class Database
         $row = $stm->fetch(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
     }
-
-
-
     public function getAllMembers($table, $role_id)
     {
         $sql = 'SELECT * FROM ' . $table . ' WHERE `role_id` = :role_id';
@@ -358,7 +296,6 @@ class Database
     public function getBorrowBook($table, $user_name)
     {
         $sql = 'SELECT * FROM ' . $table . ' WHERE `name` =:name';
-        // print_r($sql);
         $stm = $this->pdo->prepare($sql);
         $stm->bindValue(':name', $user_name);
         $success = $stm->execute();
@@ -369,42 +306,8 @@ class Database
     public function getReservationBook($table, $user_name)
     {
         $sql = 'SELECT * FROM ' . $table . ' WHERE `user_name` =:name';
-        // print_r($sql);
         $stm = $this->pdo->prepare($sql);
         $stm->bindValue(':name', $user_name);
-        $success = $stm->execute();
-        $row = $stm->fetchAll(PDO::FETCH_ASSOC);
-        return ($success) ? $row : [];
-    }
-    public function getBookList($table)
-    {
-        $sql = 'SELECT * FROM ' . $table;
-        $stm = $this->pdo->prepare($sql);
-        $success = $stm->execute();
-        $row = $stm->fetchAll(PDO::FETCH_ASSOC);
-        return ($success) ? $row : [];
-    }
-    public function getBorrowBookList($table)
-    {
-        $sql = 'SELECT * FROM ' . $table;
-        $stm = $this->pdo->prepare($sql);
-        $success = $stm->execute();
-        $row = $stm->fetchAll(PDO::FETCH_ASSOC);
-        return ($success) ? $row : [];
-    }
-    public function getReturnBookList($table)
-    {
-        $sql = 'SELECT * FROM ' . $table;
-        $stm = $this->pdo->prepare($sql);
-        $success = $stm->execute();
-        $row = $stm->fetchAll(PDO::FETCH_ASSOC);
-        return ($success) ? $row : [];
-    }
-
-    public function getReservedBookList($table)
-    {
-        $sql = 'SELECT * FROM ' . $table;
-        $stm = $this->pdo->prepare($sql);
         $success = $stm->execute();
         $row = $stm->fetchAll(PDO::FETCH_ASSOC);
         return ($success) ? $row : [];
@@ -430,93 +333,67 @@ class Database
         //  print_r($row);
         return ($success) ? $row : [];
     }
-    public function raw($sql, $params = [])
+   public function raw($sql, $params = [])
+{
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute($params);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);  // or fetch() if expecting one row
+}
+
+
+    // Returns how many books user currently borrowed (status = 'borrowed')
+    public function countBorrowedBooksByUser($userId)
     {
+        $sql = "SELECT COUNT(*) AS count FROM borrowBook WHERE user_id = :uid AND status = 'borrowed'";
+        $result = $this->raw($sql, ['uid' => $userId]);
+        return $result['count'] ?? 0;
+    }
+
+    // Check if user has already borrowed a specific book
+    public function hasUserBorrowedBook($userId, $bookId)
+    {
+        $sql = "SELECT 1 FROM borrowBook WHERE user_id = :uid AND book_id = :bid AND status = 'borrowed' LIMIT 1";
+        $result = $this->raw($sql, ['uid' => $userId, 'bid' => $bookId]);
+        return !empty($result);
+    }
+
+    public function hasReservation(int $userId, int $bookId, string $status): bool
+    {
+        $sql = "SELECT 1 FROM reservations WHERE user_id = :user_id AND book_id = :book_id AND status = :status LIMIT 1";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->execute([
+            ':user_id' => $userId,
+            ':book_id' => $bookId,
+            ':status'  => $status,
+        ]);
+        return (bool) $stmt->fetchColumn();
     }
-    public function rawAll($sql, $params = [])
+
+
+    ////--------------------STORE PROCEDURE --------------------------------------//
+    // public function InsertBook($title, $image, $isbn, $category_id, $author_id, $total_quantity, $available_quantity, $status_id, $status_description)
+    // {
+    //     $sql = 'CALL InsertBook (:title, :image, :isbn, :category_id, :author_id, :total_quantity, :available_quantity, :status_is, :status_description)';
+    //     $stm = $this->pdo->prepare($sql);
+    //     $stm->bindParam(':title', $title, PDO::PARAM_INT);
+    //     $stm->bindParam(':image', $image, PDO::PARAM_INT);
+    //     $stm->bindParam(':isbn', $isbn, PDO::PARAM_INT);
+    //     $stm->bindParam(':category_id', $category_id, PDO::PARAM_INT);
+    //     $stm->bindParam(':author_id', $author_id, PDO::PARAM_INT);
+    //     $stm->bindParam(':total_quantity', $total_quantity, PDO::PARAM_INT);
+    //     $stm->bindParam(':available_quantity', $available_quantity, PDO::PARAM_INT);
+    //     $stm->bindParam(':status_id', $status_id, PDO::PARAM_INT);
+    //     $stm->bindParam(':status_description', $status_description, PDO::PARAM_INT);
+    //     return $stm->execute();
+
+    // }
+
+    public function storeprocedure($name, $params = [])
     {
+        $placeholders = implode(',', array_fill(0, count($params), '?'));
+        $sql = "CALL $name($placeholders)";
         $stm = $this->pdo->prepare($sql);
-
-        // Bind parameters securely
-        foreach ($params as $key => $value) {
-            $stm->bindValue(":$key", $value);
-        }
-
-        // Execute the statement
-        $stm->execute();
-
-        // Return all rows as associative arrays
-        return $stm->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-
-    // For Dashboard
-    // public function incomeTransition()
-    // {
-    //    try{
-
-    //        $sql        = "SELECT *,SUM(amount) AS amount FROM incomes WHERE
-    //        (date = { fn CURDATE() }) ";
-    //        $stm = $this->pdo->prepare($sql);
-    //        $success = $stm->execute();
-
-    //        $row     = $stm->fetch(PDO::FETCH_ASSOC);
-    //        return ($success) ? $row : [];
-
-    //     }
-    //     catch( Exception $e)
-    //     {
-    //         echo($e);
-    //     }
-
-    // }
-
-    public function incomeTransition()
-    {
-        try {
-            $sql = "SELECT SUM(amount) AS total_amount FROM incomes WHERE date = CURDATE()";
-            $stm = $this->pdo->prepare($sql);
-            $success = $stm->execute();
-            $row = $stm->fetch(PDO::FETCH_ASSOC);
-            return ($success) ? $row : [];
-        } catch (Exception $e) {
-            echo ($e);
-        }
-    }
-
-
-    // public function expenseTransition()
-    // {
-    //    try{
-
-    //        $sql        = "SELECT * ,SUM(amount*qty) AS amount FROM expenses WHERE
-    //        (date = { fn CURDATE() }) ";
-    //        $stm = $this->pdo->prepare($sql);
-    //        $success = $stm->execute();
-
-    //        $row     = $stm->fetch(PDO::FETCH_ASSOC);
-    //        return ($success) ? $row : [];
-
-    //     }
-    //     catch( Exception $e)
-    //     {
-    //         echo($e);
-    //     }
-
-    // }
-    public function expenseTransition()
-    {
-        try {
-            $sql = "SELECT SUM(amount * qty) AS total_expense FROM expenses WHERE date = CURDATE()";
-            $stm = $this->pdo->prepare($sql);
-            $success = $stm->execute();
-            $row = $stm->fetch(PDO::FETCH_ASSOC);
-            return ($success) ? $row : [];
-        } catch (Exception $e) {
-            echo ($e);
-        }
+        $stm->execute(array_values($params));
+        return true;
     }
 }

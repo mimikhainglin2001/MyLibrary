@@ -25,11 +25,7 @@
             </select>
         </div>
 
-        <div>
-            <label style="display: block; margin-bottom: 6px; font-weight: bold; color: #374151;">Roll No</label>
-            <input type="text" name="rollno" value="<?php echo htmlspecialchars($data['loginuser']['rollno']); ?>"
-                style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px;">
-        </div>
+       
 
         <div>
             <label style="display: block; margin-bottom: 6px; font-weight: bold; color: #374151;">Year</label>

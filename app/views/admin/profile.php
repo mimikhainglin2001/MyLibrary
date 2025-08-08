@@ -11,7 +11,7 @@
     <!-- Profile Card -->
     <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 sm:mb-8">
         <!-- Profile Header -->
-        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 sm:p-8">
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 sm:p-8" style="background-color: rgba(30, 58, 138);">
             <div class="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
                 <!-- Profile Avatar -->
                 <div class="flex-shrink-0">

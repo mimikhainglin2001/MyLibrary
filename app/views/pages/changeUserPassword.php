@@ -1,7 +1,6 @@
 <?php require_once APPROOT . '/views/inc/header.php'; ?>
 
 <main style="background-color: #ebf8ff; padding: 2rem; min-height: 100vh; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-    <h2 style="font-size: 2rem; font-weight: bold; color: #2d3748; margin-bottom: 1.5rem;">Change Password</h2>
 
     <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); max-width: 600px; margin: 0 auto;">
         <form 

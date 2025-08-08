@@ -16,9 +16,9 @@ class BorrowBook extends Controller
     public function borrow()
     {
         AuthMiddleware::userOnly();
+
         $user = $_SESSION['session_loginuser'] ?? null;
         $bookId = $_GET['id'] ?? null;
-
         if (!$user || !$bookId) {
             return $this->failRedirect('Invalid user or book.', 'pages/category');
         }
@@ -27,54 +27,37 @@ class BorrowBook extends Controller
         $now = date('Y-m-d H:i:s');
         $dueDate = date('Y-m-d H:i:s', strtotime('+7 days'));
 
-        $book = $this->db->getById('books', $bookId);
-        if (!$book) {
+        if (!$this->db->getById('books', $bookId)) {
             return $this->failRedirect('Book not found.', 'pages/category');
         }
 
-        if ((int)$book['available_quantity'] <= 0) {
-            return $this->failRedirect('This book is currently not available. You may reserve it.', 'pages/reservePage?id=' . $bookId, 'info');
-        }
-
-        $borrowCount = $this->db->raw(
-            "SELECT COUNT(*) as count FROM borrowBook WHERE user_id = :uid AND status = 'borrowed'",
-            ['uid' => $user['id']]
-        )['count'] ?? 0;
-
-        if ($borrowCount >= 2) {
+        if ($this->db->countBorrowedBooksByUser($user['id']) >= 2) {
             return $this->failRedirect('You have already borrowed 2 books. Please return one.', 'pages/history');
         }
 
-        $alreadyBorrowed = $this->db->raw(
-            "SELECT 1 FROM borrowBook WHERE user_id = :uid AND book_id = :bid AND status = 'borrowed' LIMIT 1",
-            ['uid' => $user['id'], 'bid' => $bookId]
-        );
-
-        if ($alreadyBorrowed) {
+        if ($this->db->hasUserBorrowedBook($user['id'], $bookId)) {
             return $this->failRedirect('You have already borrowed this book.', 'pages/history');
         }
 
         $borrowData = [
-            'book_id'      => $bookId,
-            'user_id'      => $user['id'],
-            'borrow_date'  => $now,
-            'due_date'     => $dueDate,
-            'return_date'  => null,
-            'renew_date'   => null,
-            'status'       => 'borrowed'
+            'book_id'     => $bookId,
+            'user_id'     => $user['id'],
+            'borrow_date' => $now,
+            'due_date'    => $dueDate,
+            'return_date' => null,
+            'renew_date'  => null,
+            'status'      => 'borrowed'
         ];
 
-        if ($this->db->create('borrowBook', $borrowData)) {
-            $newQty = max(0, $book['available_quantity'] - 1);
-            $this->db->update('books', $bookId, [
-                'available_quantity' => $newQty,
-                'status_description' => $newQty ? 'Available' : 'Not Available'
-            ]);
-
-            return $this->successRedirect('Book borrowed successfully.', 'pages/history');
+        try {
+            if (!$this->db->create('borrowBook', $borrowData)) {
+                return $this->failRedirect('Failed to borrow book. Please try again later.', 'pages/history');
+            }
+        } catch (PDOException $e) {
+            return $this->failRedirect($e->getMessage(), 'pages/category');
         }
 
-        return $this->failRedirect('Failed to borrow book. Please try again later.', 'pages/history');
+        return $this->successRedirect('Book borrowed successfully.', 'pages/history');
     }
 
     private function failRedirect(string $message, string $location, string $type = 'error')
@@ -95,22 +78,16 @@ class BorrowBook extends Controller
     public function return()
     {
         AuthMiddleware::userOnly();
-        $borrowId = $_GET['id'] ?? null;
 
+        $borrowId = $_GET['id'] ?? null;
         if (!$borrowId) {
-            setMessage('error', 'Invalid request');
-            redirect('pages/history');
-            return;
+            return $this->failRedirect('Invalid request', 'pages/history');
         }
 
         $borrowRecord = $this->db->getById('borrowBook', $borrowId);
         if (!$borrowRecord) {
-            setMessage('error', 'Borrow record not found');
-            redirect('pages/history');
-            return;
+            return $this->failRedirect('Borrow record not found', 'pages/history');
         }
-
-
 
         $returnDate = date('Y-m-d H:i:s');
 
@@ -119,36 +96,43 @@ class BorrowBook extends Controller
             'status' => 'returned'
         ]);
 
-        if ($updated) {
-
-            $reservedbook = $this->db->columnFilter('reservations', 'book_id', $borrowRecord['book_id']);
-            if ($reservedbook) {
-                $newquantity = $reservedbook['available_quantity'] + 1;
-
-                $isadd = $this->db->update('reservations', $reservedbook['id'], ['available_quantity' => $newquantity]);
-                var_dump($isadd);
-                die();
-            }
-
-
-            $book = $this->db->getById('books', $borrowRecord['book_id']);
-            if ($book) {
-                $newAvailable = (int)$book['available_quantity'] + 1;
-                $statusDesc = $newAvailable === 0 ? 'Not Available' : 'Available';
-
-                $this->db->update('books', $borrowRecord['book_id'], [
-                    'available_quantity' => $newAvailable,
-                    'status_description' => $statusDesc
-                ]);
-            }
-
-            setMessage('success', 'Book returned successfully');
-        } else {
-            setMessage('error', 'Failed to return book');
+        if (!$updated) {
+            return $this->failRedirect('Failed to return book', 'pages/history');
         }
 
-        redirect('pages/history');
+        $this->updateReservationQuantity($borrowRecord['book_id']);
+        $this->updateBookAvailability($borrowRecord['book_id']);
+
+        return $this->successRedirect('Book returned successfully', 'pages/history');
     }
+
+    private function updateReservationQuantity(int $bookId): void
+    {
+        $reservation = $this->db->columnFilter('reservations', 'book_id', $bookId);
+        if (!$reservation) {
+            return;
+        }
+
+        $newQuantity = $reservation['available_quantity'] + 1;
+        $this->db->update('reservations', $reservation['id'], ['available_quantity' => $newQuantity]);
+    }
+
+    private function updateBookAvailability(int $bookId): void
+    {
+        $book = $this->db->getById('books', $bookId);
+        if (!$book) {
+            return;
+        }
+
+        $newAvailable = (int)$book['available_quantity'] + 1;
+        $statusDesc = $newAvailable === 0 ? 'Not Available' : 'Available';
+
+        $this->db->update('books', $bookId, [
+            'available_quantity' => $newAvailable,
+            'status_description' => $statusDesc
+        ]);
+    }
+
 
     //Renew Book
     public function renew()
@@ -193,33 +177,52 @@ class BorrowBook extends Controller
     public function reserve()
     {
         AuthMiddleware::userOnly();
-        $users = $_SESSION['session_loginuser'];
-        $userId = $users['id'];
-        $id = $_GET['id'];
-        // Check the user already reserved the book
 
-        $existingReserve = $this->db->raw(
-            "SELECT 1 FROM reservations WHERE user_id = :user_id AND book_id = :book_id AND status = 'pending' ",
-            [
-                'user_id' => $users['id'],
-                'book_id' => $id
-            ]
-        );
+        $user = $_SESSION['session_loginuser'] ?? null;
+        $bookId = $_GET['id'] ?? null;
 
-        if ($existingReserve) {
-            echo "<script>alert('You have already reserved this book.');window.location.href='" . URLROOT . "/pages/history';</script>";
+        if (!$user || !$bookId) {
+            $this->redirectWithMessage('Invalid user or book.', 'pages/category', 'error');
             return;
         }
-        $user = new ReservationModel();
-        $user->book_id = $id;
-        $user->available_quantity = 0;
-        $user->user_id = $userId;
+
+        // Check if user already has a pending reservation for this book
+        $existingReserve = $this->db->hasReservation($user['id'], $bookId, 'pending');
+        if ($existingReserve) {
+            $this->redirectWithMessage('You have already reserved this book.', 'pages/history', 'error');
+            return;
+        }
+
         date_default_timezone_set('Asia/Yangon');
-        $user->reserved_at = date('Y-m-d H:i:s');
-        $user->status = 'pending';
-        $this->db->create('reservations', $user->toArray());
-        redirect('pages/history');
+        $reservationData = [
+            'book_id'           => $bookId,
+            'available_quantity' => 0,
+            'user_id'           => $user['id'],
+            'reserved_at'       => date('Y-m-d H:i:s'),
+            'status'            => 'pending',
+        ];
+
+        if ($this->db->create('reservations', $reservationData)) {
+            $this->redirectWithMessage('Book reserved successfully.', 'pages/history', 'success');
+        } else {
+            $this->redirectWithMessage('Failed to reserve book. Please try again later.', 'pages/history', 'error');
+        }
     }
+
+    // Redirect with session message, no external helpers used
+    private function redirectWithMessage(string $message, string $location, string $type = 'error')
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        $_SESSION['flash_message'] = ['type' => $type, 'message' => $message];
+
+        header("Location: /$location");  // <-- add slash here
+        exit();
+    }
+
+
+    // Confirm Reservation
 
     public function confirmreservation()
     {
@@ -232,7 +235,7 @@ class BorrowBook extends Controller
 
         $new_quantity = $available_quantity - 1;
 
-        $update_new_quantity = $this->db->updateByBookId('reservations', $reservationid['book_id'], ['available_quantity' => $new_quantity]);
+        $update_new_quantity = $this->db->columnFilter('reservations', $reservationid['book_id'], ['available_quantity' => $new_quantity]);
 
         $user = new BorrowBookModel();
         $user->book_id = $book_id;
@@ -244,8 +247,6 @@ class BorrowBook extends Controller
         $user->status = 'borrowed';
 
         $iscreated = $this->db->create('borrowBook', $user->toArray());
-        // var_dump($iscreated);
-        // die();
 
         $isdelete = $this->db->delete('reservations', $reservationid['id']);
 
@@ -256,28 +257,18 @@ class BorrowBook extends Controller
 
         header("Location: " . URLROOT . "/admin/reservation");
         exit;
-
-        // if()
-
-        // $id = $this->db->getReservation($user_id,$book_id);
-        // var_dump($id);
-        // die();
     }
-
-    public function cancel()
+    //Cancel Reservation
+    public function cancelreservation()
     {
         AuthMiddleware::userOnly();
         $reservationId = $_GET['id'];
-        // var_dump($reservationId);
-        // die();
 
         if (!$reservationId) {
             setMessage('error', 'Reservations does not found');
             redirect('pages/history');
         }
         $deleteReservation = $this->db->delete('reservations', $reservationId);
-        // var_dump($deleteReservation);
-        // die();
 
         if (!$deleteReservation) {
             setMessage('error', 'Failed to delete reservations ');
@@ -287,29 +278,32 @@ class BorrowBook extends Controller
             redirect('pages/history');
         }
     }
-    //Check Overdue 
+
     public function checkOverdue()
     {
-        AuthMiddleware::adminOnly(); // Only admins can trigger this
+        AuthMiddleware::adminOnly();
 
-        // Get all borrowed or renewed books where due or renewed date is past today
-        $now = date('Y-m-d H:i:s');
+        $now = date('Y-m-d');
+        $allRecords = $this->db->readAll('borrowBook');
+        $overdueRecords = [];
 
-        $overdueRecords = $this->db->rawAll(
-            "SELECT * FROM borrowBook 
-         WHERE status IN ('borrowed', 'renewed') 
-         AND (
-             (renew_date IS NOT NULL AND renew_date < :now)
-             OR (renew_date IS NULL AND due_date < :now)
-         )",
-            ['now' => $now]
-        );
+        foreach ($allRecords as $record) {
+            if (!in_array($record['status'], ['borrowed', 'renewed'])) {
+                continue;
+            }
 
-        foreach ($overdueRecords as $record) {
-            $this->db->update('borrowBook', $record['id'], ['status' => 'overdue']);
+            $compareDate = $record['renew_date'] ?: $record['due_date'];
+
+            if ($compareDate && strtotime($compareDate) < strtotime($now)) {
+                $overdueRecords[] = $record;
+            }
         }
 
-        setMessage('success', 'Overdue check completed. ' . count($overdueRecords) . ' records updated.');
-        redirect('admin/issueBook');
+        foreach ($overdueRecords as $record) {
+            $success = $this->db->update('borrowBook', $record['id'], ['status' => 'overdue']);
+            if (!$success) {
+                error_log("Failed to update borrowBook ID " . $record['id']);
+            }
+        }
     }
 }

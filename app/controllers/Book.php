@@ -19,6 +19,7 @@ class Book extends Controller
             return;
         }
 
+        // Validate required fields
         $required = ['title', 'author', 'isbn', 'category', 'total_quantity'];
         foreach ($required as $field) {
             if (empty($_POST[$field])) {
@@ -27,30 +28,45 @@ class Book extends Controller
             }
         }
 
-        $title = $_POST['title'];
-        $authorName = $_POST['author'];
-        $isbn = $_POST['isbn'];
-        $categoryName = $_POST['category'];
-        $totalQty = (int)$_POST['total_quantity'];
+        $title         = trim($_POST['title']);
+        $authorName    = trim($_POST['author']);
+        $isbn          = trim($_POST['isbn']);
+        $categoryName  = trim($_POST['category']);
+        $totalQuantity = (int) $_POST['total_quantity'];
+        $availableQty  = $totalQuantity;
+        $statusId      = 1;
+        $statusDesc    = 'Available';
 
+        // Prevent duplicate books by ISBN
         if ($this->db->columnFilter('books', 'isbn', $isbn)) {
             setMessage('error', 'This book already exists.');
-            return redirect('admin/addnewBook');
-        }
-
-        $category = $this->db->columnFilter('categories', 'name', $categoryName);
-        if (!$category) {
-            setMessage('error', 'Invalid category.');
+            redirect('admin/addnewBook');
             return;
         }
 
+        // Get category ID
+        $category = $this->db->columnFilter('categories', 'name', $categoryName);
+        if (!$category || !isset($category['id'])) {
+            setMessage('error', 'Invalid category.');
+            return;
+        }
+        $categoryId = $category['id'];
+
+        // Get or create author ID
         $author = $this->db->columnFilter('authors', 'name', $authorName);
         if (!$author) {
             $authorModel = new AuthorModel();
-            $authorModel->setName($authorName);
-            $this->db->create('authors', $authorModel->toArray());
+            $params = [$authorName];
+            $this->db->storeprocedure('InsertAuthor', $params);
+
             $author = $this->db->columnFilter('authors', 'name', $authorName);
         }
+
+        if (!$author || !isset($author['id'])) {
+            setMessage('error', 'Failed to assign author.');
+            return;
+        }
+        $authorId = $author['id'];
 
         // Handle image upload
         $image = null;
@@ -64,30 +80,37 @@ class Book extends Controller
             }
 
             if (!move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-                setMessage('error', 'Failed to move uploaded file.');
+                setMessage('error', 'Failed to upload image.');
                 return;
             }
 
             $image = $targetPath;
         } else {
-            setMessage('error', 'Image not uploaded or error occurred.');
+            setMessage('error', 'Image is required.');
             return;
         }
 
-        $book = new BookModel();
-        $book->title = $title;
-        $book->author_id = $author['id'];
-        $book->isbn = $isbn;
-        $book->category_id = $category['id'];
-        $book->total_quantity = $totalQty;
-        $book->available_quantity = $totalQty;
-        $book->status_id = 1;
-        $book->image = $image;
+        // Prepare parameters for stored procedure
+        $params = [
+            $title,
+            $image,
+            $isbn,
+            $categoryId,
+            $authorId,
+            $totalQuantity,
+            $availableQty,
+            $statusId,
+            $statusDesc
+        ];
 
-        $inserted = $this->db->create('books', $book->toArray());
-
-        setMessage($inserted ? 'success' : 'error', $inserted ? 'Book added successfully.' : 'Failed to add book.');
-        redirect($inserted ? 'admin/manageBook' : 'admin/addnewBook');
+        // Insert via stored procedure
+        if ($this->db->storeprocedure('InsertBook', $params)) {
+            setMessage('success', 'Book added successfully.');
+            redirect('admin/manageBook');
+        } else {
+            setMessage('error', 'Failed to add book.');
+            redirect('admin/addnewBook');
+        }
     }
 
 

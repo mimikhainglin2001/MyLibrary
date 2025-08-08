@@ -242,7 +242,7 @@
                                     <td><span class="status reserved">Reserved</span></td>
                                     <td>
                                         <button class="action-btn return">
-                                            <a href="/BorrowBook/cancel?id=<?= $book['id'] ?>" style="text-decoration: none; color: inherit;">Cancel Reservation</a>
+                                            <a href="/BorrowBook/cancelreservation?id=<?= $book['id'] ?>" style="text-decoration: none; color: inherit;">Cancel Reservation</a>
                                         </button>
                                     </td>
                                 </tr>

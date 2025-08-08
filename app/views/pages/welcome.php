@@ -1,30 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to Central Library</title>
-    <link rel="stylesheet" href="<?php echo URLROOT;?>/librarycss/welcome.css">
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/librarycss/welcome.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         .book-1 {
-    background-image: url('/images/book1.avif');
-    background-size: cover;
-    background-position: center;
-}
-.book-2 {
-    background-image: url('/images/book2.avif');
-    background-size: cover;
-    background-position: center;
-}
-.book-3 {
-    background-image: url('/images/book3.avif');
-    background-size: cover;
-    background-position: center;
-}
+            background-image: url('/images/book1.avif');
+            background-size: cover;
+            background-position: center;
+        }
 
+        .book-2 {
+            background-image: url('/images/book2.avif');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .book-3 {
+            background-image: url('/images/book3.avif');
+            background-size: cover;
+            background-position: center;
+        }
     </style>
 </head>
+
 <body>
     <main>
         <!-- Hero Section -->
@@ -36,12 +39,14 @@
                 <h1 class="hero-title">Welcome to Our Library</h1>
                 <p class="hero-description">Where knowledge meets curiosity and stories come alive. Discover, learn, and explore in our sanctuary of books and digital resources.</p>
                 <div class="hero-actions">
-                    <a href="<?php echo URLROOT;?>/pages/home"><button class="btn btn-primary">Get Knowledge</button></a>
+                    <a href="<?php echo URLROOT; ?>/pages/home"><button class="btn btn-primary">Get Knowledge</button></a>
+                    <a href="<?php echo URLROOT; ?>/pages/login"><button class="btn btn-primary">Sign In</button></a>
+
                 </div>
             </div>
             <div class="hero-visual">
                 <div class="book-stack">
-                    <div class="book book-1" >
+                    <div class="book book-1">
                     </div>
                     <div class="book book-2"></div>
                     <div class="book book-3"></div>
@@ -114,11 +119,12 @@
             card.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateY(-8px) scale(1.02)';
             });
-            
+
             card.addEventListener('mouseleave', function() {
                 this.style.transform = 'translateY(0) scale(1)';
             });
         });
     </script>
 </body>
+
 </html>
