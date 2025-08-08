@@ -33,6 +33,7 @@ $currentUrl = $_SERVER['REQUEST_URI'];
             <nav>
                 <ul class="nav">
                     <li><a href="<?php echo URLROOT; ?>/pages/home">Home</a></li>
+                    <li><a href="<?php echo URLROOT; ?>/pages/category">Category</a></li>
                     <li><a href="<?php echo URLROOT; ?>/pages/contact">Contact</a></li>
                     <li><a href="<?php echo URLROOT; ?>/pages/history">History</a></li>
                     <li><a href="<?php echo URLROOT; ?>/auth/logout">Logout</a></li>

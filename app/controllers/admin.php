@@ -43,7 +43,7 @@ class Admin extends Controller
     }
     public function manageBook()
     {
-        $booklist = $this->db->getBookList('book_details');
+        $booklist = $this->db->readAll('book_details');
         $data = [
             'booklist' => $booklist
         ];
@@ -51,7 +51,7 @@ class Admin extends Controller
     }
     public function issueBook()
     {
-        $borrowBookList = $this->db->getBorrowBookList('borrow_full_view');
+        $borrowBookList = $this->db->readAll('borrow_full_view');
         $data = [
             'borrowBookList' => $borrowBookList
         ];
@@ -63,7 +63,7 @@ class Admin extends Controller
     }
     public function returnBook()
     {
-        $returnBookList = $this->db->getReturnBookList('borrow_full_view');
+        $returnBookList = $this->db->readAll('borrow_full_view');
         $data = [
             'returnBookList' => $returnBookList
         ];
@@ -71,7 +71,7 @@ class Admin extends Controller
     }
     public function reservation()
     {
-        $reservedBookList = $this->db->getReservedBookList('reservation_view');
+        $reservedBookList = $this->db->readAll('reservation_view');
         $data = [
             'reservedBookList' => $reservedBookList
         ];

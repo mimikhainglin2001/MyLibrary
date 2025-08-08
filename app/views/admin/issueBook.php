@@ -4,7 +4,7 @@
     <div class="flex items-center justify-between pb-6 border-b border-blue-200 mb-8">
         <h2 class="text-2xl font-bold text-gray-800">Borrow Book List</h2>
         <div class="flex items-center space-x-4">
-            
+
             <a href="<?php echo URLROOT; ?>/admin/profile" class="flex items-center space-x-4 text-gray-700 hover:text-blue-600 transition duration-300">
                 <i class="fas fa-user-circle text-2xl"></i>
                 <span class="font-medium"><?php echo htmlspecialchars($name['name']); ?></span>
@@ -42,7 +42,7 @@
                                 $now = date('Y-m-d H:i:s');
                                 if (!empty($book['return_date'])) {
                                     echo '<span class="bg-green-100 text-green-700 text-sm px-3 py-1 rounded-full font-semibold">Returned</span>';
-                                } elseif (!empty($book['due_date']) && $now > $book['due_date']) {
+                                } elseif ($book['status'] === 'overdue' || (!empty($book['due_date']) && $now > $book['due_date'])) {
                                     echo '<span class="bg-red-100 text-red-700 text-sm px-3 py-1 rounded-full font-semibold">Overdue</span>';
                                 } else {
                                     echo '<span class="bg-yellow-100 text-yellow-700 text-sm px-3 py-1 rounded-full font-semibold">Borrowed</span>';
@@ -59,4 +59,5 @@
 </div>
 
 </body>
+
 </html>

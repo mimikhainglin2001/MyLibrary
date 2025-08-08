@@ -10,11 +10,6 @@ class Auth extends Controller
         $this->model('BorrowBookModel');
         $this->db = new Database();
     }
-    // public function index()
-    // {
-    //     // Example: redirect to login page
-    //     redirect('auth/login');
-    // }
     public function index()
     {
         // some default behavior
@@ -24,7 +19,6 @@ class Auth extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST['email']) && isset($_POST['password'])) {
-                // session_start();
                 $email = $_POST['email'];
                 $password = $_POST['password'];
                 $password = base64_encode($password);
@@ -96,6 +90,7 @@ class Auth extends Controller
             $department = $_POST['department'];
             $password = $_POST['password'];
             $confirmpassword = $_POST['confirm_password'];
+            $department = $_POST['department'];
 
             // Check if passwords match
             if ($password !== $confirmpassword) {
@@ -106,21 +101,24 @@ class Auth extends Controller
 
             // Hash password securely
             $password = base64_encode($password);
-            $user = new UserModel();
-            $user->name = $name;
-            $user->email = $email;
-            $user->gender = $gender;
-            $user->department = $department;
-            $user->year = null;
-            $user->password = $password;
-            $user->is_active = 0;
-            $user->is_login = 0;
-            $user->date = date('Y-m-d H:i:s');
-            $user->role_id = 1;
-            $user->otp = null;
-            $user->otp_expiry = null;
 
-            $insert = $this->db->create('users', $user->toArray());
+
+            $params = [
+                $name,
+                $email,
+                $department,
+                $gender,
+                $password,
+                0,
+                0,
+                0,
+                date('Y-m-d H:i:s'),
+                2,
+                null,
+                null
+            ];
+
+            $insert = $this->db->storeprocedure('InsertUser', $params);
 
             if ($insert) {
                 $mail = new Mail();
@@ -157,30 +155,36 @@ class Auth extends Controller
             $year  = $_POST['year'];
             $password = $_POST['password'];
             $confirmpassword = $_POST['confirm_password'];
+            $department = $_POST['department'];
 
             if ($password !== $confirmpassword) {
                 setMessage('error', 'Password does not match.');
                 redirect('pages/register');
                 return;
             }
+
             // Encrypt or hash the password (base64 is NOT secure)
             $password = base64_encode($password); // ✅ Use secure hashing
 
             $user = new UserModel();
-            $user->name = $name;
-            $user->email = $email;
-            $user->rollno = $roll;
-            $user->gender = $gender;
-            $user->year = $year;
-            $user->is_active = 0;
-            $user->is_login = 0;
-            $user->date = date('Y-m-d H:i:s');
-            $user->password = $password;
-            $user->role_id = 2;
-            $user->otp = null;
-            $user->otp_expiry = null;
 
-            $insert = $this->db->create('users', $user->toArray());
+            $params = [
+                $name,
+                $email,
+                $roll,
+                $department,
+                $gender,
+                $year,
+                $password,
+                0,
+                0,
+                0,
+                date('Y-m-d H:i:s'),
+                2,
+                null,
+                null
+            ];
+            $insert = $this->db->storeprocedure('InsertUser', $params);
 
             if ($insert) {
                 $mail = new Mail();
