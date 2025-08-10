@@ -69,7 +69,7 @@
     }
 
     .profile-header {
-        background: rgba(30, 58, 138);
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
         padding: 1.5rem;
     }
 

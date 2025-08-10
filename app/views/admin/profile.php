@@ -11,7 +11,7 @@
     <!-- Profile Card -->
     <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-6 sm:mb-8">
         <!-- Profile Header -->
-        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 sm:p-8" style="background-color: rgba(30, 58, 138);">
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 sm:p-8">
             <div class="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
                 <!-- Profile Avatar -->
                 <div class="flex-shrink-0">
@@ -33,7 +33,13 @@
                         <span class="text-blue-100 text-sm hidden sm:inline">•</span>
                         <span class="text-blue-100 text-sm">
                             <i class="fas fa-envelope mr-1"></i>
-                            <?php echo htmlspecialchars($data['loginuser']['email']); ?>
+                            <?php
+                            if (!empty($data['loginuser']) && is_array($data['loginuser'])) {
+                                echo htmlspecialchars($data['loginuser']['email']);
+                            } else {
+                                echo 'Email not available';
+                            }
+                            ?>
                         </span>
                     </div>
                 </div>
@@ -56,7 +62,13 @@
                             <div>
                                 <p class="text-sm font-medium text-gray-600">Full Name</p>
                                 <p class="text-base sm:text-lg font-semibold text-gray-800 mt-1">
-                                    <?php echo htmlspecialchars($data['loginuser']['name']); ?>
+                                    <?php
+                                    if (!empty($data['loginuser']) && is_array($data['loginuser'])) {
+                                        echo htmlspecialchars($data['loginuser']['name']);
+                                    } else {
+                                        echo 'Name not available';
+                                    }
+                                    ?>
                                 </p>
                             </div>
                             <i class="fas fa-user text-blue-500 text-xl"></i>
@@ -69,8 +81,12 @@
                             <div class="min-w-0 flex-1">
                                 <p class="text-sm font-medium text-gray-600">Email Address</p>
                                 <p class="text-base sm:text-lg font-semibold text-gray-800 mt-1 truncate">
-                                    <?php echo htmlspecialchars($data['loginuser']['email']); ?>
-                                </p>
+                                    <?php if (!empty($data['loginuser']) && is_array($data['loginuser'])): ?>
+                                        <?php echo htmlspecialchars($data['loginuser']['email'] ?? ''); ?>
+                                    <?php else: ?>
+                                <p>User data not available.</p>
+                            <?php endif; ?>
+                            </p>
                             </div>
                             <i class="fas fa-envelope text-green-500 text-xl ml-2"></i>
                         </div>
@@ -82,8 +98,12 @@
                             <div>
                                 <p class="text-sm font-medium text-gray-600">Gender</p>
                                 <p class="text-base sm:text-lg font-semibold text-gray-800 mt-1 capitalize">
-                                    <?php echo htmlspecialchars($data['loginuser']['gender']); ?>
-                                </p>
+                                    <?php if (!empty($data['loginuser']) && is_array($data['loginuser'])): ?>
+                                        <?php echo htmlspecialchars($data['loginuser']['gender'] ?? 'Not specified'); ?>
+                                    <?php else: ?>
+                                <p>User data not available.</p>
+                            <?php endif; ?>
+                            </p>
                             </div>
                             <i class="fas fa-venus-mars text-purple-500 text-xl"></i>
                         </div>
