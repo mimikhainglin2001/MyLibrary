@@ -35,7 +35,7 @@ $currentUrl = $_SERVER['REQUEST_URI'];
                     <li><a href="<?php echo URLROOT; ?>/pages/home">Home</a></li>
                     <li><a href="<?php echo URLROOT; ?>/pages/category">Category</a></li>
                     <li><a href="<?php echo URLROOT; ?>/pages/contact">Contact</a></li>
-                    <li><a href="<?php echo URLROOT; ?>/pages/history">History</a></li>
+                    <li><a href="<?php echo URLROOT; ?>/user/history">History</a></li>
                     <li><a href="<?php echo URLROOT; ?>/auth/logout">Logout</a></li>
                     <div class="flex items-center space-x-4">
                     <a href="<?php echo URLROOT; ?>/pages/userProfile" class="flex items-center space-x-4 text-gray-700 hover:text-blue-600 transition duration-300">

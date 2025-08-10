@@ -17,191 +17,198 @@ class Auth extends Controller
     // Login
     public function login()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (isset($_POST['email']) && isset($_POST['password'])) {
-                $email = $_POST['email'];
-                $password = $_POST['password'];
-                $password = base64_encode($password);
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['email']) || empty($_POST['password'])) {
+            return;
+        }
 
-                $ischeck = $this->db->loginCheck($email, $password);
+        $email = $_POST['email'];
+        $password = base64_encode($_POST['password']);
 
-                if (!$ischeck) {
-                    setMessage('error', 'Invalid email and password');
-                    redirect('pages/login');
-                } else {
-                    $this->db->setLogin($ischeck['id']);
+        $user = $this->db->loginCheck($email, $password);
+        if (!$user) {
+            setMessage('error', 'Invalid email and password');
+            redirect('pages/login');
+            return;
+        }
 
-                    $_SESSION['session_loginuser'] = $ischeck;
+        // Set login session
+        $this->db->setLogin($user['id']);
+        $_SESSION['session_loginuser'] = $user;
 
-                    if ($ischeck) {
-
-                        switch ($ischeck['role_id']) {
-                            case Admin:
-                                redirect('admin/adminDashboard');
-                                break;
-
-                            case user:
-                                redirect('pages/category');
-                                break;
-
-                            default:
-                                // Optional: handle unknown roles
-                                setMessage('error', 'Invalid Username & Password');
-                                redirect('pages/login');
-                                break;
-                        }
-                    }
-                }
-            }
+        // Role-based redirect
+        switch ($user['role_id']) {
+            case Admin:
+                redirect('admin/adminDashboard');
+                break;
+            case user:
+                redirect('pages/category');
+                break;
+            default:
+                setMessage('error', 'Invalid Username & Password');
+                redirect('pages/login');
+                break;
         }
     }
+
     // Form Register
     public function formRegister()
     {
         if (
-            $_SERVER['REQUEST_METHOD'] == 'POST' &&
-            isset($_POST['email_check']) &&
-            $_POST['email_check'] == 1
+            $_SERVER['REQUEST_METHOD'] !== 'POST' ||
+            empty($_POST['email_check']) ||
+            $_POST['email_check'] != 1
         ) {
-            $email = $_POST['email'];
-            // call columnFilter Method from Database.php
-            $isUserExist = $this->db->columnFilter('users', 'email', $email);
-            if ($isUserExist) {
-                echo 'Sorry! email has already taken. Please try another.';
-            }
+            return;
+        }
+
+        $email = $_POST['email'] ?? '';
+        if (!$email) {
+            return;
+        }
+        // Check if user already exists
+        if ($this->db->columnFilter('users', 'email', $email)) {
+            echo 'Sorry! Email has already been taken. Please try another.';
         }
     }
+
     // Admin register
     public function adminRegister()
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $email = $_POST['email'];
-
-            // Check if email already exists
-            $checkmail = $this->db->columnFilter('users', 'email', $email);
-            if ($checkmail) {
-                setMessage('error', 'Email already exists');
-                redirect('pages/adminregister');
-                return; // stop execution
-            }
-
-            $name = $_POST['name'];
-            $gender = $_POST['gender'];
-            $department = $_POST['department'];
-            $password = $_POST['password'];
-            $confirmpassword = $_POST['confirm_password'];
-            $department = $_POST['department'];
-
-            // Check if passwords match
-            if ($password !== $confirmpassword) {
-                setMessage('error', 'Password does not match');
-                redirect('pages/adminregister');
-                return; // stop execution
-            }
-
-            // Hash password securely
-            $password = base64_encode($password);
-
-
-            $params = [
-                $name,
-                $email,
-                $department,
-                $gender,
-                $password,
-                0,
-                0,
-                0,
-                date('Y-m-d H:i:s'),
-                2,
-                null,
-                null
-            ];
-
-            $insert = $this->db->storeprocedure('InsertUser', $params);
-
-            if ($insert) {
-                $mail = new Mail();
-                $sentMail = $mail->verifyMail($email, $name);
-                setMessage('success', 'Mail is sent');
-                redirect('admin/adminlist');
-                return;
-            } else {
-                setMessage('error', 'Failed to register');
-                redirect('admin/adminregister');
-                return;
-            }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return;
         }
-    }
+        $email = $_POST['email'] ?? '';
+        // Fail fast if email already exists
+        if ($this->db->columnFilter('users', 'email', $email)) {
+            setMessage('error', 'Email already exists');
+            redirect('pages/adminregister');
+            return;
+        }
 
+        $name = $_POST['name'] ?? '';
+        $gender = $_POST['gender'] ?? '';
+        $department = $_POST['department'] ?? '';
+        $password = $_POST['password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
+
+        // Fail if passwords do not match
+        if ($password !== $confirmPassword) {
+            setMessage('error', 'Password does not match');
+            redirect('pages/adminregister');
+            return;
+        }
+
+        // Fail if password is too short
+        if (strlen($password) < 6) {
+            setMessage('error', 'Password must be at least 6 characters.');
+            redirect('pages/adminregister');
+            return;
+        }
+
+        // Encode password (replace with password_hash in production)
+        $encodedPassword = base64_encode($password);
+
+        $params = [
+            $name,
+            $email,
+            $department,
+            $gender,
+            $encodedPassword,
+            0,
+            0,
+            0,
+            date('Y-m-d H:i:s'),
+            1,
+            null,
+            null
+        ];
+
+        if (!$this->db->storeprocedure('InsertUser', $params)) {
+            setMessage('error', 'Failed to register');
+            redirect('admin/adminregister');
+            return;
+        }
+
+        (new Mail())->verifyMail($email, $name);
+        setMessage('success', 'Mail is sent');
+        redirect('admin/adminlist');
+    }
 
     //Register
     public function register()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = $_POST['email'];
-
-            // Check if email already exists
-            $checkmail = $this->db->columnFilter('users', 'email', $email);
-            if ($checkmail) {
-                setMessage('error', 'Email already exists.');
-                redirect('pages/register');
-                return;
-            }
-
-            $name = $_POST['name'];
-            $roll = $_POST['rollno'];
-            $gender = $_POST['gender'];
-            $year  = $_POST['year'];
-            $password = $_POST['password'];
-            $confirmpassword = $_POST['confirm_password'];
-            $department = $_POST['department'];
-
-            if ($password !== $confirmpassword) {
-                setMessage('error', 'Password does not match.');
-                redirect('pages/register');
-                return;
-            }
-
-            // Encrypt or hash the password (base64 is NOT secure)
-            $password = base64_encode($password); // ✅ Use secure hashing
-
-            $user = new UserModel();
-
-            $params = [
-                $name,
-                $email,
-                $roll,
-                $department,
-                $gender,
-                $year,
-                $password,
-                0,
-                0,
-                0,
-                date('Y-m-d H:i:s'),
-                2,
-                null,
-                null
-            ];
-            $insert = $this->db->storeprocedure('InsertUser', $params);
-
-            if ($insert) {
-                $mail = new Mail();
-                $sentmail = $mail->verifyMail($email, $name);
-                setMessage('success', 'Mail is sent.');
-                redirect('pages/login');
-            } else {
-                setMessage('error', 'Failed to register.');
-                redirect('pages/register');
-            }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return;
         }
+
+        $email = $_POST['email'] ?? '';
+
+        // Fail if email exists
+        if ($this->db->columnFilter('users', 'email', $email)) {
+            setMessage('error', 'Email already exists.');
+            redirect('pages/register');
+            return;
+        }
+
+        $name = $_POST['name'] ?? '';
+        $roll = $_POST['rollno'] ?? '';
+        $gender = $_POST['gender'] ?? '';
+        $year = $_POST['year'] ?? '';
+        $password = $_POST['password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
+        $department = $_POST['department'] ?? '';
+
+        // Fail if passwords do not match
+        if ($password !== $confirmPassword) {
+            setMessage('error', 'Password does not match.');
+            redirect('pages/register');
+            return;
+        }
+
+        // Optional: check password length
+        if (strlen($password) < 6) {
+            setMessage('error', 'Password must be at least 6 characters.');
+            redirect('pages/register');
+            return;
+        }
+
+        // Encode password (replace with password_hash in production)
+        $encodedPassword = base64_encode($password);
+
+        $params = [
+            $name,
+            $email,
+            $roll,
+            $department,
+            $gender,
+            $year,
+            $encodedPassword,
+            0,
+            0,
+            0,
+            date('Y-m-d H:i:s'),
+            2,
+            null,
+            null
+        ];
+
+        if (!$this->db->storeprocedure('InsertUser', $params)) {
+            setMessage('error', 'Failed to register');
+            redirect('pages/register');
+            return;
+        }
+
+        (new Mail())->verifyMail($email, $name);
+        setMessage('success', 'Mail is sent');
+        redirect('pages/login');
     }
+
 
 
     public function verify($token = null)
     {
         echo "Incoming token: $token<br>";
+
         if (!$token) {
             setMessage('error', 'Verification token missing!');
             redirect('');
@@ -209,117 +216,95 @@ class Auth extends Controller
         }
 
         $user = $this->db->columnFilter('users', 'token', $token);
-        // var_dump($user);
-        // exit();
 
-        if ($user) {
-            $success = $this->db->setLogin($user[0]['id']);
-
-            if ($success) {
-                setMessage(
-                    'success',
-                    'Successfully Verified. Please log in!'
-                );
-            } else {
-                setMessage('error', 'Fail to Verify. Please try again!');
-            }
-        } else {
+        if (!$user) {
             setMessage('error', 'Incorrect Token. Please try again!');
+            redirect('');
+            return;
         }
 
+        $success = $this->db->setLogin($user[0]['id']);
+
+        if (!$success) {
+            setMessage('error', 'Fail to Verify. Please try again!');
+            redirect('');
+            return;
+        }
+
+        setMessage('success', 'Successfully Verified. Please log in!');
         redirect('');
     }
 
     // Forgot Password
     public function forgotPassword()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            //session_start();
-            $email = $_POST['email'];
-
-            $ischeck = $this->db->columnFilter('users', 'email', $email);
-
-            if (!$ischeck) {
-                echo "Email not found.";
-                die();
-            }
-
-            $otp = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
-            $otp_expiry = date('Y-m-d H:i:s');
-
-            $store = $this->db->storeotp($email, $otp, $otp_expiry);
-
-            switch ($store) {
-                case true:
-                    $mail = new Mail();
-                    $sentotp = $mail->sendotp($email, $otp);
-
-                    switch ($sentotp) {
-                        case true:
-                            $_SESSION['post_email'] = $email;
-                            redirect('pages/otp');
-                            break;
-
-                        default:
-                            echo "Failed to send OTP email.";
-                            break;
-                    }
-                    break;
-
-                default:
-                    echo "Failed to store OTP.";
-                    break;
-            }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return;
         }
+
+        $email = $_POST['email'] ?? '';
+
+        $userExists = $this->db->columnFilter('users', 'email', $email);
+
+        if (!$userExists) {
+            echo "Email not found.";
+            exit;
+        }
+
+        $otp = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+        $otp_expiry = date('Y-m-d H:i:s');
+
+        if (!$this->db->storeotp($email, $otp, $otp_expiry)) {
+            echo "Failed to store OTP.";
+            exit;
+        }
+
+        $mail = new Mail();
+
+        if (!$mail->sendotp($email, $otp)) {
+            echo "Failed to send OTP email.";
+            exit;
+        }
+
+        $_SESSION['post_email'] = $email;
+        redirect('pages/otp');
     }
+
     // Verify OTP
     public function verify_otp()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = $_SESSION['post_email'];
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return;
+        }
 
-            $otp = implode('', $_POST['otp']);
+        $email = $_SESSION['post_email'] ?? null;
+        if (!$email) {
+            setMessage('error', 'Session expired. Please try again.');
+            redirect('pages/otp');
+            return;
+        }
 
-            $chekcotp = $this->db->checkotp($email, $otp);
-            if ($chekcotp) {
-                redirect('pages/changepassword');
-            } else {
-                setMessage('error', 'Invalid OTP');
-                redirect('pages/otp');
-            }
+        $otp = implode('', $_POST['otp'] ?? []);
+
+        if ($this->db->checkotp($email, $otp)) {
+            redirect('pages/changepassword');
+        } else {
+            setMessage('error', 'Invalid OTP');
+            redirect('pages/otp');
         }
     }
-
-    // public function resendOtp()
-    // {
-    //     if (!isset($_SESSION['post_email'])) {
-    //         setMessage('error', 'Session expired. Please login again.');
-    //         redirect('auth/login');
-    //         return;
-    //     }
-
-    //     $newOtp = rand(100000, 999999);
-    //     $_SESSION['otp'] = $newOtp;
-
-    //     $userEmail = $_SESSION['post_email'];
-
-    //     if (mail($userEmail, "Your OTP Code", "Your OTP is: $newOtp")) {
-    //         setMessage('success', 'A new OTP has been sent to your email.');
-    //     } else {
-    //         setMessage('error', 'Failed to send OTP. Please try again.');
-    //     }
-
-    //     redirect('pages/otp');
-    // }
-
-
 
     //Changed Password
     public function changedPassword()
     {
-        $user = $_SESSION['post_email'];
-        // var_dump($user);
-        // die();
+        $email = $_SESSION['post_email'] ?? null;
+
+        if (!$email) {
+            setMessage('error', 'Session expired. Please try again.');
+            redirect('pages/changePassword');
+            return;
+        }
+
         $password = $_POST['password'] ?? '';
         $confirmPassword = $_POST['confirm_password'] ?? '';
 
@@ -342,79 +327,18 @@ class Auth extends Controller
         }
 
         $updatedPassword = base64_encode($password);
-        // echo $user['id'];
-        // die();
-        $update = $this->db->columnFilter('users', 'email', $user);
-        // var_dump($update);
-        // die();
 
-        $this->db->update('users', $update['id'], ['password' => $updatedPassword]);
-        // var_dump($updatedPassword);
-        // die();
-
-        setMessage('success', 'Password changed successfully. Please log in again.');
-        redirect('pages/login');
-    }
-
-    // edit profile
-    public function editProfile($id)
-    {
-        $user = $this->db->getById('users', $id);
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $name = $_POST['name'];
-            $email = $_POST['email'];
-            $gender = $_POST['gender'];
-            $rollno = $_POST['rollno'];
-            $year = $_POST['year'];
-
-            $updatedUser = [
-                'name' => $name,
-                'email' => $email,
-
-            ];
-
-            $updated = $this->db->update('users', $id, $updatedUser);
-            // var_dump($updated);
-            // die();
-            if (!$updated) {
-                setMessage('error', 'User Updated Failed');
-                redirect('pages/editProfile');
-            } else {
-                setMessage('success', 'User Updated Successfully');
-                redirect('pages/userProfile');
-            }
-        }
-    }
-
-    public function changeUserPassword()
-    {
-        $user = $_SESSION['session_loginuser'];
-        // var_dump($user);
-
-        $currentPassword = $_POST['currentPassword'];
-        $newPassword = $_POST['newPassword'];
-        $confirmPassword = $_POST['confirmPassword'];
-
-        if (!$currentPassword || !$newPassword || !$confirmPassword) {
-            setMessage('error', 'All fields are required');
-            redirect('pages/userProfile');
+        $user = $this->db->columnFilter('users', 'email', $email);
+        if (!$user) {
+            setMessage('error', 'User not found.');
+            redirect('pages/changePassword');
             return;
         }
 
-        if ($newPassword !== $confirmPassword) {
-            setMessage('error', 'Passwords must be match');
-            //redirect('pages/changeUserPassword');
-        }
+        $this->db->update('users', $user['id'], ['password' => $updatedPassword]);
 
-        if (strlen($newPassword < 6)) {
-            setMessage('error', 'Password length must be more than 6');
-            //redirect('pages/changeUserPassword');
-        }
-
-        $updatedPassword = base64_encode($newPassword);
-        $updated = $this->db->update('users', $user['id'], ['password' => $updatedPassword]);
-        setMessage('success', 'Password changed successfully');
-        redirect('pages/userProfile');
+        setMessage('success', 'Password changed successfully. Please log in again.');
+        redirect('pages/login');
     }
 
     public function logout()
@@ -423,7 +347,6 @@ class Auth extends Controller
         if ($id) {
             $this->db->unsetLogin($id);
         }
-
 
         session_destroy();
         $this->view('pages/login');

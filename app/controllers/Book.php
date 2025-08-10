@@ -5,10 +5,11 @@ class Book extends Controller
     private $db;
 
     public function __construct()
+
     {
         AuthMiddleware::adminOnly();
-        $this->model('BookModel'); // optional if autoloading
-        $this->model('AuthorModel'); // optional if autoloading
+        $this->model('BookModel');
+        $this->model('AuthorModel');
         $this->db = new Database();
     }
 
@@ -33,9 +34,11 @@ class Book extends Controller
         $isbn          = trim($_POST['isbn']);
         $categoryName  = trim($_POST['category']);
         $totalQuantity = (int) $_POST['total_quantity'];
-        $availableQty  = $totalQuantity;
-        $statusId      = 1;
-        $statusDesc    = 'Available';
+
+        if ($totalQuantity <= 0) {
+            setMessage('error', 'Total quantity must be a positive number.');
+            return;
+        }
 
         // Prevent duplicate books by ISBN
         if ($this->db->columnFilter('books', 'isbn', $isbn)) {
@@ -58,10 +61,8 @@ class Book extends Controller
             $authorModel = new AuthorModel();
             $params = [$authorName];
             $this->db->storeprocedure('InsertAuthor', $params);
-
             $author = $this->db->columnFilter('authors', 'name', $authorName);
         }
-
         if (!$author || !isset($author['id'])) {
             setMessage('error', 'Failed to assign author.');
             return;
@@ -69,41 +70,37 @@ class Book extends Controller
         $authorId = $author['id'];
 
         // Handle image upload
-        $image = null;
-        if (!empty($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = 'public/images/';
-            $imageName = uniqid('book_') . '_' . basename($_FILES['image']['name']);
-            $targetPath = $uploadDir . $imageName;
-
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0755, true);
-            }
-
-            if (!move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-                setMessage('error', 'Failed to upload image.');
-                return;
-            }
-
-            $image = $targetPath;
-        } else {
+        if (empty($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
             setMessage('error', 'Image is required.');
+            return;
+        }
+
+        $uploadDir = 'public/images/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        $imageName = uniqid('book_') . '_' . basename($_FILES['image']['name']);
+        $targetPath = $uploadDir . $imageName;
+
+        if (!move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
+            setMessage('error', 'Failed to upload image.');
             return;
         }
 
         // Prepare parameters for stored procedure
         $params = [
             $title,
-            $image,
+            $targetPath,
             $isbn,
             $categoryId,
             $authorId,
             $totalQuantity,
-            $availableQty,
-            $statusId,
-            $statusDesc
+            $totalQuantity, // availableQty equals totalQuantity initially
+            1,              // statusId (Available)
+            'Available'     // statusDesc
         ];
 
-        // Insert via stored procedure
         if ($this->db->storeprocedure('InsertBook', $params)) {
             setMessage('success', 'Book added successfully.');
             redirect('admin/manageBook');
@@ -113,37 +110,63 @@ class Book extends Controller
         }
     }
 
-
     // Edit Book
     public function editBook($id)
     {
         $book = $this->db->getById('books', $id);
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !$book) {
+
+        if (!$book) {
+            setMessage('error', 'Book not found.');
+            redirect('admin/manageBook');
             return;
         }
 
-        $title       = $_POST['title'];
-        $isbn        = $_POST['isbn'];
-        $author      = $_POST['author_name'];
-        $totalQty    = (int)$_POST['total_quantity'];
-        $statusDesc  = $_POST['status_description'];
-
-        $bookByIsbn = $this->db->columnFilter('books', 'isbn', $isbn);
-        if (!$bookByIsbn) {
-            setMessage('error', 'Book not found by ISBN');
-            return redirect('admin/manageBook');
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return; 
         }
 
-        $quantityDiff     = $totalQty - $bookByIsbn['total_quantity'];
-        $availableQty     = max(0, $bookByIsbn['available_quantity'] + $quantityDiff);
+        $title = trim($_POST['title'] ?? '');
+        $isbn = trim($_POST['isbn'] ?? '');
+        $author = trim($_POST['author_name'] ?? '');
+        $totalQuantity = isset($_POST['total_quantity']) ? (int)$_POST['total_quantity'] : null;
+        $statusDescription = trim($_POST['status_description'] ?? '');
 
-        $updated = $this->db->update('books', $id, [
-            'total_quantity'     => $totalQty,
-            'available_quantity' => $availableQty,
-            'status_description' => $statusDesc
-        ]);
+        if ($totalQuantity === null || $totalQuantity < 0) {
+            setMessage('error', 'Invalid total quantity.');
+            redirect('admin/manageBook');
+            return;
+        }
 
-        setMessage($updated ? 'success' : 'error', $updated ? 'Books updated successfully' : 'Failed to update books');
+        // Fetch current book info by ISBN to calculate available quantity correctly
+        $currentBookByIsbn = $this->db->columnFilter('books', 'isbn', $isbn);
+
+        if (!$currentBookByIsbn) {
+            setMessage('error', 'Book with provided ISBN not found.');
+            redirect('admin/manageBook');
+            return;
+        }
+
+        // Calculate difference between new total quantity and old total quantity
+        $quantityDifference = $totalQuantity - $currentBookByIsbn['total_quantity'];
+        $availableQuantity = $currentBookByIsbn['available_quantity'] + $quantityDifference;
+
+        // Make sure available quantity is not negative
+        $availableQuantity = max(0, $availableQuantity);
+
+        $updateData = [
+            'total_quantity'       => $totalQuantity,
+            'available_quantity'   => $availableQuantity,
+            'status_description'   => $statusDescription
+        ];
+
+        $updated = $this->db->update('books', $id, $updateData);
+
+        if (!$updated) {
+            setMessage('error', 'Failed to update book.');
+        } else {
+            setMessage('success', 'Book updated successfully.');
+        }
+
         redirect('admin/manageBook');
     }
 }

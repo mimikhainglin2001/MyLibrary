@@ -23,64 +23,80 @@ class Admin extends Controller
         $this->view('admin/adminregister');
     }
 
-   public function adminlist()
-{
-    $admins = $this->db->getAllAdmins('users',1);
-    $data = [
-        'admins' => $admins
-    ];
-    $this->view('admin/adminlist', $data);
-}
+    public function adminlist()
+    {
+        $allUsers = $this->db->readAll('users');
+        $admins = [];
 
+        foreach ($allUsers as $user) {
+            if ((int)$user['role_id'] === 1) { // Admin role
+                $admins[] = $this->db->getById('users', $user['id']);
+            }
+        }
+
+        $data = ['admins' => $admins];
+        $this->view('admin/adminlist', $data);
+    }
 
     public function manageMember()
     {
-        $members = $this->db->getAllMembers('users',2);
-        $data = [
-            'members' => $members
-        ];
+        $allUsers = $this->db->readAll('users');
+        $members = [];
+
+        foreach ($allUsers as $user) {
+            if ((int)$user['role_id'] === 2) { // Member role
+                $members[] = $this->db->getById('users', $user['id']);
+            }
+        }
+
+        $data = ['members' => $members];
         $this->view('admin/manageMember', $data);
     }
+
     public function manageBook()
     {
         $booklist = $this->db->readAll('book_details');
-        $data = [
-            'booklist' => $booklist
-        ];
+        $data = ['booklist' => $booklist];
         $this->view('admin/manageBook', $data);
     }
+
     public function issueBook()
     {
         $borrowBookList = $this->db->readAll('borrow_full_view');
-        $data = [
-            'borrowBookList' => $borrowBookList
-        ];
+        $data = ['borrowBookList' => $borrowBookList];
         $this->view('admin/issueBook', $data);
     }
+
     public function addnewBook()
     {
         $this->view('admin/addnewBook');
     }
+
     public function returnBook()
     {
         $returnBookList = $this->db->readAll('borrow_full_view');
-        $data = [
-            'returnBookList' => $returnBookList
-        ];
+        $data = ['returnBookList' => $returnBookList];
         $this->view('admin/returnBook', $data);
     }
+
     public function reservation()
     {
         $reservedBookList = $this->db->readAll('reservation_view');
-        $data = [
-            'reservedBookList' => $reservedBookList
-        ];
-        $this->view('admin/reservation',$data);
+        $data = ['reservedBookList' => $reservedBookList];
+        $this->view('admin/reservation', $data);
     }
+
     public function profile()
     {
         $id = is_array($_SESSION['session_loginuser']) ? $_SESSION['session_loginuser']['id'] : $_SESSION['session_loginuser'];
-        $loginuser = $this->db->getUserWithRoleById($id);
+
+        $loginuser = $this->db->getById('users', $id);
+
+        if (!$loginuser) {
+            setMessage('error', 'User not found.');
+            redirect('login'); // or another page suitable for your app
+            exit;
+        }
 
         $data = [
             'loginuser' => $loginuser
@@ -88,180 +104,182 @@ class Admin extends Controller
 
         $this->view('admin/profile', $data);
     }
+
+
     public function editAdminProfile()
     {
         $id = is_array($_SESSION['session_loginuser']) ? $_SESSION['session_loginuser']['id'] : $_SESSION['session_loginuser'];
-        $loginuser = $this->db->getUserWithRoleById($id);
-        $data = [
-            'loginuser' => $loginuser
-        ];
-
-        $this->view('admin/editAdminProfile', $data);
-    }
-    // admin edit profile
-    public function editProfile($id)
-    {
         $user = $this->db->getById('users', $id);
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $updatedata = [
-                'name'   => $_POST['name'],
-                'email'  => $_POST['email'],
-                'gender' => $_POST['gender']
-            ];
-
-            if ($this->db->update('users', $id, $updatedata)) {
-                setMessage('success', 'Profile updated successfully');
-                redirect('admin/profile');
-            } else {
-                setMessage('error', 'Failed to update profile');
-            }
+        if (!$user) {
+            setMessage('error', 'User not found');
+            redirect('admin/profile');
+            return;
         }
 
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $updatedData = [
+                'name'   => $_POST['name'] ?? $user['name'],
+                'email'  => $_POST['email'] ?? $user['email'],
+                'gender' => $_POST['gender'] ?? $user['gender'],
+            ];
 
+            if (!$this->db->update('users', $id, $updatedData)) {
+                setMessage('error', 'Failed to update profile');
+                $data = ['loginuser' => $user];
+                $this->view('admin/editAdminProfile', $data);
+                return;
+            }
+
+            setMessage('success', 'Profile updated successfully');
+            redirect('admin/profile');
+            return;
+        }
         $data = ['loginuser' => $user];
         $this->view('admin/editAdminProfile', $data);
     }
+
     // edit Member List
     public function editMemberList($id)
     {
         $user = $this->db->getById('users', $id);
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $name = $_POST['name'];
-            // var_dump($name);
-            // die();
-            $year = $_POST['year'];
-            $status = $_POST['id'];
-
-            $updateUser = [
-                'name' => $name,
-                'year' => $year,
-                'id' => $status
-
-            ];
-
-            $updated = $this->db->update('users', $id, $updateUser);
-            // var_dump($updated);
-            // die();
-
-            if (!$updated) {
-                setMessage('error', 'Failed to update member list');
-                //redirect('admin/manageMember');
-            } else {
-                setMessage('success', 'Member List updated successfully');
-                redirect('admin/manageMember');
-            }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            // Optionally, you might want to load a view here with $user data
+            return;
         }
+
+        $updateUser = [
+            'name' => $_POST['name'] ?? $user['name'],
+            'year' => $_POST['year'] ?? $user['year'],
+            'id'   => $_POST['id'] ?? $user['id'], // Be careful updating 'id', usually it's primary key!
+        ];
+
+        if (!$this->db->update('users', $id, $updateUser)) {
+            setMessage('error', 'Failed to update member list');
+            // Optionally redirect or load view here
+            return;
+        }
+
+        setMessage('success', 'Member List updated successfully');
+        redirect('admin/manageMember');
     }
+
+
 
     // Delete Member List
     public function deleteMemberList($id)
     {
         $user = $this->db->getById('users', $id);
-        // var_dump($id);exit;
+
         if (!$user) {
             setMessage('error', 'User not found');
             redirect('admin/manageMember');
             return;
         }
 
-        $deleted = $this->db->delete('users', $id);
-
-        if ($deleted) {
-            setMessage('success', 'Member deleted successfully');
-        } else {
+        if (!$this->db->delete('users', $id)) {
             setMessage('error', 'Failed to delete member');
+            redirect('admin/manageMember');
+            return;
         }
 
+        setMessage('success', 'Member deleted successfully');
         redirect('admin/manageMember');
     }
 
+
     // Changed Admin Password in admin profile
-    public function changeAdminPassword(){
+    public function changeAdminPassword()
+    {
         $this->view('admin/changeAdminPassword');
     }
 
-    public function changePassword(){
+    public function changePassword()
+    {
         $user = $_SESSION['session_loginuser'];
-        // var_dump($user);
 
-        $currentPassword = $_POST['currentPassword'];
-        $newPassword = $_POST['newPassword'];
-        $confirmPassword = $_POST['confirmPassword'];
+        $currentPassword = $_POST['currentPassword'] ?? null;
+        $newPassword = $_POST['newPassword'] ?? null;
+        $confirmPassword = $_POST['confirmPassword'] ?? null;
 
-        if(!$currentPassword || !$newPassword || !$confirmPassword){
+        if (!$currentPassword || !$newPassword || !$confirmPassword) {
             setMessage('error', 'All fields are required');
             redirect('admin/changeAdminPassword');
             return;
         }
 
-        if($newPassword !== $confirmPassword){
-            setMessage('error', 'Passwords must be match');
-            //redirect('admin/changeAdminPassword');
+        if ($newPassword !== $confirmPassword) {
+            setMessage('error', 'Passwords must match');
+            redirect('admin/changeAdminPassword');
+            return;
         }
 
-        if(strlen($newPassword < 6)){
+        if (strlen($newPassword) < 6) {
             setMessage('error', 'Password length must be more than 6');
-            //redirect('admin/changeAdminPassword');
+            redirect('admin/changeAdminPassword');
+            return;
         }
 
         $updatedPassword = base64_encode($newPassword);
         $updated = $this->db->update('users', $user['id'], ['password' => $updatedPassword]);
-        setMessage('success', 'Password changed successfully');
-        redirect('admin/profile/');
 
+        if ($updated) {
+            setMessage('success', 'Password changed successfully');
+        } else {
+            setMessage('error', 'Failed to change password');
+        }
+
+        redirect('admin/profile');
     }
+
     // Edit Admin List
     public function editadminlist($id)
     {
         $user = $this->db->getById('users', $id);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $name = $_POST['name'];
-            // var_dump($name);
-            // die();
-            $department = $_POST['department'];
-            $status = $_POST['id'];
+            $name = $_POST['name'] ?? null;
+            $department = $_POST['department'] ?? null;
+            $status = $_POST['id'] ?? null;
 
             $updateUser = [
-                'name' => $name,
+                'name'       => $name,
                 'department' => $department,
-                'id' => $status
-
+                'id'         => $status,
             ];
 
             $updated = $this->db->update('users', $id, $updateUser);
-            // var_dump($updated);
-            // die();
 
             if (!$updated) {
-                setMessage('error', 'Failed to update member list');
-                //redirect('admin/adminlist');
-            } else {
-                setMessage('success', 'Member List updated successfully');
-                redirect('admin/adminlist');
+                setMessage('error', 'Failed to update admin list');
+                // You may want to redirect here if needed, e.g. redirect('admin/adminlist');
+                return;
             }
+
+            setMessage('success', 'Admin list updated successfully');
+            redirect('admin/adminlist');
         }
     }
+
 
     // Delete Admin List
     public function deleteadminlist($id)
     {
         $user = $this->db->getById('users', $id);
-        // var_dump($id);exit;
+
         if (!$user) {
-            setMessage('error', 'User not found');
+            setMessage('error', 'Admin not found');
             redirect('admin/adminlist');
             return;
         }
 
         $deleted = $this->db->delete('users', $id);
 
-        if ($deleted) {
-            setMessage('success', 'Member deleted successfully');
+        if (!$deleted) {
+            setMessage('error', 'Failed to delete admin');
         } else {
-            setMessage('error', 'Failed to delete member');
+            setMessage('success', 'Admin deleted successfully');
         }
 
         redirect('admin/adminlist');

@@ -585,14 +585,13 @@ $modalMessage = $modalData['message'] ?? ''; // The actual message text
 <main class="main-content">
     <section class="hero-section">
         <div class="hero-image">
-            <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Library books">
+            <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Library books">
         </div>
-
         <div class="search-section">
             <h1>Find The Book You Love</h1>
             <div class="search-container">
                 <div class="search-box">
-                    <input type="text" placeholder="Search books, authors, categories..." class="search-input">
+                    <input type="text" placeholder="Search by title, author, or ISBN..." class="search-input" id="searchInput">
                 </div>
             </div>
         </div>
@@ -667,7 +666,7 @@ $modalMessage = $modalData['message'] ?? ''; // The actual message text
                                 data-book-title="<?= htmlspecialchars($book['title']) ?>"
                                 data-book-author="<?= htmlspecialchars($book['author_name']) ?>"
                                 data-borrow-url="<?= URLROOT; ?>/BorrowBook/borrow?id=<?= htmlspecialchars($book['id']) ?>"
-                                data-reserve-url="<?= URLROOT; ?>/BorrowBook/reserve?id=<?= htmlspecialchars($book['id']) ?>"
+                                data-reserve-url="<?= URLROOT; ?>/Reservation/reserve?id=<?= htmlspecialchars($book['id']) ?>"
                                 data-is-borrowed="<?= $isBorrowedByUser ? 'true' : 'false' ?>"
                                 <?= $buttonDisabled ?>>
                                 <?= $buttonText ?>
